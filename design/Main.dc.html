@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #29b6f6; text-decoration: none; }
+    a:hover { color: #9adcf5; }
+    .pf-card { transition: border-color .15s ease, transform .1s ease; }
+    .pf-card:hover { border-color: rgba(41,182,246,.42); transform: translateY(-1px); }
+  </style>
+</helmet>
+
+<div style="width: 1120px; background: #040d1a; color: #e8eef6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; padding: 34px 44px 44px; box-sizing: border-box;">
+
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 40px;">
+    <div style="width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #1a6ea8, #a855f7); display: grid; place-items: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d8f2fd" stroke-width="1.6" stroke-linecap="round">
+        <path d="M12 2v20M4.2 7l15.6 10M19.8 7L4.2 17"/>
+        <path d="M12 6.4l2.4-2.4M12 6.4L9.6 4M12 17.6l2.4 2.4M12 17.6L9.6 20"/>
+      </svg>
+    </div>
+    <div>
+      <b style="font-size: 18px; letter-spacing: -.4px; display: block; line-height: 1.2;">PermaFrost</b>
+      <span style="display: block; font-size: 9.5px; color: #8aa0b2; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Proof of lock · Epoch on Sui</span>
+    </div>
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 13px; color: #8aa0b2;">No Sui wallet detected</span>
+      <button style="padding: 10px 18px; border-radius: 12px; border: 1px solid rgba(41,182,246,.16); background: rgba(41,182,246,.08); color: #9adcf5; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: inherit;">Connect wallet</button>
+    </div>
+  </div>
+
+  <h1 style="font-size: 46px; font-weight: 800; letter-spacing: -1.4px; line-height: 1.08; margin: 0 0 14px; max-width: 15ch; background: linear-gradient(96deg, #d8f2fd, #29b6f6 68%, #a855f7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Frozen liquidity you can actually verify.</h1>
+
+  <p style="color: #8aa0b2; font-size: 15.5px; line-height: 1.6; max-width: 60ch; margin: 0 0 26px;">Paste a project's address and see everything it has locked with Epoch — LP positions, vesting vaults, the lot. Then embed a badge that reads the chain live, so nobody has to take your word for it.</p>
+
+  <div style="display: flex; gap: 10px; margin-bottom: 28px;">
+    <input placeholder="project address, lock id, or coin type" style="flex-grow: 1; background: #060f1c; border: 1px solid rgba(41,182,246,.16); border-radius: 14px; padding: 14px 16px; color: #e8eef6; font-size: 14.5px; font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace;">
+    <button style="padding: 14px 26px; border: none; border-radius: 14px; font-weight: 700; font-size: 14.5px; color: #fff; cursor: pointer; background: linear-gradient(96deg, #29b6f6, #a855f7); font-family: inherit;">Verify</button>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 32px; background: linear-gradient(135deg, rgba(41,182,246,.07), rgba(168,85,247,.05)), #0a1524; border: 1px solid rgba(41,182,246,.16); border-radius: 20px; padding: 26px 30px; margin-bottom: 22px;">
+    <svg width="176" height="180" viewBox="0 0 86 88" style="flex-shrink: 0;">
+      <defs>
+        <linearGradient id="mIce" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#9adcf5" stop-opacity=".95"/>
+          <stop offset="55%" stop-color="#4db8e8" stop-opacity=".85"/>
+          <stop offset="100%" stop-color="#0d3f63"/>
+        </linearGradient>
+        <clipPath id="mClip"><path d="M22 40 L64 40 L68 74 L18 74 Z"/></clipPath>
+      </defs>
+      <circle cx="24" cy="12" r=".9" fill="#d8f2fd" opacity=".5"/>
+      <circle cx="46" cy="7" r=".7" fill="#d8f2fd" opacity=".4"/>
+      <circle cx="62" cy="14" r=".85" fill="#d8f2fd" opacity=".45"/>
+      <path d="M22 40 L64 40 L68 74 L18 74 Z" fill="#0d3f63" opacity=".22"/>
+      <g clip-path="url(#mClip)">
+        <rect x="14" y="{{ice.surfaceY}}" width="60" height="42" fill="url(#mIce)"/>
+        <rect x="29.5" y="{{ice.sheenY}}" width="5.5" height="{{ice.sheenH}}" rx="2.75" fill="#d8f2fd" opacity=".2"/>
+      </g>
+      <path d="M22 40 L64 40 L68 74 L18 74 Z" fill="none" stroke="#9adcf5" stroke-opacity=".4" stroke-width=".8"/>
+      <line x1="21" x2="65" y1="{{ice.rimeY}}" y2="{{ice.rimeY}}" stroke="#d8f2fd" stroke-width=".8" stroke-dasharray="3 2.5" opacity=".5"/>
+      <ellipse cx="43" cy="77" rx="{{ice.puddleR}}" ry="2" fill="#2b7fb5" opacity=".3"/>
+      <g transform="translate(0 {{ice.drop}})">
+        <ellipse cx="43" cy="33.5" rx="18.5" ry="7.5" fill="#7d90a7"/>
+        <ellipse cx="43" cy="32" rx="17" ry="6.2" fill="#8b9db3"/>
+        <ellipse cx="27.5" cy="38" rx="6.5" ry="2.6" fill="#6b7f96"/>
+        <ellipse cx="58.5" cy="38" rx="6.5" ry="2.6" fill="#6b7f96"/>
+        <ellipse cx="43" cy="24.5" rx="10.5" ry="9" fill="#9cadc2"/>
+        <ellipse cx="43" cy="29" rx="7.4" ry="5" fill="#c3d0dd"/>
+        <ellipse cx="43" cy="26.6" rx="1.5" ry="1.1" fill="#5a6b7d"/>
+        <path d="M40.3 30.6 L39.4 37.4 L41.3 37.4 L41.6 30.6 Z" fill="#f4f8fb"/>
+        <path d="M45.7 30.6 L46.6 37.4 L44.7 37.4 L44.4 30.6 Z" fill="#f4f8fb"/>
+        <g stroke="#7b8b9e" stroke-width=".55" stroke-linecap="round">
+          <path d="M37.8 28.8 L32.6 27.8"/><path d="M37.8 30.4 L32.8 30.8"/>
+          <path d="M48.2 28.8 L53.4 27.8"/><path d="M48.2 30.4 L53.2 30.8"/>
+        </g>
+        <circle cx="38.9" cy="21.6" r="1.6" fill="#26313d"/><circle cx="39.25" cy="21.2" r=".6" fill="#fff"/>
+        <circle cx="47.1" cy="21.6" r="1.6" fill="#26313d"/><circle cx="47.45" cy="21.2" r=".6" fill="#fff"/>
+      </g>
+    </svg>
+
+    <div style="display: flex; flex-direction: column; gap: 6px; flex-grow: 1;">
+      <span style="font-size: 10px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase; color: #8aa0b2;">Live on Sui mainnet, right now</span>
+      <b style="font-size: 38px; font-weight: 800; letter-spacing: -1px; color: #d8f2fd; line-height: 1.1;">{{sel.amount}}</b>
+      <span style="color: #8aa0b2; font-size: 14.5px;">{{sel.status}}</span>
+
+      <div style="display: flex; align-items: center; gap: 12px; margin-top: 12px;">
+        <div style="flex-grow: 1; height: 5px; border-radius: 3px; background: rgba(41,182,246,.14); overflow: hidden;">
+          <div style="height: 100%; width: {{sel.pctW}}; border-radius: 3px; background: linear-gradient(90deg, #1a6ea8, #4db8e8);"></div>
+        </div>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 12px; color: #9adcf5;">{{sel.pct}} of term</span>
+      </div>
+
+      <span style="color: #29b6f6; font-size: 14px; font-weight: 600; margin-top: 12px;">Inspect this lock →</span>
+    </div>
+  </div>
+
+  <div style="font-size: 10px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase; color: #8aa0b2; margin: 30px 0 12px;">Everything else Epoch is holding</div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 26px;">
+    <sc-for list="{{cards}}" as="c" hint-placeholder-count="3">
+      <div class="pf-card" onClick="{{c.pick}}" style="display: flex; align-items: center; gap: 13px; background: #0a1524; border: 1px solid {{c.border}}; border-radius: 16px; padding: 15px 17px; cursor: pointer;">
+        <svg width="58" height="59" viewBox="0 0 86 88" style="flex-shrink: 0;">
+          <path d="M22 40 L64 40 L68 74 L18 74 Z" fill="#0d3f63" opacity=".22"/>
+          <clipPath id="c{{$index}}"><path d="M22 40 L64 40 L68 74 L18 74 Z"/></clipPath>
+          <g clip-path="url(#c{{$index}})">
+            <rect x="14" y="{{c.surfaceY}}" width="60" height="42" fill="url(#mIce)"/>
+          </g>
+          <path d="M22 40 L64 40 L68 74 L18 74 Z" fill="none" stroke="#9adcf5" stroke-opacity=".4" stroke-width=".8"/>
+          <ellipse cx="43" cy="77" rx="{{c.puddleR}}" ry="2" fill="#2b7fb5" opacity=".3"/>
+        </svg>
+        <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+          <b style="font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 14px;">{{c.sym}}</b>
+          <span style="color: #8aa0b2; font-size: 12.5px;">{{c.kind}}</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 11.5px; color: #9adcf5;">{{c.when}}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display: flex; gap: 12px; align-items: center;">
+    <button style="padding: 13px 22px; border: none; border-radius: 14px; font-weight: 700; font-size: 14px; color: #fff; cursor: pointer; background: linear-gradient(96deg, #29b6f6, #a855f7); font-family: inherit; display: inline-flex; align-items: center; gap: 8px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v20M4.2 7l15.6 10M19.8 7L4.2 17"/></svg>
+      Freeze something
+    </button>
+    <button style="padding: 13px 22px; border-radius: 14px; border: 1px solid rgba(41,182,246,.16); background: rgba(41,182,246,.08); color: #9adcf5; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;">Deploy</button>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; gap: 14px; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(41,182,246,.16); color: #8aa0b2; font-size: 12.5px;">
+    <span>Reads <span style="font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; color: #9adcf5;">epoch_object_lock</span> and <span style="font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; color: #9adcf5;">vesting_service</span> on Sui mainnet. Nothing is stored off-chain.</span>
+    <a href="#">Built on Epoch ↗</a>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":1120,"height":980}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { picked: 0 };
+  }
+
+  // Real values read off Sui mainnet, so the mockup shows what the app shows.
+  data() {
+    return [
+      { sym: 'EPT',   kind: 'vesting vault', amount: '1,230,000 EPT', status: 'still frozen · unlocks in 20d 21h', pct: 7,  when: 'unlocks 22/09/2026' },
+      { sym: 'HIPPO', kind: 'vesting vault', amount: '11,000 HIPPO',  status: 'still frozen · unlocks in 1y 65d',  pct: 22, when: 'unlocks 05/11/2027' },
+      { sym: 'SUI',   kind: 'vesting vault', amount: '3 SUI',         status: 'still frozen · unlocks in 1y 71d',  pct: 41, when: 'unlocks 11/11/2027' },
+      { sym: 'CETUS', kind: 'vesting vault', amount: '70 CETUS',      status: 'still frozen · unlocks in 71d',     pct: 68, when: 'unlocks 11/11/2026' },
+    ];
+  }
+
+  renderVals() {
+    const all = this.data();
+    const i = this.state.picked;
+    const sel = all[i];
+    const melt = sel.pct / 100;
+
+    return {
+      sel: { ...sel, pct: sel.pct + '%', pctW: sel.pct + '%' },
+      // The block geometry mirrors IceBlock.tsx: top 40, bottom 74.
+      ice: {
+        surfaceY: 40 + 34 * melt,
+        sheenY: 44 + 34 * melt,
+        sheenH: Math.max(0, 74 - (40 + 34 * melt) - 8),
+        rimeY: 40 + 34 * melt,
+        drop: 34 * melt,
+        puddleR: 10 + 20 * melt,
+      },
+      cards: all
+        .map((c, idx) => ({ ...c, idx }))
+        .filter((c) => c.idx !== i)
+        .map((c) => ({
+          ...c,
+          surfaceY: 40 + 34 * (c.pct / 100),
+          puddleR: 10 + 20 * (c.pct / 100),
+          border: 'rgba(41,182,246,.16)',
+          pick: () => this.setState({ picked: c.idx }),
+        })),
+    };
+  }
+}
+</script>
+</body>
+</html>

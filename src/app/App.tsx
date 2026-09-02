@@ -1,0 +1,339 @@
+import { useCallback, useEffect, useState } from 'preact/hooks'
+import { resolveFrost } from '@/chain/resolve'
+import { smartSearch, type SearchResult } from '@/chain/search'
+import type { Frost } from '@/chain/frost'
+import { Frozen } from '@/ice/Frozen'
+import { Details } from './Details'
+import { Embed } from './Embed'
+import { Actions } from './Actions'
+import { Landing } from './Landing'
+import { Create } from './Create'
+import { Deploy } from './Deploy'
+import { Results } from './Results'
+import { useWallet } from '@/wallet/useWallet'
+import { shortAddr } from '@/format'
+import { HeroTitle } from '@/ui/HeroTitle'
+import './app.css'
+
+type Status = 'idle' | 'loading' | 'ready' | 'error'
+
+/**
+ * Views live in the query string: one Walrus blob means one document, so there
+ * are no server routes to hang a second page off. Deep links still work, which
+ * matters because every badge click lands on `?id=`.
+ */
+type View = 'verify' | 'new' | 'deploy'
+
+const viewFromUrl = (): View => {
+  const v = new URLSearchParams(location.search).get('view')
+  return v === 'new' || v === 'deploy' ? v : 'verify'
+}
+
+export function App() {
+  const wallet = useWallet()
+  const [query, setQuery] = useState(
+    () => new URLSearchParams(location.search).get('q') ?? new URLSearchParams(location.search).get('id') ?? '',
+  )
+  const [result, setResult] = useState<SearchResult | null>(null)
+  const [selected, setSelected] = useState<Frost | null>(null)
+  const [status, setStatus] = useState<Status>('idle')
+  const [error, setError] = useState('')
+  const [view, setView] = useState<View>(viewFromUrl)
+
+  const go = (next: View) => {
+    const url = new URL(location.href)
+    if (next === 'verify') url.searchParams.delete('view')
+    else url.searchParams.set('view', next)
+    history.replaceState(null, '', url)
+    setView(next)
+  }
+
+  const setUrl = (key: 'q' | 'id', value: string) => {
+    const url = new URL(location.href)
+    url.searchParams.delete('q')
+    url.searchParams.delete('id')
+    url.searchParams.set(key, value)
+    history.replaceState(null, '', url)
+  }
+
+  /** Open one frost in the detail view. */
+  const pick = useCallback(
+    async (id: string) => {
+      setStatus('loading')
+      try {
+        const f = await resolveFrost(id, wallet.address)
+        setSelected(f)
+        setStatus('ready')
+        setUrl('id', id)
+        scrollTo({ top: 0, behavior: 'smooth' })
+      } catch (e) {
+        setStatus('error')
+        setError(e instanceof Error ? e.message : 'Lookup failed.')
+      }
+    },
+    [wallet.address],
+  )
+
+  const search = useCallback(
+    async (raw: string) => {
+      const term = raw.trim()
+      if (!term) return
+      setStatus('loading')
+      setError('')
+      setSelected(null)
+      setResult(null)
+      try {
+        const res = await smartSearch(term, wallet.address)
+
+        if (res.kind === 'none') {
+          setStatus('error')
+          setError('Paste a lock id, a project address, or a coin type like 0x2::sui::SUI.')
+          return
+        }
+        if (res.frosts.length === 1) {
+          setSelected(res.frosts[0]!)
+          setStatus('ready')
+          setUrl('id', res.frosts[0]!.id)
+          return
+        }
+        setResult(res)
+        setStatus('ready')
+        setUrl('q', term)
+      } catch (e) {
+        setStatus('error')
+        setError(e instanceof Error ? e.message : 'Search failed.')
+      }
+    },
+    [wallet.address],
+  )
+
+  // Deep link: every badge click and shared link lands here.
+  useEffect(() => {
+    if (query) void search(query)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const nothingFound = status === 'ready' && !selected && result?.frosts.length === 0
+
+  return (
+    <div class="wrap">
+      <header class="head">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">❄</span>
+          <div>
+            <b class="glitch" data-text="PermaFrost">PermaFrost</b>
+            <small>proof of lock · epoch on sui</small>
+          </div>
+        </div>
+        <nav class="nav">
+          <button class={view === 'verify' ? 'on' : ''} onClick={() => go('verify')}>
+            Verify
+          </button>
+          <button class={view === 'new' ? 'on' : ''} onClick={() => go('new')}>
+            Freeze
+          </button>
+          <button class={view === 'deploy' ? 'on' : ''} onClick={() => go('deploy')}>
+            Deploy
+          </button>
+        </nav>
+        <WalletButton wallet={wallet} />
+      </header>
+      <div class="rule" />
+
+      <span class="sticker s-yellow" style="--tilt:-5deg; top:118px; right:34px" aria-hidden="true">
+        Walrus status: chill
+      </span>
+      <span class="sticker s-pink" style="--tilt:4deg; top:186px; right:96px" aria-hidden="true">
+        Read-only proof
+      </span>
+
+      <HeroTitle />
+      <p class="lede">
+        Paste a project's address and see everything it has locked with Epoch — LP positions,
+        vesting vaults, the lot. Then embed a badge that reads the chain live, so nobody has to
+        take your word for it.
+      </p>
+
+      {view === 'verify' && (
+      <form
+        class="search"
+        onSubmit={(e) => {
+          e.preventDefault()
+          void search(query)
+        }}
+      >
+        <input
+          class="mono"
+          value={query}
+          onInput={(e) => setQuery(e.currentTarget.value)}
+          placeholder="project address, lock id, or coin type"
+          spellcheck={false}
+          autocomplete="off"
+        />
+        <button class="btn" type="submit" disabled={status === 'loading'}>
+          {status === 'loading' ? 'Reading chain…' : 'Verify'}
+        </button>
+      </form>
+      )}
+
+      {wallet.address && status === 'idle' && (
+        <button class="btn ghost mine" onClick={() => void search(wallet.address!)}>
+          Show everything I locked
+        </button>
+      )}
+
+      {view === 'new' && (
+        <Create
+          wallet={wallet}
+          onCreated={() => {
+            go('verify')
+            setStatus('idle')
+          }}
+          onCancel={() => go('verify')}
+        />
+      )}
+
+      {view === 'deploy' && <Deploy wallet={wallet} onCancel={() => go('verify')} />}
+
+      {status === 'error' && <p class="err">{error}</p>}
+      {nothingFound && (
+        <p class="err">
+          Nothing locked with Epoch under that address. It may hold locks created by a different
+          wallet — search that one instead.
+        </p>
+      )}
+
+      {view === 'verify' && status === 'idle' && (
+        <>
+          <Landing
+            onPick={(id) => {
+              go('verify')
+              void pick(id)
+            }}
+          />
+          <div class="row">
+            <button class="btn" onClick={() => go('new')}>
+              ❄ Freeze something
+            </button>
+            <button class="btn ghost" onClick={() => go('deploy')}>
+              Deploy
+            </button>
+          </div>
+        </>
+      )}
+
+      {view === 'verify' && result && result.frosts.length > 1 && (
+        <Results kind={result.kind} term={result.term} frosts={result.frosts} onPick={(id) => void pick(id)} />
+      )}
+
+      {view === 'verify' && selected && (
+        <>
+          <section class="stage">
+            <div class="crt">
+              <Frozen frost={selected} size={200} />
+            </div>
+            <Verdict frost={selected} />
+          </section>
+
+          {selected.phase !== 'absent' && (
+            <>
+              <Actions frost={selected} wallet={wallet} onDone={() => void pick(selected.id)} />
+              <div class="cols">
+                <Details frost={selected} />
+                <Embed frost={selected} />
+              </div>
+            </>
+          )}
+
+          {result && result.frosts.length > 1 && (
+            <button class="btn ghost" onClick={() => setSelected(null)}>
+              ← Back to {result.frosts.length} results
+            </button>
+          )}
+        </>
+      )}
+
+      <footer class="foot">
+        <span>
+          Reads <code>epoch_object_lock</code> and <code>vesting_service</code> on Sui mainnet.
+          Nothing is stored off-chain.
+        </span>
+        <a href="https://epochsui.com" target="_blank" rel="noopener noreferrer">
+          Built on Epoch ↗
+        </a>
+      </footer>
+    </div>
+  )
+}
+
+function Verdict({ frost }: { frost: Frost }) {
+  if (frost.phase === 'absent') {
+    return (
+      <div class="verdict is-absent">
+        <b>No Epoch lock here</b>
+        <p class="muted">
+          This object exists on Sui but it is not an Epoch lock or vesting vault. Nothing is frozen.
+        </p>
+      </div>
+    )
+  }
+  const copy: Record<string, [string, string]> = {
+    melting: [
+      'Still frozen',
+      'The creator cannot cancel this or pull it forward. Only the beneficiary can push the date further out.',
+    ],
+    cracked: ['Unlocked', 'The term has elapsed. The beneficiary can withdraw at any time.'],
+    thawed: ['Fully claimed', 'Everything that was locked here has been withdrawn.'],
+    sealed: ['Sealed', 'Locked and not yet melting.'],
+  }
+  const [title, body] = copy[frost.phase] ?? ['', '']
+
+  return (
+    <div class={`verdict is-${frost.phase}`}>
+      <b>{title}</b>
+      <p class="muted">{body}</p>
+    </div>
+  )
+}
+
+function WalletButton({ wallet }: { wallet: ReturnType<typeof useWallet> }) {
+  const [open, setOpen] = useState(false)
+
+  if (wallet.address) {
+    return (
+      <div class="wallet-state">
+        {wallet.wrongNetwork && <span class="pill-warn">Wrong network</span>}
+        <button class="btn ghost mono" onClick={() => void wallet.disconnect()}>
+          {shortAddr(wallet.address)}
+        </button>
+      </div>
+    )
+  }
+  if (wallet.wallets.length === 0) {
+    return <span class="muted small">No Sui wallet detected</span>
+  }
+  return (
+    <div class="dropdown">
+      <button class="btn ghost" onClick={() => setOpen(!open)} disabled={wallet.busy}>
+        {wallet.busy ? 'Connecting…' : 'Connect wallet'}
+      </button>
+      {open && (
+        <ul class="menu">
+          {wallet.wallets.map((w) => (
+            <li key={w.name}>
+              <button
+                onClick={() => {
+                  setOpen(false)
+                  void wallet.connect(w)
+                }}
+              >
+                {w.icon && <img src={w.icon} alt="" width="16" height="16" />}
+                {w.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}

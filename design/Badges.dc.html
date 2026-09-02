@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #29b6f6; } a:hover { color: #9adcf5; }
+  </style>
+</helmet>
+
+<div style="width: 1000px; background: {{sheetBg}}; color: {{sheetFg}}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; padding: 36px 40px 40px; box-sizing: border-box;">
+
+  <h1 style="font-size: 24px; margin: 0 0 6px; letter-spacing: -.5px;">Badge states</h1>
+  <p style="color: {{muted}}; margin: 0 0 8px; font-size: 14px; line-height: 1.6; max-width: 68ch;">What a visitor sees on somebody else's site. Nothing here is written by the site owner — every value is read from Sui, which is the whole reason it can be trusted.</p>
+  <p style="color: {{muted}}; margin: 0 0 28px; font-size: 12.5px;">Toggle the host background to check both — the badge sits on pages we do not control.</p>
+
+  <div style="display: flex; gap: 10px; margin-bottom: 30px;">
+    <sc-for list="{{hosts}}" as="h" hint-placeholder-count="2">
+      <button onClick="{{h.pick}}" style="border: 1px solid {{h.border}}; background: {{h.bg}}; color: {{h.fg}}; border-radius: 10px; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;">{{h.label}}</button>
+    </sc-for>
+  </div>
+
+  <div style="font-size: 11px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase; color: {{muted}}; margin-bottom: 14px;">Pill · 260 × 48</div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 34px;">
+    <sc-for list="{{states}}" as="s" hint-placeholder-count="3">
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 7px; border: 1px solid rgba(41,182,246,.16); border-radius: 999px; background: linear-gradient(135deg, rgba(41,182,246,.09), rgba(168,85,247,.06)), #0a1524; opacity: {{s.opacity}};">
+          <svg width="34" height="35" viewBox="0 0 86 88" style="flex-shrink: 0;">
+            <defs>
+              <linearGradient id="bg{{$index}}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#9adcf5" stop-opacity=".95"/>
+                <stop offset="55%" stop-color="#4db8e8" stop-opacity=".85"/>
+                <stop offset="100%" stop-color="#0d3f63"/>
+              </linearGradient>
+              <clipPath id="bc{{$index}}"><path d="M22 40 L64 40 L68 74 L18 74 Z"/></clipPath>
+            </defs>
+            <path d="M22 40 L64 40 L68 74 L18 74 Z" fill="#0d3f63" opacity=".22"/>
+            <g clip-path="url(#bc{{$index}})"><rect x="14" y="{{s.surfaceY}}" width="60" height="42" fill="url(#bg{{$index}})"/></g>
+            <path d="M22 40 L64 40 L68 74 L18 74 Z" fill="none" stroke="#9adcf5" stroke-opacity=".4" stroke-width=".8"/>
+            <sc-if value="{{s.cracked}}" hint-placeholder-val="{{ true }}">
+              <g stroke="#d8f2fd" stroke-width="1.1" stroke-linecap="round" fill="none">
+                <path d="M43 40 L40 51 L46 58 L42 74"/><path d="M40 51 L24 54"/><path d="M46 58 L64 55"/>
+              </g>
+            </sc-if>
+            <ellipse cx="43" cy="77" rx="{{s.puddleR}}" ry="2" fill="#2b7fb5" opacity=".35"/>
+          </svg>
+          <span style="display: flex; flex-direction: column; line-height: 1.3;">
+            <span style="font-weight: 700; font-size: 12px; color: {{s.labelColor}};">{{s.label}}</span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #8aa0b2;">{{s.detail}}</span>
+          </span>
+        </div>
+        <span style="color: {{muted}}; font-size: 12px; line-height: 1.5;">{{s.note}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="font-size: 11px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase; color: {{muted}}; margin-bottom: 14px;">Card · 300 × 96</div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+    <sc-for list="{{states}}" as="s" hint-placeholder-count="3">
+      <div style="display: inline-flex; align-items: center; gap: 12px; padding: 12px 16px 12px 10px; border: 1px solid rgba(41,182,246,.16); border-radius: 14px; background: linear-gradient(135deg, rgba(41,182,246,.09), rgba(168,85,247,.06)), #0a1524; opacity: {{s.opacity}};">
+        <svg width="66" height="68" viewBox="0 0 86 88" style="flex-shrink: 0;">
+          <path d="M22 40 L64 40 L68 74 L18 74 Z" fill="#0d3f63" opacity=".22"/>
+          <clipPath id="cc{{$index}}"><path d="M22 40 L64 40 L68 74 L18 74 Z"/></clipPath>
+          <g clip-path="url(#cc{{$index}})"><rect x="14" y="{{s.surfaceY}}" width="60" height="42" fill="url(#bg0)"/></g>
+          <path d="M22 40 L64 40 L68 74 L18 74 Z" fill="none" stroke="#9adcf5" stroke-opacity=".4" stroke-width=".8"/>
+          <sc-if value="{{s.cracked}}" hint-placeholder-val="{{ true }}">
+            <g stroke="#d8f2fd" stroke-width="1.1" stroke-linecap="round" fill="none">
+              <path d="M43 40 L40 51 L46 58 L42 74"/><path d="M40 51 L24 54"/><path d="M46 58 L64 55"/>
+            </g>
+          </sc-if>
+          <ellipse cx="43" cy="77" rx="{{s.puddleR}}" ry="2" fill="#2b7fb5" opacity=".35"/>
+          <sc-if value="{{s.frozen}}" hint-placeholder-val="{{ true }}">
+            <g transform="translate(0 {{s.drop}})">
+              <ellipse cx="43" cy="33.5" rx="18.5" ry="7.5" fill="#7d90a7"/>
+              <ellipse cx="43" cy="32" rx="17" ry="6.2" fill="#8b9db3"/>
+              <ellipse cx="27.5" cy="38" rx="6.5" ry="2.6" fill="#6b7f96"/>
+              <ellipse cx="58.5" cy="38" rx="6.5" ry="2.6" fill="#6b7f96"/>
+              <ellipse cx="43" cy="24.5" rx="10.5" ry="9" fill="#9cadc2"/>
+              <ellipse cx="43" cy="29" rx="7.4" ry="5" fill="#c3d0dd"/>
+              <ellipse cx="43" cy="26.6" rx="1.5" ry="1.1" fill="#5a6b7d"/>
+              <path d="M40.3 30.6 L39.4 37.4 L41.3 37.4 L41.6 30.6 Z" fill="#f4f8fb"/>
+              <path d="M45.7 30.6 L46.6 37.4 L44.7 37.4 L44.4 30.6 Z" fill="#f4f8fb"/>
+              <circle cx="38.9" cy="21.6" r="1.6" fill="#26313d"/><circle cx="39.25" cy="21.2" r=".6" fill="#fff"/>
+              <circle cx="47.1" cy="21.6" r="1.6" fill="#26313d"/><circle cx="47.45" cy="21.2" r=".6" fill="#fff"/>
+            </g>
+          </sc-if>
+        </svg>
+        <span style="display: flex; flex-direction: column; line-height: 1.3;">
+          <span style="font-weight: 700; font-size: 12px; color: {{s.labelColor}};">{{s.label}}</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #8aa0b2;">{{s.detail}}</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 10.5px; color: #9adcf5; margin-top: 2px;">{{s.sub}}</span>
+        </span>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":1000,"height":640}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { host: 'dark' };
+  }
+
+  renderVals() {
+    const dark = this.state.host === 'dark';
+    const on = 'rgba(41,182,246,.1)';
+
+    return {
+      sheetBg: dark ? '#040d1a' : '#f4f6f8',
+      sheetFg: dark ? '#e8eef6' : '#1b2530',
+      muted: dark ? '#8aa0b2' : '#5c6b7a',
+      hosts: [
+        { key: 'dark', label: 'Dark host page' },
+        { key: 'light', label: 'Light host page' },
+      ].map((h) => ({
+        ...h,
+        border: this.state.host === h.key ? '#29b6f6' : 'rgba(41,182,246,.3)',
+        bg: this.state.host === h.key ? on : 'transparent',
+        fg: this.state.host === h.key ? (dark ? '#d8f2fd' : '#0d3f63') : (dark ? '#8aa0b2' : '#5c6b7a'),
+        pick: () => this.setState({ host: h.key }),
+      })),
+      states: [
+        {
+          label: '🔒 Locked on Epoch', detail: 'until 22/09/2026', sub: '20d 21h left · 7% elapsed',
+          labelColor: '#e8eef6', surfaceY: 42.4, drop: 2.4, puddleR: 11.4, opacity: 1,
+          frozen: true, cracked: false,
+          note: 'The normal state. Date and countdown come from the chain on every load.',
+        },
+        {
+          label: '🔓 Unlocked', detail: 'since 22/09/2026', sub: 'claimable by the beneficiary',
+          labelColor: '#fbbf24', surfaceY: 74, drop: 34, puddleR: 30, opacity: 1,
+          frozen: false, cracked: true,
+          note: 'The term elapsed. The badge flips on its own — no reload needed.',
+        },
+        {
+          label: '🔓 Unlocked & claimed', detail: 'was locked until 22/09/2026', sub: 'nothing left to verify',
+          labelColor: '#8aa0b2', surfaceY: 74, drop: 34, puddleR: 30, opacity: .75,
+          frozen: false, cracked: true,
+          note: 'Withdrawn. Reads as finished rather than as broken.',
+        },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+/* The ice system.
+   Every animation here is transform/opacity only: this renders inside an
+   iframe on somebody else's page, and a badge that janks their scroll is a
+   badge they remove. */
+
+.frost { display: block; overflow: visible; }
+
+/* --- the block ------------------------------------------------------ */
+.frost-block { transition: transform 600ms ease; }
+
+.frost-shimmer {
+  animation: frost-shimmer 5s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes frost-shimmer {
+  0%, 100% { opacity: 0.18; transform: translateX(-7px) scaleY(0.94); }
+  45%      { opacity: 0.85; transform: translateX(5px)  scaleY(1); }
+  55%      { opacity: 0.85; transform: translateX(6px)  scaleY(1); }
+}
+
+/* Cracks stay invisible until the cliff, then snap in. */
+.frost-crack {
+  opacity: 0;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+}
+.is-cracked .frost-block { animation: frost-jolt 620ms cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes frost-jolt {
+  0%       { transform: translate(0, 0) rotate(0deg); }
+  12%      { transform: translate(-3px, -1px) rotate(-1.4deg); }
+  26%      { transform: translate(3px, 1px)  rotate(1.2deg); }
+  42%      { transform: translate(-2px, 1px) rotate(-0.8deg); }
+  60%      { transform: translate(2px, 0)    rotate(0.5deg); }
+  100%     { transform: translate(0, 0) rotate(0deg); }
+}
+
+.is-cracked .frost-crack,
+.is-thawed .frost-crack {
+  opacity: 1;
+  animation: frost-crack 700ms cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+@keyframes frost-crack { to { stroke-dashoffset: 0; } }
+
+/* --- drips: vesting releasing token by token ------------------------ */
+.frost-drip {
+  animation: frost-drip 2.4s cubic-bezier(0.5, 0, 0.9, 0.6) infinite;
+  opacity: 0;
+}
+.frost-drip:nth-of-type(2) { animation-delay: 0.9s; }
+.frost-drip:nth-of-type(3) { animation-delay: 1.7s; }
+@keyframes frost-drip {
+  0%       { transform: translateY(0);    opacity: 0; }
+  15%      { opacity: 0.9; }
+  70%      { transform: translateY(14px); opacity: 0.9; }
+  100%     { transform: translateY(18px); opacity: 0; }
+}
+
+/* --- snow ----------------------------------------------------------- */
+.frost-snow { animation: frost-snow 4.5s linear infinite; opacity: 0.75; }
+.frost-snow:nth-of-type(2) { animation-delay: 1.4s; animation-duration: 6s; }
+.frost-snow:nth-of-type(3) { animation-delay: 2.9s; animation-duration: 3.6s; }
+@keyframes frost-snow {
+  0%   { transform: translate(0, -8px) scale(0.6);   opacity: 0; }
+  18%  { opacity: 0.95; }
+  60%  { transform: translate(4px, 24px) scale(1);   opacity: 0.8; }
+  100% { transform: translate(7px, 44px) scale(0.7); opacity: 0; }
+}
+
+/* --- the walrus ------------------------------------------------------ */
+.walrus { transition: transform 600ms cubic-bezier(0.3, 0.8, 0.4, 1); }
+
+.walrus-body { animation: walrus-breathe 4s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes walrus-breathe {
+  0%, 100% { transform: scaleY(1) translateY(0); }
+  50%      { transform: scaleY(1.075) translateY(-0.6px); }
+}
+
+/* A slow list from side to side, so she never sits perfectly still. */
+.walrus { animation: walrus-loll 9s ease-in-out infinite; transform-origin: 43px 40px; }
+@keyframes walrus-loll {
+  0%, 100% { transform: rotate(-1.4deg); }
+  50%      { transform: rotate(1.4deg); }
+}
+
+/* Blink is mostly closed-eye downtime, which reads as "asleep, unbothered". */
+.walrus-lid { animation: walrus-blink 6.5s ease-in-out infinite; transform-origin: 50% 0%; }
+@keyframes walrus-blink {
+  0%, 92%, 100% { transform: scaleY(0); }
+  94%, 97%      { transform: scaleY(1); }
+}
+
+.walrus-whisker { animation: walrus-whisker 4s ease-in-out infinite; transform-origin: 0% 50%; }
+@keyframes walrus-whisker {
+  0%, 100% { transform: rotate(1.5deg); }
+  50%      { transform: rotate(-7deg); }
+}
+
+/* The one moment of real motion: the cliff hits and she slides off. */
+.is-cracked .walrus { animation: walrus-plop 900ms cubic-bezier(0.4, 0, 0.7, 1) forwards; }
+@keyframes walrus-plop {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  30%  { transform: translate(6px, -2px) rotate(-6deg); }
+  62%  { transform: translate(13px, 19px) scale(0.74) rotate(16deg); }
+  /* Overshoots, then settles beside the puddle — still legible. Fading her to
+     a grey smear read as a rendering artefact, not as a walrus that slid off. */
+  80%  { transform: translate(18px, 26px) scale(0.7) rotate(9deg); }
+  100% { transform: translate(17px, 23px) scale(0.72) rotate(12deg); opacity: 0.9; }
+}
+
+.is-thawed .walrus {
+  opacity: 0.9;
+  transform: translate(17px, 23px) scale(0.72) rotate(12deg);
+}
+
+/* Hover: she opens an eye and looks at you. Desktop only — no hover state
+   should ever be the only way to learn something. */
+@media (hover: hover) {
+  .frost:hover .walrus-lid { animation-play-state: paused; transform: scaleY(0); }
+  .frost:hover .walrus-pupil { transform: translateX(1.2px); }
+}
+.walrus-pupil { transition: transform 300ms ease; }
+
+/* --- puddle ---------------------------------------------------------- */
+.frost-puddle { animation: frost-puddle 4s ease-in-out infinite; transform-origin: center; }
+@keyframes frost-puddle {
+  0%, 100% { transform: scaleX(1);    opacity: 0.7; }
+  50%      { transform: scaleX(1.04); opacity: 0.9; }
+}

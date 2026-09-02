@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0718"/>
+      <stop offset="55%" stop-color="#040d1a"/>
+      <stop offset="100%" stop-color="#05101f"/>
+    </linearGradient>
+    <linearGradient id="ice" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9adcf5" stop-opacity="0.95"/>
+      <stop offset="55%" stop-color="#4db8e8" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#0d3f63"/>
+    </linearGradient>
+    <linearGradient id="tx" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d8f2fd"/>
+      <stop offset="65%" stop-color="#29b6f6"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <clipPath id="blk"><path d="M700 250 L900 250 L920 470 L680 470 Z"/></clipPath>
+  </defs>
+
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <g transform="translate(0 285)">
+  <circle cx="140" cy="60" r="320" fill="#7c1fd0" opacity="0.13"/>
+  <circle cx="1090" cy="600" r="300" fill="#29b6f6" opacity="0.11"/>
+
+  <g transform="translate(96 176)">
+    <rect width="56" height="56" rx="15" fill="#1a6ea8"/>
+    <text x="28" y="39" font-size="30" text-anchor="middle" fill="#d8f2fd">❄</text>
+    <text x="74" y="26" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="27" font-weight="800" fill="#e8eef6">PermaFrost</text>
+    <text x="74" y="47" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="12.5" font-weight="700" letter-spacing="3" fill="#8aa0b2">PROOF OF LOCK · EPOCH ON SUI</text>
+  </g>
+
+  <text x="96" y="330" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="60" font-weight="800" fill="url(#tx)">Frozen liquidity</text>
+  <text x="96" y="398" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="60" font-weight="800" fill="url(#tx)">you can verify.</text>
+
+  <text x="96" y="462" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="23" fill="#8aa0b2">A badge that reads the chain live —</text>
+  <text x="96" y="496" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="23" fill="#8aa0b2">so the site owner cannot edit what it claims.</text>
+
+  <g clip-path="url(#blk)">
+    <rect x="660" y="250" width="280" height="230" fill="url(#ice)"/>
+    <rect x="742" y="272" width="34" height="182" rx="17" fill="#d8f2fd" opacity="0.26"/>
+  </g>
+  <path d="M700 250 L900 250 L920 470 L680 470 Z" fill="none" stroke="#9adcf5" stroke-opacity="0.4" stroke-width="3"/>
+  <ellipse cx="800" cy="486" rx="130" ry="12" fill="#2b7fb5" opacity="0.45"/>
+
+  <g transform="translate(717 168)">
+    <ellipse cx="0" cy="46" rx="30" ry="14" fill="#6b7f96"/>
+    <ellipse cx="83" cy="46" rx="30" ry="14" fill="#6b7f96"/>
+    <ellipse cx="42" cy="34" rx="66" ry="52" fill="#8b9db3"/>
+    <ellipse cx="42" cy="24" rx="56" ry="42" fill="#9cadc2"/>
+    <ellipse cx="42" cy="50" rx="38" ry="25" fill="#c3d0dd"/>
+    <circle cx="42" cy="38" r="6" fill="#5a6b7d"/>
+    <path d="M30 58 L26 88 L36 88 L37 58 Z" fill="#f4f8fb"/>
+    <path d="M54 58 L58 88 L48 88 L47 58 Z" fill="#f4f8fb"/>
+    <circle cx="24" cy="16" r="7.5" fill="#26313d"/><circle cx="26" cy="14" r="2.6" fill="#fff"/>
+    <circle cx="60" cy="16" r="7.5" fill="#26313d"/><circle cx="62" cy="14" r="2.6" fill="#fff"/>
+    <g stroke="#7b8b9e" stroke-width="2.4" stroke-linecap="round">
+      <path d="M10 48 L-14 44"/><path d="M10 55 L-13 57"/>
+      <path d="M74 48 L98 44"/><path d="M74 55 L97 57"/>
+    </g>
+  </g>
+
+  <text x="96" y="574" font-family="ui-monospace,Menlo,monospace" font-size="19" fill="#29b6f6">permafrost.epochsui.com</text>
+  </g>
+</svg>

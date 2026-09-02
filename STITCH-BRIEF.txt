@@ -1,0 +1,832 @@
+================================================================================
+PERMAFROST — BRIEFING COMPLETO DE UI
+Documento para recriação das telas no Google Stitch (ou qualquer gerador de UI)
+================================================================================
+
+Gerado a partir do código-fonte real em /Users/fabioalves/Projects/permafrost
+Última revisão: 02/09/2026
+
+Como usar este arquivo:
+  - Seções 1 a 9 são a especificação completa, em português.
+  - Seção 10 traz PROMPTS PRONTOS EM INGLÊS para colar direto no Stitch
+    (o Stitch responde bem melhor a prompt em inglês).
+  - Textos entre "aspas" são a copy literal da interface — não traduza,
+    a UI é toda em inglês.
+
+
+================================================================================
+1. IDENTIDADE
+================================================================================
+
+NOME DO SITE ........ PermaFrost
+TAGLINE ............. Proof of lock · Epoch on Sui
+DOMÍNIO PRINCIPAL ... permafrost.epochsui.com
+DOMÍNIO DO BADGE .... frostbadge.epochsui.com
+HEADLINE ............ "Frozen liquidity you can actually verify."
+
+O QUE É
+  Um verificador público de "prova de travamento" (proof-of-lock) para o
+  protocolo Epoch na blockchain Sui. Quando um projeto cripto trava a
+  liquidez dele, a prova que ele mostra ao mercado normalmente é um print
+  de tela — falsificável em 30 segundos. O PermaFrost lê o travamento
+  direto da blockchain e devolve um selo (badge) que o projeto embute no
+  próprio site. O dono do site NÃO consegue editar o que o selo diz.
+  Esse é o argumento central do produto inteiro.
+
+METÁFORA VISUAL
+  Gelo. "Liquidez congelada" já é o termo do mercado, e a infraestrutura
+  de hospedagem se chama Walrus (morsa, bicho do gelo). Então:
+     - ativo travado           = bloco de gelo sólido
+     - tempo passando          = o bloco derrete
+     - liberação por cliff     = o bloco racha de uma vez
+     - liberação linear        = o bloco pinga
+     - tudo resgatado          = sobra uma poça
+     - mascote                 = uma morsa deitada em cima do bloco
+
+REGRA DE OURO DO VISUAL
+  A imagem nunca pode discordar do número. O desenho é derivado dos mesmos
+  dados da tabela. O componente de gelo não aceita legenda nem texto livre —
+  ele só sabe desenhar o que a blockchain devolveu.
+
+
+================================================================================
+2. SISTEMA DE DESIGN (valores exatos, não arredondar)
+================================================================================
+
+CORES — base
+  Fundo da página ............. #040d1a
+  Fundo de painel/card ........ #0a1524
+  Fundo de input .............. #060f1c
+  Borda padrão ................ rgba(41, 182, 246, 0.16)
+  Borda em hover .............. rgba(41, 182, 246, 0.42)
+  Texto principal ............. #e8eef6
+  Texto secundário/mudo ....... #8aa0b2
+
+CORES — marca (herdadas da Epoch, para o badge não destoar)
+  Ciano ....................... #29b6f6
+  Violeta ..................... #a855f7
+  Verde (valor resgatável) .... #34d399
+  Âmbar (destravado) .......... #fbbf24
+  Vermelho (erro) ............. #ef5350
+
+CORES — rampa de gelo (do mais congelado ao quase água)
+  ice-900 ..................... #0d3f63
+  ice-700 ..................... #1a6ea8
+  ice-500 ..................... #4db8e8
+  ice-300 ..................... #9adcf5
+  ice-100 ..................... #d8f2fd
+  água ........................ #2b7fb5
+
+GRADIENTES
+  Botão primário .............. linear-gradient(96deg, #29b6f6, #a855f7)
+  Headline (texto) ............ linear-gradient(96deg, #d8f2fd, #29b6f6 68%, #a855f7)
+                                com background-clip: text
+  Fundo de destaque (hero) .... linear-gradient(135deg, rgba(41,182,246,.07),
+                                rgba(168,85,247,.05)) sobre #0a1524
+  Gelo (vertical) ............. #9adcf5 (95%) → #4db8e8 (85%) → #0d3f63
+
+TIPOGRAFIA
+  Sans .... -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif
+  Mono .... ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace
+            (no Stitch pode usar IBM Plex Mono como equivalente)
+
+  REGRA: todo número, endereço, hash, valor de token, data e trecho de
+  código usa a fonte MONO. Texto corrido usa SANS. Isso é o que faz a
+  interface parecer verificável em vez de decorativa.
+
+  Escala:
+    Headline (h1) ........ 46px / peso 800 / letter-spacing -1.4px / line-height 1.08
+    Título de tela ....... 26px / peso 800 / letter-spacing -0.6px
+    Valor em destaque .... 38px / peso 800 / letter-spacing -1px / cor #d8f2fd
+    Veredito ............. 27px / peso 800
+    Título de painel ..... 16px / peso 700
+    Corpo ................ 15.5px / line-height 1.6 / cor #8aa0b2
+    Corpo pequeno ........ 13.5px
+    Linha de dado ........ 13px
+    Rótulo/eyebrow ....... 10px / peso 800 / letter-spacing 1.8px / MAIÚSCULAS / #8aa0b2
+    Texto do badge ....... 12px (título) e 11px (detalhe)
+
+RAIOS DE BORDA
+  Botões e inputs ............. 14px
+  Painéis ..................... 18px
+  Hero / palco ................ 20px
+  Cards de exemplo ............ 16px
+  Itens de lista / segmentos .. 10px
+  Badge pill .................. 999px (cápsula)
+  Badge card .................. 14px
+  Marca (quadrado do logo) .... 10px
+
+ESPAÇAMENTO
+  Largura máxima do conteúdo .. 940px (app real) / 1120px (artboards)
+  Padding da página ........... 34px 44px 44px
+  Padding de painel ........... 20px 24px
+  Padding do hero ............. 26px 30px
+  Gap entre painéis ........... 16px
+  Gap entre cards ............. 12px
+  Gap do grid de 2 colunas .... 16px
+  Altura de controle .......... 44px mínimo (alvo de toque)
+
+COMPONENTES BASE
+  Botão primário .... gradiente ciano→violeta, texto #fff, peso 700,
+                      padding 13px 24px, raio 14px, sem borda
+  Botão fantasma .... fundo rgba(41,182,246,.08), borda padrão,
+                      texto #9adcf5, peso 600
+  Input ............. fundo #060f1c, borda padrão, raio 14px,
+                      padding 14px 16px, foco muda borda para
+                      rgba(41,182,246,.55)
+  Segmento .......... grupo de botões numa cápsula com borda; o ativo
+                      recebe fundo rgba(41,182,246,.16) e texto #d8f2fd
+  Linha de dado ..... rótulo à esquerda (#8aa0b2, 13px), valor à direita
+                      (mono, 13px), separador inferior
+                      1px solid rgba(255,255,255,.05)
+
+
+================================================================================
+3. MAPA DE TELAS
+================================================================================
+
+O site inteiro é UM ÚNICO ARQUIVO HTML (restrição da hospedagem: cada nome
+.epoch guarda um único blob no Walrus). Não existem rotas de servidor —
+as "páginas" são views trocadas por query string.
+
+  /                        Landing (estado inicial)
+  /?id=<object_id>         Verificação de um lock específico
+  /?q=<termo>              Lista de resultados de busca
+  /?view=new               Criar um lock
+  /?view=deploy            Console de publicação (uso interno)
+
+  Site separado (segundo nome .epoch):
+  frostbadge.epochsui.com/?id=<id>&variant=pill|card&mascot=0|1
+
+
+================================================================================
+4. TELA 1 — LANDING
+================================================================================
+
+PROPÓSITO
+  Fazer o visitante entender o produto em 5 segundos sem ler nada e sem
+  clicar em nada. A tela CHEGA já mostrando um travamento real, lido da
+  blockchain naquele instante.
+
+ELEMENTOS, DE CIMA PARA BAIXO
+
+ 1. CABEÇALHO
+    - Marca: quadrado 38x38, raio 10px, gradiente #1a6ea8 → #a855f7,
+      com um floco de neve em SVG traçado (stroke #d8f2fd, 1.6px).
+      NÃO usar emoji — tem que ser vetor.
+    - Ao lado: "PermaFrost" (18px, peso 800) e abaixo, em maiúsculas
+      espaçadas: "PROOF OF LOCK · EPOCH ON SUI"
+    - À direita: botão "Connect wallet" (fantasma).
+      Se não houver carteira instalada, mostrar em vez disso o texto
+      mudo "No Sui wallet detected".
+      Se conectada, mostrar o endereço abreviado em mono: "0x474bfe…8d1d"
+      Se a carteira estiver na rede errada, exibir ANTES do endereço um
+      chip âmbar "Wrong network".
+
+ 2. HEADLINE
+    "Frozen liquidity you can actually verify."
+    46px, peso 800, com gradiente aplicado ao texto, máx 15 caracteres
+    por linha para quebrar em duas linhas equilibradas.
+
+ 3. SUBTÍTULO
+    "Paste a project's address and see everything it has locked with
+     Epoch — LP positions, vesting vaults, the lot. Then embed a badge
+     that reads the chain live, so nobody has to take your word for it."
+
+ 4. BUSCA
+    Input largo + botão "Verify".
+    Placeholder: "project address, lock id, or coin type"
+    O input aceita TRÊS coisas diferentes e descobre sozinho qual é:
+      - endereço de projeto  → lista tudo que ele travou
+      - id de objeto         → abre aquele lock direto
+      - tipo/símbolo de moeda→ lista tudo congelado daquele ativo
+                               (aceita "0x2::sui::SUI" ou só "SUI")
+    Durante a busca o botão vira "Reading chain…" e fica desabilitado.
+
+ 5. HERO — O LOCK REAL (elemento mais importante da tela)
+    Painel horizontal, fundo de destaque, raio 20px.
+    ESQUERDA: bloco de gelo animado com a morsa, 190px.
+    DIREITA:
+      - eyebrow: "LIVE ON SUI MAINNET, RIGHT NOW"
+      - valor gigante em 38px: ex. "1,230,000 EPT"
+      - status: "still frozen · unlocks in 20d 21h"
+      - barra de progresso do prazo (5px de altura, raio 3px,
+        trilho rgba(41,182,246,.14), preenchimento
+        linear-gradient(90deg, #1a6ea8, #4db8e8)) + rótulo mono
+        "7% of term"
+      - link: "Inspect this lock →"
+    O painel inteiro é clicável.
+
+ 6. OUTROS LOCKS
+    eyebrow "EVERYTHING ELSE EPOCH IS HOLDING"
+    Grid de 3 colunas. Cada card: bloco de gelo pequeno (58px, SEM morsa),
+    símbolo do token em mono, tipo ("vesting vault" / "object lock"),
+    e a data em mono ("unlocks 05/11/2027").
+    Clicar num card troca o lock exibido no hero.
+
+ 7. AÇÕES
+    Botão primário "Freeze something" (com ícone de floco em SVG)
+    Botão fantasma "Deploy"
+
+ 8. RODAPÉ
+    "Reads epoch_object_lock and vesting_service on Sui mainnet.
+     Nothing is stored off-chain."
+    (os dois nomes de módulo em mono, cor #9adcf5)
+    À direita, link: "Built on Epoch ↗" → https://epochsui.com
+
+
+================================================================================
+5. TELA 2 — VERIFICAÇÃO
+================================================================================
+
+PROPÓSITO
+  Mostrar tudo que a blockchain diz sobre um travamento, e entregar o
+  código do selo para embutir.
+
+ 1. NAVEGAÇÃO
+    Se veio de uma lista: "← Back to 4 results"
+
+ 2. PALCO (hero de resultado)
+    Bloco de gelo grande (200px) COM a morsa, ao lado do veredito.
+    Veredito muda conforme o estado:
+
+    ESTADO "melting" (ainda congelado)
+      Título: "Still frozen"        (cor #9adcf5)
+      Texto: "The creator cannot cancel this or pull it forward. Only
+              the beneficiary can push the date further out."
+    ESTADO "cracked" (prazo venceu, não resgatado)
+      Título: "Unlocked"            (cor #fbbf24)
+      Texto: "The term has elapsed. The beneficiary can withdraw at any
+              time."
+    ESTADO "thawed" (tudo resgatado)
+      Título: "Fully claimed"       (cor #8aa0b2)
+      Texto: "Everything that was locked here has been withdrawn."
+    ESTADO "absent" (não é um lock da Epoch)
+      Título: "No Epoch lock here"  (cor #ef5350)
+      Texto: "This object exists on Sui but it is not an Epoch lock or
+              vesting vault. Nothing is frozen."
+
+    Abaixo do veredito, três métricas em linha, cada uma com eyebrow +
+    valor em mono 19px:
+      LOCKED → "1,230,000 EPT"   TIME LEFT → "20d 21h"   UNLOCKS → "22/09/2026"
+
+ 3. PAINEL DE AÇÃO (só aparece se a carteira conectada tem direito)
+    Borda violeta rgba(168,85,247,.3) para diferenciar dos painéis neutros.
+
+    Variante "estender":
+      Título "Freeze it for longer"
+      Texto: "The contract only accepts a later date, so this can
+              strengthen your proof but never weaken it."
+      Segmento com +30d / +90d / +180d / +365d
+      Botão "Extend lock"
+      Ao lado: "New unlock: 21/12/2026"
+
+    Variante "resgatar objeto":
+      Título "Ready to withdraw"
+      Texto: "The term elapsed on 22/09/2026. The object is yours to take."
+      Botão "Claim object"
+
+    Variante "resgatar vesting":
+      Título "Vested and claimable"
+      Texto: "This is computed with the contract's own curve, so it
+              matches to the base unit."
+      Botão "Claim vested tokens"
+
+    Se a carteira não for a beneficiária:
+      "This wallet is not the beneficiary of this lock, so there is
+       nothing for it to sign. Anyone can still verify and embed it."
+    Se não houver carteira:
+      "Connect the beneficiary wallet to extend this lock or claim from it."
+
+ 4. GRID DE DUAS COLUNAS
+
+    COLUNA ESQUERDA — "On-chain record"
+      Lista de linhas rótulo/valor:
+        Kind ............ "Vesting vault" | "Object lock (cliff)" |
+                          "Multi-beneficiary vesting"
+        Frozen asset .... símbolo do token, em mono
+        Locked at ....... data
+        Unlocks ......... data
+        Time left ....... contagem regressiva ao vivo
+        Term elapsed .... percentual
+        Creator ......... endereço abreviado, em mono, LINK azul
+        Beneficiary ..... endereço abreviado, em mono, LINK azul
+        Total locked .... valor com unidade
+        Claimed ......... valor com unidade
+        Vested .......... percentual
+        Claimable now ... valor, em VERDE #34d399 e negrito
+        Cliff ........... "100% at 22/09/2026"
+      Se for multi-beneficiário, lista extra com endereço + percentual.
+      Botão fantasma no fim: "Verify on Suiscan ↗"
+
+    COLUNA DIREITA — "Embed this proof"
+      Texto: "Paste it on your site. The date is read from Sui on every
+              page load — you cannot edit what it says, which is exactly
+              why a visitor can trust it."
+      Controles: segmento Pill / Card + checkbox "Mascot"
+      Área de prévia: fundo xadrez sutil
+        (repeating-conic-gradient(rgba(255,255,255,.02) 0% 25%,
+         transparent 0% 50%) 50% / 16px 16px), borda tracejada,
+        com o badge real renderizado dentro
+      Bloco de código em mono, 11px, cor #9adcf5, com o snippet:
+
+        <iframe src="https://frostbadge.epochsui.com/?id=0x…&variant=pill"
+                width="260" height="48" frameborder="0"
+                scrolling="no" loading="lazy" title="Locked on Epoch"></iframe>
+
+      Botão "Copy embed code" (vira "Copied" por 1,6s)
+      Bloco expansível: "Blocked by your site's CSP?" com um link de
+      fallback em texto.
+
+
+================================================================================
+6. TELA 3 — CRIAR LOCK (?view=new)
+================================================================================
+
+PROPÓSITO
+  Congelar algo. Fecha o ciclo do produto: travar aqui, provar aqui,
+  embutir em qualquer lugar.
+
+Painel único com borda violeta.
+Título: "Freeze something"
+Texto: "Locks are shared objects: once signed, nobody — not you, not
+        Epoch — can cancel it or pull the date forward. Only the
+        beneficiary can push it further out."
+
+Duas colunas.
+
+ COLUNA ESQUERDA
+   eyebrow "1 · WHAT TO FREEZE"
+   Input de filtro: "filter by name or type"
+   Lista selecionável. Cada item:
+     - ícone quadrado 26px, raio 7px, com SVG traçado
+       (moeda = círculo com cifrão estilizado; objeto = cubo isométrico)
+     - nome em negrito: "1,230,000 EPT" ou "Cetus LP #4821"
+     - id abreviado em mono: "0x8fa21c…4d90"
+     - à direita, etiqueta muda: "coin" ou "object"
+   Item selecionado: borda #29b6f6 e fundo rgba(41,182,246,.1)
+   Nota abaixo: "Only objects the contract accepts are listed — it needs
+                 key + store." (o trecho "key + store" em mono ciano)
+
+   Estado vazio: "Nothing in this wallet can be locked. The contract
+                  needs an object with key + store — coins, LP positions
+                  and most NFTs qualify."
+
+ COLUNA DIREITA
+   eyebrow "2 · UNTIL WHEN"
+   Botões de prazo: 30 days / 90 days / 6 months / 1 year / 2 years
+   Campo de data para prazo customizado
+   Linha muda: "Unlocks 02/09/2027"
+
+   eyebrow "3 · WHO CAN CLAIM IT"
+   Input de endereço, placeholder é o endereço da própria carteira
+   Nota: "Leave blank to lock it for yourself. A wrong address here
+          cannot be undone."
+
+   CAIXA DE RESUMO (fundo #060f1c, raio 14px)
+     eyebrow "YOU ARE ABOUT TO FREEZE"
+     valor 21px: "1,230,000 EPT"
+     linha: "until 02/09/2027 · 1 year"
+
+   Botões: "Freeze it" (primário) e "Cancel" (fantasma)
+
+
+================================================================================
+7. TELA 4 — DEPLOY (?view=deploy, uso interno)
+================================================================================
+
+Título "Deploy"
+Texto: "Build, publish the bundle to Walrus, then point a name at the
+        blob it returned."
+Bloco de código com os comandos.
+Lista selecionável dos nomes .epoch que a carteira possui
+  (ex.: "permafrost.epoch", "frostbadge.epoch")
+Input "blob id printed by publish.mjs"
+Botão "Point name at blob"
+
+
+================================================================================
+8. COMPONENTE — O BADGE EMBUTÍVEL
+================================================================================
+
+É o produto que sai do site e vive no site dos outros. Roda dentro de um
+iframe, fundo transparente, sem margem.
+
+DUAS VARIANTES
+  PILL ... 260 × 48 px, raio 999px, padding 6px 12px 6px 7px, gap 8px,
+           gelo em 34px
+  CARD ... 300 × 96 px, raio 14px, padding 12px 16px 12px 10px, gap 12px,
+           gelo em 68px, com uma terceira linha de detalhe
+
+FUNDO
+  linear-gradient(135deg, rgba(41,182,246,.09), rgba(168,85,247,.06))
+  sobre #0a1524, borda rgba(41,182,246,.16)
+  Hover: borda rgba(41,182,246,.45) e translateY(-1px)
+
+TRÊS ESTADOS
+  CONGELADO   título "🔒 Locked on Epoch"        (texto #e8eef6)
+              detalhe "until 22/09/2026"
+              extra (card) "20d 21h left · 7% elapsed"
+              gelo cheio, morsa em cima
+
+  DESTRAVADO  título "🔓 Unlocked"               (texto #fbbf24)
+              detalhe "since 22/09/2026"
+              gelo vazio com rachaduras, morsa caída ao lado
+
+  RESGATADO   título "🔓 Unlocked & claimed"     (texto #8aa0b2)
+              detalhe "was locked until 22/09/2026"
+              opacidade geral 0.75, só a poça
+
+ESTADOS AUXILIARES (cápsula com um ponto colorido, sem gelo)
+  Carregando ... ponto cinza pulsando, "Checking the chain…"
+  Erro ......... ponto vermelho, "Could not reach Sui"
+  Não achou .... ponto âmbar, "No Epoch lock found"
+
+O badge inteiro é um link para o explorador de blocos.
+Abaixo de 90px de largura o mascote SOME — nesse tamanho ele vira uma
+mancha ilegível, e um bloco limpo comunica melhor.
+
+
+================================================================================
+9. ANIMAÇÕES — ESPECIFICAÇÃO COMPLETA
+================================================================================
+
+REGRAS GERAIS
+  - Animar SOMENTE transform e opacity. O badge roda dentro do site de
+    terceiros; qualquer coisa que force recálculo de layout trava a
+    rolagem da página do cliente.
+  - Tudo pausa quando a aba está oculta.
+  - Abaixo de 90px, o mascote não é renderizado.
+  - prefers-reduced-motion: reduce → TUDO congela num quadro estático.
+    Isso não é opcional; é o que mantém o selo utilizável em contexto
+    corporativo.
+
+--- O BLOCO DE GELO ---
+
+  GEOMETRIA
+    Sistema de coordenadas 86 × 88.
+    Silhueta trapezoidal: M22,40 L64,40 L68,74 L18,74 Z
+    Topo em y=40, base em y=74. Altura útil: 34 unidades.
+    A superfície do gelo fica em:  y = 40 + 34 × (fração derretida)
+
+  PREENCHIMENTO
+    Retângulo recortado pela silhueta, com gradiente vertical
+    #9adcf5 → #4db8e8 → #0d3f63. A borda superior desse retângulo É a
+    linha de derretimento.
+
+  FANTASMA
+    A silhueta original permanece desenhada em #0d3f63 com 22% de
+    opacidade, sempre. Sem isso, um bloco vazio parece uma caixa de
+    vidro oca em vez de gelo que acabou.
+
+  BRILHO (shimmer)
+    Pílula vertical 5.5 × altura restante, raio 2.75, cor #d8f2fd,
+    opacidade 0.2.
+    Animação: 5s ease-in-out infinita.
+      0% e 100% → opacity .25, translateX(-6px)
+      50%       → opacity .6,  translateX(+6px)
+
+  LINHA DE GEADA (rime line)
+    Linha tracejada horizontal (traço 3, vão 2.5), #d8f2fd, 0.8px,
+    opacidade 0.5, na altura do TEMPO DECORRIDO.
+    Só aparece quando o tempo decorrido supera o derretimento em mais de
+    2 pontos percentuais. Existe para o caso do cofre com liberação
+    única (cliff de 100%): nada derrete durante meses, então sem essa
+    linha o bloco pareceria travado/quebrado.
+
+  RACHADURAS
+    Quatro traços em #d8f2fd, 1.1px, pontas arredondadas:
+      M43,40 L40,51 L46,58 L42,74
+      M40,51 L24,54
+      M46,58 L64,55
+      M33,40 L36,49
+    Invisíveis por padrão (stroke-dasharray 40, dashoffset 40).
+    No cliff: 700ms cubic-bezier(.2,.9,.3,1), dashoffset vai a 0.
+    Efeito: as rachaduras "entram" de uma vez, como estalo.
+
+  PINGOS (só durante liberação linear)
+    Três elipses (raio 1.1 a 1.3 × 1.7 a 1.9) em #2b7fb5, opacidade 0.85,
+    partindo da base do bloco.
+    Animação: 2.4s cubic-bezier(.5,0,.9,.6) infinita, com atrasos de
+    0s / 0.9s / 1.7s entre elas.
+      0%   → translateY(0),    opacity 0
+      15%  → opacity .9
+      70%  → translateY(14px), opacity .9
+      100% → translateY(18px), opacity 0
+
+  POÇA
+    Elipse em #2b7fb5 que CRESCE com o derretimento:
+      raio horizontal = 10 + 20 × fração,  raio vertical = 1.6 + 1.6 × fração
+      opacidade       = 0.15 + 0.5 × fração
+    Animação: 4s ease-in-out infinita, scaleX 1 → 1.04, opacity .7 → .9
+
+  NEVE
+    Três círculos pequenos (raio 0.7 a 0.9) em #d8f2fd.
+    Animação: 7s linear infinita (as outras duas com 9s e 6s, atrasos de
+    2.3s e 4.6s).
+      0%   → translate(0, -8px),  opacity 0
+      20%  → opacity .6
+      100% → translate(5px, 42px), opacity 0
+    Não aparece no estado "resgatado".
+
+--- A MORSA ---
+
+  CONSTRUÇÃO (deitada, larga e baixa — não é uma cabeça em pé)
+    Corpo traseiro ... elipse cx43 cy33.5 rx18.5 ry7.5, cor #7d90a7
+    Corpo frontal .... elipse cx43 cy32   rx17   ry6.2, cor #8b9db3
+    Nadadeiras ....... elipses em cx27.5 e cx58.5, cy38, rx6.5 ry2.6, #6b7f96
+    Cabeça ........... elipse cx43 cy24.5 rx10.5 ry9, cor #9cadc2
+    Focinho .......... elipse cx43 cy29 rx7.4 ry5, cor #c3d0dd
+    Narina ........... elipse cx43 cy26.6 rx1.5 ry1.1, cor #5a6b7d
+    Presas ........... dois trapézios de y30.6 até y37.4, cor #f4f8fb
+    Bigodes .......... 4 traços #7b8b9e, 0.55px, pontas arredondadas
+    Olhos ............ círculos r1.6 em #26313d, com brilho r0.6 branco
+    Pálpebras ........ retângulos #9cadc2 escalados em Y
+
+    IMPORTANTE: a base da morsa fica em y≈40, exatamente o topo do bloco.
+    Ela DESCE junto com a superfície: translate(0, 34 × fração derretida).
+    Se ela não tiver corpo largo visível apoiado, o desenho lê como uma
+    bolha saindo de um balde. Esse foi um erro real que precisou correção.
+
+  RESPIRAÇÃO
+    4s ease-in-out infinita, transform-origin 50% 100%
+      0% e 100% → scaleY(1)
+      50%       → scaleY(1.035)
+
+  PISCADA
+    6.5s ease-in-out infinita, transform-origin 50% 0%
+      0%, 92%, 100% → scaleY(0)   (pálpebra recolhida, olho aberto)
+      94% e 97%     → scaleY(1)   (pálpebra desce)
+    A maior parte do ciclo é olho aberto; a piscada é rápida e rara.
+
+  BIGODES
+    4s ease-in-out infinita, transform-origin 0% 50%
+      0% e 100% → rotate(0deg)
+      50%       → rotate(-3.5deg)
+
+  HOVER (só em dispositivos com ponteiro)
+    A piscada pausa, a pálpebra recolhe e a pupila desliza 1.2px para o
+    lado: ela abre o olho e encara quem passou o mouse.
+    Transição da pupila: 300ms ease.
+
+  ESCORREGÃO (quando o prazo vence)
+    900ms cubic-bezier(.4,0,.7,1), estado final mantido:
+      0%   → translate(0,0) rotate(0deg)
+      40%  → translate(7px, 3px) rotate(8deg)
+      100% → translate(17px, 23px) scale(.72) rotate(12deg), opacity .9
+    ELA CONTINUA LEGÍVEL no fim. Desbotar para uma mancha cinza faz
+    parecer defeito de renderização — outro erro real já corrigido.
+    No estado "resgatado" ela já nasce nessa posição final.
+
+  FANTASIAS (variam só com a duração do travamento)
+    Travamento de 2 anos ou mais → CACHECOL vermelho
+      Faixa: M32.6,31.6 Q43,35.4 53.4,31.6 L53.4,34.4 Q43,38.2 32.6,34.4 Z
+      em #c0392b, com ponta caída em #a93226
+    Travamento de até 45 dias → ÓCULOS ESCUROS
+      DUAS lentes 5.6 × 3.6, raio 1.7, cor #16283a, ligadas por uma ponte
+      de 1.1px, com reflexo #4d7ea3 em cada uma.
+      NUNCA uma tarja única — vira máscara de bandido.
+
+--- TRANSIÇÕES DE INTERFACE ---
+  Card / painel em hover ...... 150ms ease na cor da borda + translateY(-1px)
+  Bloco de gelo (mudança) ..... 600ms ease no transform
+  Morsa (mudança de altura) ... 600ms cubic-bezier(.3,.8,.4,1)
+  Contagem regressiva ......... atualiza a cada 1 segundo
+
+
+================================================================================
+10. LINKS E ENDEREÇOS
+================================================================================
+
+LINKS DA INTERFACE
+  "Built on Epoch ↗" .......... https://epochsui.com
+  "Verify on Suiscan ↗" ....... https://suiscan.xyz/mainnet/object/<object_id>
+  Endereços clicáveis ......... https://suiscan.xyz/mainnet/object/<address>
+  Badge (iframe src) .......... https://frostbadge.epochsui.com/?id=<id>
+                                &variant=pill|card&mascot=0|1
+
+ECOSSISTEMA
+  Site do projeto ............. https://permafrost.epochsui.com
+  Protocolo Epoch ............. https://epochsui.com
+  Registro de nomes ........... https://names.epochsui.com
+  Concurso .................... https://contest.epochsui.com
+  Epoch no X .................. https://x.com/EpochSui
+  Discord da Epoch ............ https://discord.gg/mBKgWWcB4p
+
+INFRAESTRUTURA (não aparece na UI, mas explica os dados)
+  Leitura da blockchain ....... https://graphql.mainnet.sui.io/graphql
+                                (o JSON-RPC público foi desativado)
+  Hospedagem .................. blob único no Walrus, servido pelo
+                                aggregator.walrus-mainnet.walrus.space
+  Contrato de lock ............ epoch_object_lock::object_lock
+  Contrato de vesting ......... vesting_service::vesting
+
+DADOS REAIS PARA USAR NOS MOCKUPS (lidos da mainnet, não invente outros)
+  1,230,000 EPT    vesting vault   ainda congelado   destrava 22/09/2026
+  11,000 HIPPO     vesting vault   ainda congelado   destrava 05/11/2027
+  3 SUI            vesting vault   ainda congelado   destrava 11/11/2027
+  70 CETUS         vesting vault   ainda congelado   destrava 11/11/2026
+  Endereço exemplo: 0x9ed3b9…b2ff
+
+
+================================================================================
+11. PROMPTS PRONTOS PARA O GOOGLE STITCH (em inglês)
+================================================================================
+
+Cole um bloco de cada vez. O Stitch trabalha melhor com uma tela por
+prompt. Comece pelo PROMPT 0 para fixar o sistema de design.
+
+--------------------------------------------------------------------------------
+PROMPT 0 — DESIGN SYSTEM (rode primeiro)
+--------------------------------------------------------------------------------
+Create a dark arctic design system for a blockchain proof-of-lock web app
+called PermaFrost.
+
+Colors: page background #040d1a, raised panels #0a1524, inputs #060f1c,
+borders rgba(41,182,246,0.16), primary text #e8eef6, muted text #8aa0b2.
+Brand accents: cyan #29b6f6, violet #a855f7, green #34d399, amber #fbbf24,
+red #ef5350. Ice ramp from #0d3f63 through #1a6ea8, #4db8e8, #9adcf5 to
+#d8f2fd, with water #2b7fb5.
+
+Typography: system sans-serif for prose, monospace for every number,
+date, token amount, wallet address and code snippet. This split is the
+core of the visual identity — it makes the interface feel verifiable.
+Headline 46px weight 800 letter-spacing -1.4px. Eyebrow labels 10px
+weight 800 letter-spacing 1.8px uppercase in muted grey.
+
+Corner radii: buttons and inputs 14px, panels 18px, hero 20px, cards 16px,
+list rows 10px, capsule badges 999px.
+
+Primary button: linear-gradient(96deg, #29b6f6, #a855f7), white text,
+weight 700. Ghost button: rgba(41,182,246,0.08) fill with a 1px border.
+
+Tone: precise, technical, calm. Not playful, not corporate. Think an
+instrument panel that happens to be beautiful. No drop shadows, no
+rounded-corner-with-left-accent-border cards, no emoji as icons — icons
+are stroked SVG on a 24px grid.
+
+--------------------------------------------------------------------------------
+PROMPT 1 — LANDING PAGE
+--------------------------------------------------------------------------------
+Design the landing page for PermaFrost, a tool that verifies crypto
+liquidity locks on the Sui blockchain and gives projects an embeddable
+proof badge.
+
+Header: a 38px rounded square logo with a cyan-to-violet gradient holding
+a stroked snowflake icon, the wordmark "PermaFrost" and beneath it the
+uppercase spaced label "PROOF OF LOCK · EPOCH ON SUI". A ghost "Connect
+wallet" button sits on the right.
+
+Headline in gradient text: "Frozen liquidity you can actually verify."
+Subheading: "Paste a project's address and see everything it has locked
+with Epoch — LP positions, vesting vaults, the lot. Then embed a badge
+that reads the chain live, so nobody has to take your word for it."
+
+A wide search field with placeholder "project address, lock id, or coin
+type" beside a gradient "Verify" button.
+
+Then the most important element: a wide hero panel showing one real lock.
+On the left, a large illustration of a translucent blue ice block shaped
+like a trapezoid, with a cartoon walrus lying on top of it — the walrus is
+wide and low, resting on the ice surface, with tusks and whiskers. On the
+right: the small uppercase label "LIVE ON SUI MAINNET, RIGHT NOW", then
+"1,230,000 EPT" at 38px in near-white, then "still frozen · unlocks in
+20d 21h" in muted grey, then a thin 5px progress bar with a cyan gradient
+fill at 7% next to the monospace label "7% of term", then the link
+"Inspect this lock →".
+
+Below, the label "EVERYTHING ELSE EPOCH IS HOLDING" and a three-column
+grid of smaller cards, each with a small ice block (no walrus), a
+monospace token symbol (HIPPO, SUI, CETUS), the type "vesting vault", and
+a monospace unlock date.
+
+Finish with a gradient "Freeze something" button, a ghost "Deploy" button,
+and a footer reading "Reads epoch_object_lock and vesting_service on Sui
+mainnet. Nothing is stored off-chain." with a "Built on Epoch ↗" link.
+
+--------------------------------------------------------------------------------
+PROMPT 2 — VERIFICATION PAGE
+--------------------------------------------------------------------------------
+Design the lock verification screen for PermaFrost, dark arctic theme.
+
+Top: a wide panel with a large ice-block illustration on the left (a
+translucent blue trapezoid block, partly melted, with a dashed horizontal
+frost line marking elapsed time, a small puddle at its base, and a cartoon
+walrus lying on top wearing tiny sunglasses). On the right, the verdict
+"Still frozen" at 27px in ice blue, the explanation "The creator cannot
+cancel this or pull it forward. Only the beneficiary can push the date
+further out.", and three inline metrics each with a tiny uppercase label
+above a 19px monospace value: LOCKED "1,230,000 EPT", TIME LEFT "20d 21h",
+UNLOCKS "22/09/2026".
+
+Below that, an action panel outlined in translucent violet: the title
+"Freeze it for longer", explanatory text, a segmented control with +30d,
++90d, +180d, +365d, a gradient "Extend lock" button, and the note
+"New unlock: 21/12/2026".
+
+Then a two-column grid. Left panel "On-chain record": a list of
+label/value rows separated by hairlines — Kind, Frozen asset, Locked at,
+Unlocks, Time left, Term elapsed, Total locked, Claimed, Cliff,
+Beneficiary — with every value in monospace, addresses shown as cyan
+links, and a "Claimable now" row highlighted in green. A ghost button
+"Verify on Suiscan ↗" at the bottom.
+
+Right panel "Embed this proof": explanatory text, a segmented Pill/Card
+control plus a "Mascot" checkbox, a preview area with a subtle checkerboard
+background containing a small capsule badge that reads "🔒 Locked on Epoch"
+above "until 22/09/2026", a dark code block in small cyan monospace showing
+an iframe embed snippet, and a gradient "Copy embed code" button.
+
+--------------------------------------------------------------------------------
+PROMPT 3 — CREATE LOCK PAGE
+--------------------------------------------------------------------------------
+Design a "Freeze something" form screen for PermaFrost, dark arctic theme,
+inside a single panel outlined in translucent violet.
+
+Title "Freeze something" with the warning text: "Locks are shared objects:
+once signed, nobody — not you, not Epoch — can cancel it or pull the date
+forward. Only the beneficiary can push it further out."
+
+Two columns.
+
+Left, under the label "1 · WHAT TO FREEZE": a filter input, then a
+selectable list of wallet assets. Each row has a 26px rounded icon tile
+with a stroked SVG (a coin glyph or an isometric cube), a bold name like
+"1,230,000 EPT" or "Cetus LP #4821", a truncated monospace object id
+below it, and a muted tag "coin" or "object" on the right. The selected
+row has a cyan border and a faint cyan fill. Below the list, a note:
+"Only objects the contract accepts are listed — it needs key + store."
+
+Right, under "2 · UNTIL WHEN": a row of duration chips (30 days, 90 days,
+6 months, 1 year, 2 years) with one selected, plus a date field. Under
+"3 · WHO CAN CLAIM IT": an address input with the note "Leave blank to
+lock it for yourself. A wrong address here cannot be undone."
+
+Finish with a darker summary box labelled "YOU ARE ABOUT TO FREEZE"
+showing "1,230,000 EPT" at 21px and "until 02/09/2027 · 1 year" beneath,
+then a gradient "Freeze it" button and a ghost "Cancel" button.
+
+--------------------------------------------------------------------------------
+PROMPT 4 — BADGE COMPONENT SHEET
+--------------------------------------------------------------------------------
+Design a component sheet for an embeddable trust badge called
+"Locked on Epoch", shown on both a dark and a light host page.
+
+Two sizes: a pill 260×48px with a fully rounded capsule shape, and a card
+300×96px with 14px corners. Each contains a small ice-block illustration
+on the left and stacked text on the right: a bold 12px title, an 11px
+monospace detail line, and on the card a third 10.5px cyan line.
+
+Three states, shown side by side:
+1. Frozen — title "🔒 Locked on Epoch", detail "until 22/09/2026", card
+   extra "20d 21h left · 7% elapsed". The ice block is full and a small
+   walrus lies on top.
+2. Unlocked — title "🔓 Unlocked" in amber, detail "since 22/09/2026".
+   The ice block is empty with white crack lines across it and a puddle
+   at the base; the walrus has slid down beside it.
+3. Claimed — title "🔓 Unlocked & claimed" in grey, detail "was locked
+   until 22/09/2026", the whole badge at 75% opacity, only the puddle
+   remaining.
+
+Also show three compact status capsules with a coloured pulsing dot and
+no illustration: grey "Checking the chain…", red "Could not reach Sui",
+amber "No Epoch lock found".
+
+Badge fill is a subtle cyan-to-violet gradient over #0a1524 with a 1px
+translucent cyan border. Keep the badge readable on both light and dark
+host backgrounds.
+
+
+================================================================================
+12. O QUE O STITCH NÃO VAI CONSEGUIR FAZER
+================================================================================
+
+Geradores de UI produzem layout estático. Estas partes precisam ser
+implementadas à mão depois, e são justamente o coração do produto:
+
+  1. O bloco de gelo é PARAMÉTRICO. A altura do preenchimento é calculada
+     a partir de dados reais da blockchain (y = 40 + 34 × fração). Um
+     gerador vai desenhar um bloco bonito e fixo. A ligação com o dado
+     precisa ser codificada.
+
+  2. A morsa tem que DESCER junto com a superfície do gelo, e usar as
+     coordenadas SVG da seção 9. Um redesenho livre quase certamente vai
+     produzir a versão "cabeça em pé" que já falhou uma vez.
+
+  3. As animações da seção 9 (respiração, piscada, bigodes, escorregão,
+     rachaduras, pingos, neve) precisam ser CSS keyframes escritas à mão,
+     restritas a transform e opacity.
+
+  4. A contagem regressiva e o relógio: tudo é derivado do horário da
+     BLOCKCHAIN, nunca do relógio local do visitante, senão o selo pode
+     dizer "congelado" e o contador dizer "destravado" ao mesmo tempo.
+
+  5. O selo tem que caber num único arquivo HTML autocontido, abaixo de
+     ~30 KB, sem nenhuma requisição externa além da leitura da chain.
+
+Use o Stitch para explorar layout, hierarquia e espaçamento. Traga a
+metáfora do gelo de volta para o código.
+
+================================================================================
+FIM
+================================================================================

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.DS_Store
+*.local
+.env
+.env.*
+!.env.example
+blob-id.txt
+
+# Design exploration inputs — heavy, and not part of the product
+design/permafrost-ui.html
+stitch_wacky_walrus_motion_lab/**/screen.png

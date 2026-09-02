@@ -1,0 +1,12 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html",   "x": 0,    "y": 0,    "w": 1120, "h": 980 },
+    { "file": "Verify.dc.html", "x": 1240, "y": 0,    "w": 1120, "h": 1010 },
+    { "file": "Create.dc.html", "x": 0,    "y": 1140, "w": 1120, "h": 700 },
+    { "file": "Badges.dc.html", "x": 1240, "y": 1140, "w": 1000, "h": 640 }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -150, "w": 420, "text": "PermaFrost — proof of lock on Epoch (Sui).\nRecreated from the real source: exact tokens, ice geometry and copy.\nControls work: click a card, a term, the badge toggles." }
+  ],
+  "launch": { "view": "canvas" }
+}

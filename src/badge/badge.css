@@ -1,0 +1,60 @@
+/* Badge shell — Arctic Chaos.
+   Lives inside an iframe on a third-party page, so: transparent background,
+   no body margin, nothing that can overflow the frame. */
+html, body { background: transparent; margin: 0; padding: 0; }
+body { display: inline-block; }
+
+.pf {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 13px 6px 7px;
+  border: 2px solid var(--cyan);
+  /* Status pills are the one element the system still lets be fully round. */
+  border-radius: 999px;
+  background: var(--bg-raised);
+  color: var(--tx);
+  text-decoration: none;
+  font-family: var(--sans);
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 4px 4px 0 0 var(--ransom);
+}
+.pf:hover { box-shadow: 4px 4px 0 0 var(--highlighter); }
+
+/* The card is a cut-out, not a pill: hand-cut edges and a hard offset. */
+.pf-card {
+  border-radius: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 92%, 97% 100%, 3% 100%, 0 92%);
+  padding: 13px 17px 13px 11px;
+  gap: 12px;
+  border-color: var(--ransom);
+  box-shadow: 7px 7px 0 0 var(--highlighter);
+}
+
+.pf-text { display: flex; flex-direction: column; line-height: 1.25; }
+.pf-label {
+  font-family: var(--mono); font-weight: 800; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.5px; color: var(--paper);
+}
+.pf-detail { font-family: var(--mono); color: var(--cyan); font-size: 10.5px; }
+.pf-sub { font-family: var(--mono); color: var(--highlighter); font-size: 10px; margin-top: 2px; }
+
+.pf.is-cracked { border-color: var(--amber); }
+.pf.is-cracked .pf-label { color: #000; background: var(--amber); padding: 0 5px; }
+.pf.is-thawed  { opacity: 0.8; border-color: var(--line); box-shadow: 4px 4px 0 0 var(--line); }
+.pf.is-thawed  .pf-label { color: var(--mut); }
+
+/* status shells */
+.pf.is-loading, .pf.is-error, .pf.is-absent {
+  padding: 6px 13px; color: var(--mut-soft); border-color: var(--line);
+  box-shadow: 3px 3px 0 0 var(--line);
+}
+.pf-dot {
+  width: 8px; height: 8px;
+  background: var(--mut);
+  animation: pf-pulse 1.4s ease-in-out infinite;
+}
+.pf.is-error .pf-dot  { background: var(--red);         animation: none; }
+.pf.is-absent .pf-dot { background: var(--highlighter); animation: none; }
+@keyframes pf-pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }

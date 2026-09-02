@@ -1,0 +1,29 @@
+{
+  "name": "permafrost",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Public proof-of-lock for Epoch on Sui. Frozen liquidity you can actually verify.",
+  "scripts": {
+    "dev": "vite",
+    "dev:badge": "vite --open /badge.html",
+    "build": "npm run build:app && npm run build:badge",
+    "build:app": "vite build --outDir dist/app",
+    "build:badge": "vite build --outDir dist/badge --mode badge",
+    "size": "node scripts/size.mjs",
+    "publish:walrus": "node scripts/publish.mjs",
+    "typecheck": "tsc --noEmit",
+    "og": "node scripts/og.mjs"
+  },
+  "dependencies": {
+    "@mysten/sui": "^1.44.0",
+    "@mysten/wallet-standard": "^0.19.0",
+    "preact": "^10.28.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.14",
+    "vite-plugin-singlefile": "^2.3.0"
+  }
+}

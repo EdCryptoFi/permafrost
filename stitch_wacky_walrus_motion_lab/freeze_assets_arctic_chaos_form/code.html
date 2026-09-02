@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PermaFrost - Lock Asset</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;family=JetBrains+Mono:wght@500;800&amp;family=Plus+Jakarta+Sans:wght@400&amp;family=Space+Grotesk:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffabf3",
+                        "on-error": "#690005",
+                        "on-secondary-fixed-variant": "#494900",
+                        "secondary-fixed": "#eaea00",
+                        "on-surface-variant": "#dcbed4",
+                        "primary-container": "#ff00ff",
+                        "on-tertiary-fixed": "#001e2d",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#c6e7ff",
+                        "on-primary-container": "#510051",
+                        "on-secondary": "#323200",
+                        "primary-fixed-dim": "#ffabf3",
+                        "glitch-blue": "#a855f7",
+                        "ransom-pink": "#ff00ff",
+                        "surface-variant": "#2c3544",
+                        "secondary-fixed-dim": "#cdcd00",
+                        "surface-container": "#16202e",
+                        "surface-container-high": "#212a39",
+                        "surface-container-lowest": "#050f1c",
+                        "primary-fixed": "#ffd7f5",
+                        "highlighter-yellow": "#ffff00",
+                        "outline-variant": "#564052",
+                        "on-tertiary": "#00344b",
+                        "on-tertiary-fixed-variant": "#004c6b",
+                        "tertiary": "#81cfff",
+                        "paper-white": "#e8eef6",
+                        "outline": "#a4899d",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#ffffff",
+                        "surface-tint": "#ffabf3",
+                        "tertiary-container": "#009cd6",
+                        "surface-bright": "#303a48",
+                        "on-surface": "#d9e3f6",
+                        "on-background": "#d9e3f6",
+                        "surface": "#0a1421",
+                        "background": "#0a1421",
+                        "on-primary-fixed": "#380038",
+                        "inverse-on-surface": "#27313f",
+                        "deep-ice": "#0a1524",
+                        "arctic-cyan": "#29b6f6",
+                        "inverse-surface": "#d9e3f6",
+                        "on-tertiary-container": "#002e43",
+                        "surface-container-low": "#121c2a",
+                        "on-primary": "#5b005b",
+                        "tertiary-fixed-dim": "#81cfff",
+                        "secondary-container": "#eaea00",
+                        "on-secondary-container": "#686800",
+                        "on-secondary-fixed": "#1d1d00",
+                        "surface-container-highest": "#2c3544",
+                        "inverse-primary": "#a900a9",
+                        "on-primary-fixed-variant": "#810081",
+                        "error-container": "#93000a",
+                        "surface-dim": "#0a1421"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "container-max": "1120px",
+                        "gap-ransom": "0.25rem",
+                        "margin-page": "2.5rem",
+                        "gutter-panel": "1.5rem"
+                    },
+                    fontFamily: {
+                        "headline-md": ["Space Grotesk"],
+                        "headline-lg": ["Bricolage Grotesque"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-caps": ["JetBrains Mono"]
+                    },
+                    fontSize: {
+                        "headline-md": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-1px", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "data-mono": ["14px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "body-md": ["15px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1.0", "letterSpacing": "1px", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glitch-hover:hover {
+            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+            background-color: #ffff00;
+            color: #ff00ff;
+        }
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-10deg); }
+            40% { transform: skew(10deg); }
+            60% { transform: skew(-5deg); }
+            80% { transform: skew(5deg); }
+            100% { transform: skew(0deg); }
+        }
+        .wobble-border {
+            border-radius: 4px 15px 3px 20px / 12px 5px 18px 8px;
+        }
+        .paper-grain {
+            position: relative;
+        }
+        .paper-grain::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.05;
+            pointer-events: none;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+            mix-blend-mode: overlay;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen overflow-x-hidden relative paper-grain">
+<nav class="docked w-full top-0 border-b-2 border-arctic-cyan bg-surface/80 backdrop-blur-md shadow-[6px_6px_0px_0px_#ffff00] flex justify-between items-center px-margin-page py-4 max-w-container-max mx-auto z-50">
+<div class="font-headline-lg text-headline-lg text-primary uppercase tracking-tighter skew-x-3 rotate-2">PermaFrost</div>
+<div class="hidden md:flex space-x-6">
+<a class="text-on-surface-variant font-medium hover:bg-ransom-pink hover:text-on-primary transition-colors px-2 py-1" href="#">Glacier</a>
+<a class="text-primary font-bold border-b-2 border-primary -translate-y-1 scale-105 px-2 py-1" href="#">Vault</a>
+<a class="text-on-surface-variant font-medium hover:bg-ransom-pink hover:text-on-primary transition-colors px-2 py-1" href="#">History</a>
+<a class="text-on-surface-variant font-medium hover:bg-ransom-pink hover:text-on-primary transition-colors px-2 py-1" href="#">Settings</a>
+</div>
+<button class="bg-ransom-pink text-label-caps font-label-caps uppercase px-4 py-2 shadow-[4px_4px_0px_0px_#ffff00] hover:bg-highlighter-yellow hover:text-ransom-pink hover:shadow-[4px_4px_0px_0px_#ff00ff] transition-none border border-black">Connect Wallet</button>
+</nav>
+<main class="max-w-container-max mx-auto px-4 py-12 relative flex flex-col items-center">
+<img class="absolute -left-12 top-20 w-32 h-32 opacity-80 -rotate-12 hidden lg:block" data-alt="A chaotic, hand-drawn doodle of a walrus wearing sunglasses and a beanie, drawn in jagged pink and cyan lines on a dark textured background, techno-brutalist style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIe0HmLRP7PHxG4C29n2kP0DgtvCsDLYfjZyjS9YD69sDwXpxHyP5wpOzxwA4dpb8cqqdC4cDV7_R0Qf9dWJlNlmWztL2M0uWooGsHgCgH2Ia5RBPY6aq2TllTzwFavDk7mLrWOX6Ti1FL-zeW3X5Re9u2C6ahor7Z-8hzJCZqF1uq9vWt4QglVVRCrTIxjmZm4g1LotTwryj1cpTzsERMrkA1DhYvOxfaSKCSCNuovqupDFoINI8"/>
+<img class="absolute -right-8 bottom-40 w-40 h-40 opacity-70 rotate-6 hidden lg:block" data-alt="Another messy, sketchy doodle of a walrus holding a sign that says 'HODL', drawn with sharp, irregular lines in vibrant yellow and pink on a dark granular background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTMJ4vz7k6eXKN6FkMpXerkiTLOlfTJ4wN8l-oxxcn8rqul9cleOyy0EnkHf8VciJaKGBYyfw6k5zsHjvpRt_ZZGwdXBKnwqkEPwKwWyqdym_4H520l9rbfVrBKc15wGLc_yP1lAoIT2I3oqDidSRn8Pz9M9Uo147N4Xy90OzrY9TIgm8DLap9H55pbwMYTaGEfGukEsBJiMHp0bM5zZdbjxTF-BTO2TTFGXJ9MnlqSeCTCVSKqB4"/>
+<div class="w-full max-w-3xl bg-surface-container border-[3px] border-arctic-cyan wobble-border p-8 shadow-[8px_8px_0px_0px_#ff00ff] relative z-10 mt-10">
+<h1 class="font-headline-lg text-headline-lg text-white mb-8 flex flex-wrap gap-1 -rotate-2">
+<span class="bg-ransom-pink text-black px-2 transform skew-y-2">LOCK</span>
+<span class="bg-highlighter-yellow text-black px-2 transform -skew-x-6">ASSET</span>
+<span class="text-arctic-cyan ml-2 translate-y-1">INTO</span>
+<span class="border border-white px-2 border-dashed">VAULT</span>
+</h1>
+<section class="mb-10">
+<h2 class="font-headline-md text-headline-md text-primary mb-4 border-b border-outline-variant pb-2 inline-block">WHAT TO FREEZE</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+<div class="bg-surface-container-high border border-arctic-cyan p-4 clip-path-polygon-[10%_0,100%_5%,95%_100%,0_90%] cursor-pointer hover:bg-surface-variant transition-colors group">
+<span class="material-symbols-outlined text-arctic-cyan mb-2 group-hover:rotate-12 transition-transform" data-icon="token">token</span>
+<div class="font-data-mono text-data-mono text-white">1000 PFT</div>
+</div>
+<div class="bg-primary-container p-4 shadow-[0_0_15px_rgba(255,0,255,0.6)] rotate-1 scale-105 border-2 border-highlighter-yellow cursor-pointer relative z-10">
+<span class="material-symbols-outlined text-on-primary-container mb-2" data-icon="diamond">diamond</span>
+<div class="font-data-mono text-data-mono text-on-primary-container font-bold">500 ETH</div>
+</div>
+<div class="bg-surface-container-high border border-arctic-cyan p-4 clip-path-polygon-[0_5%,90%_0,100%_95%,5%_100%] cursor-pointer hover:bg-surface-variant transition-colors group">
+<span class="material-symbols-outlined text-arctic-cyan mb-2 group-hover:-rotate-12 transition-transform" data-icon="deployed_code">deployed_code</span>
+<div class="font-data-mono text-data-mono text-white">Walrus NFT #42</div>
+</div>
+</div>
+</section>
+<section class="mb-10">
+<h2 class="font-headline-md text-headline-md text-highlighter-yellow mb-4 border-b border-outline-variant pb-2 inline-block rotate-1">UNTIL WHEN</h2>
+<div class="flex flex-wrap gap-4">
+<button class="bg-paper-white text-black font-data-mono text-data-mono px-6 py-3 shadow-[4px_4px_0px_0px_#000000] rotate-2 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000000] transition-all">7 DAYS</button>
+<button class="bg-ransom-pink text-black font-data-mono text-data-mono px-6 py-3 shadow-[4px_4px_0px_0px_#ffff00] -rotate-3 border border-black z-10">30 DAYS</button>
+<button class="bg-paper-white text-black font-data-mono text-data-mono px-6 py-3 shadow-[4px_4px_0px_0px_#000000] rotate-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000000] transition-all">1 YEAR</button>
+</div>
+</section>
+<section class="mb-12">
+<h2 class="font-headline-md text-headline-md text-arctic-cyan mb-4 border-b border-outline-variant pb-2 inline-block -rotate-1">WHO CAN CLAIM</h2>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-ransom-pink text-3xl" data-icon="key">key</span>
+<input class="w-full bg-black text-white font-data-mono text-data-mono border-2 border-paper-white py-4 pl-14 pr-4 focus:outline-none focus:border-dashed focus:border-ransom-pink transition-colors" type="text" value="0xChaosWallet...89f2"/>
+</div>
+</section>
+<div class="bg-surface-container-highest border-l-4 border-highlighter-yellow p-6 mt-8 shadow-[4px_4px_0px_0px_#000000]">
+<h3 class="font-headline-lg text-headline-lg text-error mb-2 uppercase tracking-tighter">You Are About To Freeze:</h3>
+<p class="font-data-mono text-data-mono text-white text-xl mb-6">500 ETH for 30 DAYS</p>
+<button class="w-full bg-ransom-pink text-black font-headline-md text-headline-md py-4 uppercase border-2 border-black shadow-[8px_8px_0px_0px_#ffff00] glitch-hover cursor-pointer relative overflow-hidden">
+                    Freeze It
+                </button>
+</div>
+</div>
+</main>
+<footer class="w-full py-4 bg-surface-container-lowest/60 border-t border-dashed border-outline-variant backdrop-blur-sm flex flex-col md:flex-row justify-between items-center px-margin-page mt-20 relative z-20">
+<div class="font-label-caps text-label-caps text-on-surface mb-2 md:mb-0">Built on Epoch</div>
+<div class="flex space-x-6">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-highlighter-yellow" href="#">Network Status</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-highlighter-yellow" href="#">Protocol Docs</a>
+</div>
+</footer>
+</body></html>

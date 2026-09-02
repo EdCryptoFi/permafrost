@@ -1,0 +1,389 @@
+/* Arctic Chaos skin. Same class names, same structure, same copy —
+   only the visual language changes. */
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 34px 40px 80px; position: relative; z-index: 1; }
+
+/* --- header ---------------------------------------------------------- */
+.head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 38px; height: 38px;
+  display: grid; place-items: center; font-size: 21px;
+  color: var(--cyan);
+  transform: rotate(-8deg);
+}
+.brand b {
+  font-family: var(--display); font-size: 2rem; font-weight: 800;
+  letter-spacing: -1px; text-transform: uppercase; color: var(--ransom);
+  display: block; line-height: 1;
+}
+.brand small {
+  display: block; font-family: var(--mono); font-size: 0.6rem; color: var(--mut);
+  font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-top: 3px;
+}
+.head > :last-child { margin-left: auto; }
+
+/* the double rule under the header — cyan over yellow */
+.head::after { content: none; }
+.wrap > .head { border-bottom: none; }
+.rule {
+  height: 0; border-top: 2px solid var(--cyan); border-bottom: 3px solid var(--highlighter);
+  margin: 0 0 34px;
+}
+
+/* --- hero ------------------------------------------------------------ */
+.hero {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  margin-bottom: 18px; max-width: 20ch;
+}
+.lede {
+  color: var(--mut-soft); max-width: 62ch; margin-bottom: 26px;
+  font-size: 1.0rem; border: 1px dashed var(--line); padding: 14px 16px;
+}
+
+/* --- search: inverted, marching ants on focus ------------------------ */
+.search { display: flex; gap: 0; margin-bottom: 30px; flex-wrap: wrap; }
+.search input {
+  flex: 1; min-width: 260px;
+  background: #000; border: 2px solid var(--paper); border-radius: 0;
+  padding: 15px 16px; color: var(--paper); font-size: 0.92rem;
+}
+.search input:focus {
+  outline: none; border-color: transparent;
+  background-image:
+    linear-gradient(90deg, var(--ransom) 50%, transparent 50%),
+    linear-gradient(90deg, var(--ransom) 50%, transparent 50%),
+    linear-gradient(0deg, var(--highlighter) 50%, transparent 50%),
+    linear-gradient(0deg, var(--highlighter) 50%, transparent 50%);
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  background-size: 12px 2px, 12px 2px, 2px 12px, 2px 12px;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  animation: pf-ants 0.6s infinite linear;
+}
+
+/* --- buttons: the ransom CTA ----------------------------------------- */
+.btn {
+  padding: 14px 22px; border: 2px solid #000; border-radius: 0;
+  font-family: var(--mono); font-weight: 800; font-size: 0.82rem;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: #000; cursor: pointer; background: var(--ransom);
+  box-shadow: 6px 6px 0 0 var(--highlighter);
+  text-decoration: none; display: inline-block;
+}
+/* colours swap instantly, no transition — that is the whole gag */
+.btn:hover { background: var(--highlighter); box-shadow: 6px 6px 0 0 var(--ransom); }
+.btn:active { transform: translate(3px, 3px); box-shadow: 3px 3px 0 0 var(--ransom); }
+.btn:disabled { opacity: 0.45; cursor: default; box-shadow: 6px 6px 0 0 var(--line); }
+.btn.ghost {
+  background: transparent; color: var(--cyan); border: 2px solid var(--cyan);
+  box-shadow: 4px 4px 0 0 var(--ransom);
+}
+.btn.ghost:hover { background: var(--cyan); color: #000; box-shadow: 4px 4px 0 0 var(--highlighter); }
+
+/* --- panels: wobbly, hard-shadowed, hand-cut ------------------------- */
+.panel {
+  background: var(--bg-raised);
+  border: 2px solid var(--cyan);
+  border-radius: 95% 5% 97% 3% / 4% 96% 5% 95%;
+  padding: 24px 26px; margin-bottom: 22px;
+  box-shadow: 8px 8px 0 0 var(--highlighter);
+}
+.panel.accent {
+  border-color: var(--ransom);
+  border-radius: 4% 96% 6% 94% / 95% 4% 96% 5%;
+  box-shadow: 8px 8px 0 0 var(--cyan);
+}
+.panel h2 {
+  font-family: var(--display); font-size: 1.35rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: -0.5px; margin-bottom: 10px;
+  color: #000; background: var(--highlighter); display: inline-block;
+  padding: 2px 10px; transform: rotate(-1.5deg);
+}
+.panel.accent h2 { background: var(--ransom); color: #000; }
+.panel h3 {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--ransom);
+  margin: 18px 0 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800;
+}
+
+.stage {
+  display: flex; align-items: center; gap: 30px; flex-wrap: wrap;
+  background: var(--bg-raised);
+  border: 2px solid var(--ransom);
+  border-radius: 2% 98% 4% 96% / 98% 2% 97% 3%;
+  padding: 28px 32px; margin-bottom: 22px;
+  box-shadow: 8px 8px 0 0 var(--ransom);
+}
+.verdict { flex: 1; min-width: 240px; }
+.verdict b {
+  font-family: var(--display); font-size: 2.2rem; font-weight: 800;
+  text-transform: uppercase; display: inline-block; margin-bottom: 10px;
+  letter-spacing: -1px; padding: 0 10px; color: #000;
+}
+.verdict.is-melting b { background: var(--highlighter); }
+.verdict.is-cracked b { background: var(--amber); }
+.verdict.is-thawed  b { background: var(--mut); }
+.verdict.is-absent  b { background: var(--red); }
+.verdict p { border: 1px dashed var(--line); padding: 12px 14px; }
+
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
+
+/* --- data rows ------------------------------------------------------- */
+.facts { display: flex; flex-direction: column; margin: 14px 0 18px; }
+.fact {
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 9px 0; border-bottom: 1px dashed var(--line);
+}
+.fact dt {
+  color: var(--mut-soft); font-family: var(--mono); font-size: 0.72rem;
+  font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+}
+.fact dd { font-family: var(--mono); font-size: 0.84rem; text-align: right; color: var(--cyan); }
+.hot { color: #000 !important; background: var(--highlighter); padding: 1px 7px; font-weight: 800; }
+
+.row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin: 14px 0; }
+.seg { display: inline-flex; border: 2px solid var(--paper); border-radius: 0; overflow: hidden; }
+.seg button {
+  background: transparent; border: none; color: var(--mut-soft);
+  padding: 9px 15px; font-family: var(--mono); font-size: 0.76rem;
+  cursor: pointer; font-weight: 800; text-transform: uppercase;
+}
+.seg button.on { background: var(--ransom); color: #000; }
+.check {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 0.74rem; color: var(--mut-soft);
+  text-transform: uppercase; font-weight: 800;
+}
+
+.preview {
+  display: grid; place-items: center; padding: 22px;
+  border: 2px dashed var(--cyan); margin: 14px 0;
+  background: repeating-conic-gradient(rgba(255,255,255,0.02) 0% 25%, transparent 0% 50%) 50% / 16px 16px;
+}
+.preview iframe { border: 0; }
+
+.code {
+  min-width: 0;
+  background: #000; border: 2px solid var(--line); border-radius: 0;
+  padding: 13px 15px; font-size: 0.72rem; color: var(--cyan);
+  overflow-x: auto; white-space: pre; margin-bottom: 12px;
+}
+.fold { margin-top: 18px; }
+.fold summary {
+  cursor: pointer; color: var(--highlighter); font-family: var(--mono);
+  font-size: 0.74rem; text-transform: uppercase; font-weight: 800;
+}
+
+.dropdown { position: relative; }
+.menu {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 10;
+  list-style: none; background: var(--bg-elevated);
+  border: 2px solid var(--ransom); padding: 6px; min-width: 190px;
+  box-shadow: 6px 6px 0 0 var(--highlighter);
+}
+.menu button {
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  background: none; border: none; color: var(--tx);
+  padding: 10px 11px; cursor: pointer; font-family: var(--mono); font-size: 0.78rem;
+}
+.menu button:hover { background: var(--ransom); color: #000; }
+
+.muted { color: var(--mut-soft); }
+.small { font-size: 0.85rem; }
+.err {
+  color: #000; background: var(--red); font-family: var(--mono); font-weight: 800;
+  font-size: 0.78rem; margin: 12px 0; padding: 8px 12px; display: inline-block;
+  text-transform: uppercase;
+}
+.ok {
+  color: #000; background: var(--green); font-family: var(--mono); font-weight: 800;
+  font-size: 0.78rem; margin: 12px 0; padding: 8px 12px; display: inline-block;
+  text-transform: uppercase;
+}
+
+.foot {
+  display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  margin-top: 46px; padding-top: 20px;
+  border-top: 2px dashed var(--line); color: var(--mut);
+  font-family: var(--mono); font-size: 0.72rem;
+}
+.foot code { font-family: var(--mono); color: var(--cyan); }
+a { color: var(--cyan); text-decoration: none; }
+a:hover { color: var(--ransom); }
+
+/* --- landing hero ---------------------------------------------------- */
+.hero-stage {
+  display: flex; align-items: center; gap: 28px; width: 100%; text-align: left;
+  background: var(--bg-raised);
+  border: 2px solid var(--cyan);
+  border-radius: 2% 98% 4% 96% / 98% 2% 97% 3%;
+  padding: 26px 30px; margin-bottom: 22px; cursor: pointer; color: var(--tx);
+  box-shadow: 8px 8px 0 0 var(--ransom);
+}
+.hero-stage:hover { box-shadow: 8px 8px 0 0 var(--highlighter); }
+@media (max-width: 620px) { .hero-stage { flex-direction: column; align-items: flex-start; } }
+
+.hero-copy { display: flex; flex-direction: column; gap: 5px; min-width: 0; flex-grow: 1; }
+.hero-copy .eyebrow { margin: 0 0 4px; }
+.hero-amount {
+  font-family: var(--mono); font-size: clamp(1.5rem, 3.6vw, 2.2rem); font-weight: 800;
+  letter-spacing: -1px; color: #000; background: var(--highlighter);
+  display: inline-block; padding: 2px 10px; transform: rotate(-1deg); align-self: flex-start;
+}
+.hero-line { color: var(--mut-soft); font-size: 0.92rem; }
+.hero-cta {
+  font-family: var(--mono); color: var(--ransom); font-size: 0.78rem;
+  font-weight: 800; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px;
+}
+.hero-skel {
+  height: 176px; border: 2px dashed var(--line);
+  margin-bottom: 22px; animation: pf-pulse 1.6s ease-in-out infinite;
+}
+
+/* --- eyebrow labels: cut-out strips ---------------------------------- */
+.eyebrow {
+  font-family: var(--mono); font-size: 0.66rem; font-weight: 800; letter-spacing: 1px;
+  text-transform: uppercase; color: #000; background: var(--paper);
+  display: inline-block; align-self: flex-start; width: fit-content;
+  padding: 3px 9px; margin: 32px 0 14px;
+  transform: rotate(-1deg);
+}
+
+.ex-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 860px) { .ex-grid { grid-template-columns: 1fr; } }
+
+.ex {
+  display: flex; align-items: center; gap: 13px; text-align: left;
+  background: var(--bg-raised); border: 2px solid var(--cyan);
+  border-radius: 4% 96% 6% 94% / 95% 4% 96% 5%;
+  padding: 15px 17px; cursor: pointer; color: var(--tx);
+  box-shadow: 5px 5px 0 0 var(--highlighter);
+}
+.ex:hover { box-shadow: 5px 5px 0 0 var(--ransom); }
+.ex-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ex-body b {
+  font-family: var(--mono); font-size: 0.9rem; font-weight: 800;
+  text-transform: uppercase; color: var(--ransom);
+}
+.ex-meta { font-family: var(--mono); font-size: 0.68rem; color: var(--cyan); }
+.ex-skel { min-height: 96px; border-style: dashed; cursor: default; animation: pf-pulse 1.6s ease-in-out infinite; }
+@keyframes pf-pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.7; } }
+
+.mine { margin-bottom: 10px; }
+
+/* --- results list ---------------------------------------------------- */
+.res-list { display: flex; flex-direction: column; gap: 9px; margin-top: 16px; }
+.res {
+  display: flex; align-items: center; gap: 13px; width: 100%; text-align: left;
+  background: transparent; border: 2px dashed var(--line); border-radius: 0;
+  padding: 11px 14px; cursor: pointer; color: var(--tx);
+}
+.res:hover { border-color: var(--ransom); border-style: solid; background: rgba(255, 0, 255, 0.06); }
+.res-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.res-body b { font-family: var(--mono); text-transform: uppercase; color: var(--cyan); }
+.res-go { margin-left: auto; color: var(--ransom); font-weight: 800; }
+
+.wallet-state { display: flex; align-items: center; gap: 10px; }
+.pill-warn {
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 800; padding: 5px 10px;
+  background: var(--amber); color: #000; text-transform: uppercase; letter-spacing: 1px;
+  transform: rotate(1.5deg);
+}
+
+/* --- object picker --------------------------------------------------- */
+.filter, .panel > input.mono, .panel input[type="date"] {
+  width: 100%; background: #000; border: 2px solid var(--paper); border-radius: 0;
+  padding: 11px 13px; color: var(--paper); font-size: 0.85rem; font-family: var(--mono);
+  margin-bottom: 12px;
+}
+.panel input[type="date"] { width: auto; }
+.pick-list { display: flex; flex-direction: column; gap: 6px; max-height: 280px; overflow-y: auto; margin-bottom: 8px; }
+.pick {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  background: transparent; border: 2px dashed var(--line); border-radius: 0;
+  padding: 10px 13px; cursor: pointer; color: var(--tx);
+}
+.pick:hover { border-color: var(--cyan); }
+.pick.on { border: 2px solid var(--ransom); background: rgba(255, 0, 255, 0.1); }
+.pick-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.pick-main b { font-family: var(--mono); text-transform: uppercase; }
+.pick > :last-child { margin-left: auto; }
+
+/* --- hero headline: hand-glued scraps -------------------------------- */
+.hero {
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 2px; margin-bottom: 26px; max-width: none;
+  font-size: inherit; line-height: 1;
+}
+.hl { display: flex; align-items: baseline; gap: 6px; }
+.cut {
+  display: inline-block;
+  line-height: 0.98;
+  padding: 0 0.08em;
+}
+
+/* "Frozen" arrives as two scraps that do not match — the loudest gesture
+   in the whole page, so it carries the biggest size. */
+.c-fro {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(2.6rem, 7.4vw, 5.2rem);
+  color: var(--ransom); background: var(--highlighter);
+  border: 3px solid #000; transform: rotate(-4deg);
+  margin-right: -2px;
+}
+.c-zen {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(2.4rem, 6.6vw, 4.6rem);
+  color: var(--cyan); transform: rotate(2deg) translateY(-4px);
+}
+
+.c-liquidity {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(2rem, 6vw, 4.2rem);
+  color: var(--paper); background: var(--bg-elevated);
+  transform: rotate(-1deg); padding: 0 0.14em;
+}
+
+.c-you {
+  font-family: "Newsreader", Georgia, serif; font-style: italic; font-weight: 600;
+  font-size: clamp(2rem, 5.6vw, 4rem);
+  color: var(--highlighter); transform: rotate(-3deg);
+}
+.c-can {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  color: var(--ransom); background: var(--bg-elevated);
+  border: 3px solid var(--ransom); transform: rotate(1.5deg) translateY(-6px);
+  padding: 0 0.12em;
+}
+
+.c-actually {
+  font-family: var(--mono); font-weight: 800;
+  font-size: clamp(1.1rem, 2.8vw, 2rem);
+  color: var(--paper); transform: rotate(-2deg);
+  text-decoration: underline wavy var(--ransom); text-underline-offset: 11px;
+  text-decoration-thickness: 4px; padding-bottom: 8px;
+}
+
+.c-verify {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(2.4rem, 6.8vw, 4.8rem);
+  color: var(--cyan); border: 4px solid var(--highlighter);
+  transform: rotate(-2.5deg); padding: 0 0.1em; margin-top: 6px;
+}
+
+/* The lines nest tighter than their boxes suggest, the way pasted paper
+   overlaps. Pulled in per line rather than globally so nothing collides. */
+.hero .hl:nth-child(2) { margin-left: 0.6rem; margin-top: -0.06em; }
+.hero .hl:nth-child(3) { margin-left: 0.2rem; margin-top: 0.1em; }
+.hero .hl:nth-child(4) { margin-left: 1.1rem; margin-top: 0.14em; }
+.hero .hl:nth-child(5) { margin-left: 0.1rem; }
+
+/* --- landing illustration slab --------------------------------------- */
+.slab {
+  position: relative; background: #0b1524;
+  border-top: 3px solid var(--cyan);
+  padding: 18px 22px 12px;
+  transform: rotate(-1deg);
+  box-shadow: 10px 10px 0 0 rgba(0, 0, 0, 0.5);
+}
