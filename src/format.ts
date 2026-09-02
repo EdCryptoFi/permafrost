@@ -5,12 +5,15 @@ export function shortAddr(a: string, lead = 6, tail = 4) {
 }
 
 export function fmtDate(ms: number, locale?: string) {
-  if (!ms) return '—'
-  return new Date(ms).toLocaleDateString(locale ?? undefined, {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
+  if (!ms || !Number.isFinite(ms)) return '—'
+  const opts: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' }
+  try {
+    return new Date(ms).toLocaleDateString(locale || undefined, opts)
+  } catch {
+    // A bad locale tag reaches here from a query string an embedder wrote.
+    // The date still has to render — on their homepage, of all places.
+    return new Date(ms).toLocaleDateString(undefined, opts)
+  }
 }
 
 const UNITS: [number, string][] = [

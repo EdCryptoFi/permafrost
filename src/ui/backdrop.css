@@ -1,0 +1,259 @@
+/* The backdrop system.
+   One fixed stack of composited layers behind everything. Each scene retunes
+   the same eight layers rather than swapping in new DOM, so switching views
+   is a class change and a 900ms cross-fade, not a re-render. */
+
+.bd {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+.bd > * {
+  position: absolute;
+  inset: -10%;
+  transition: opacity 900ms ease, filter 900ms ease;
+}
+
+/* --- base sky -------------------------------------------------------- */
+.bd-sky {
+  background:
+    radial-gradient(120% 80% at 50% -20%, #10243c 0%, #071527 46%, #030a14 100%);
+}
+
+/* --- aurora ribbons --------------------------------------------------
+   Two wide, heavily blurred conic slices drifting at different speeds. The
+   blur is what makes two gradients read as light rather than as shapes. */
+.bd-aurora {
+  background:
+    radial-gradient(38% 26% at 22% 20%, rgba(41, 182, 246, 0.55), transparent 70%),
+    radial-gradient(34% 22% at 62% 12%, rgba(168, 85, 247, 0.42), transparent 72%),
+    radial-gradient(30% 20% at 84% 26%, rgba(52, 211, 153, 0.3), transparent 74%);
+  filter: blur(46px);
+  opacity: 0.55;
+  animation: bd-drift 34s ease-in-out infinite alternate;
+}
+.bd-aurora-2 {
+  background:
+    radial-gradient(40% 24% at 70% 8%, rgba(255, 0, 255, 0.34), transparent 72%),
+    radial-gradient(30% 18% at 30% 4%, rgba(255, 255, 0, 0.16), transparent 76%);
+  filter: blur(64px);
+  opacity: 0.4;
+  animation: bd-drift 46s ease-in-out infinite alternate-reverse;
+}
+@keyframes bd-drift {
+  0%   { transform: translate3d(-3%, -2%, 0) scaleX(1); }
+  50%  { transform: translate3d(3%, 1%, 0) scaleX(1.12); }
+  100% { transform: translate3d(-1%, 3%, 0) scaleX(0.96); }
+}
+
+/* --- starfield -------------------------------------------------------
+   Three radial-gradient tiles at coprime sizes. Tiling one dot grid reads as
+   graph paper; three sizes that never align read as sky. */
+.bd-stars {
+  background-image:
+    radial-gradient(1.4px 1.4px at 18% 22%, rgba(255, 255, 255, 0.85), transparent 60%),
+    radial-gradient(1px 1px at 62% 14%, rgba(216, 242, 253, 0.75), transparent 60%),
+    radial-gradient(1.1px 1.1px at 84% 42%, rgba(255, 255, 255, 0.6), transparent 60%);
+  background-size: 233px 197px, 149px 181px, 311px 263px;
+  opacity: 0.6;
+  animation: bd-twinkle 7s ease-in-out infinite;
+}
+@keyframes bd-twinkle {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.75; }
+}
+
+/* --- falling layer ---------------------------------------------------
+   Snow by default; the scenes below re-point it at rain, shards or scanlines
+   by swapping the image and the angle. Two stacked tiles at different speeds
+   give parallax for the price of one element. */
+.bd-fall {
+  background-image:
+    radial-gradient(1.6px 1.6px at 20% 10%, rgba(232, 246, 255, 0.9), transparent 62%),
+    radial-gradient(1.1px 1.1px at 70% 40%, rgba(232, 246, 255, 0.6), transparent 62%);
+  background-size: 180px 180px, 120px 120px;
+  opacity: 0.4;
+  animation: bd-snow 22s linear infinite;
+}
+@keyframes bd-snow {
+  0%   { background-position: 0 -180px, 0 -120px; }
+  100% { background-position: 40px 180px, -30px 120px; }
+}
+
+/* --- grid ------------------------------------------------------------ */
+.bd-grid {
+  background-image:
+    linear-gradient(rgba(41, 182, 246, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(41, 182, 246, 0.15) 1px, transparent 1px);
+  background-size: 46px 46px;
+  opacity: 0;
+  mask-image: radial-gradient(70% 60% at 50% 40%, #000 30%, transparent 100%);
+}
+
+/* --- horizon glow + vignette ----------------------------------------- */
+.bd-horizon {
+  background: radial-gradient(90% 40% at 50% 108%, rgba(41, 182, 246, 0.28), transparent 70%);
+  opacity: 0.8;
+}
+.bd-vignette {
+  background: radial-gradient(120% 90% at 50% 40%, transparent 40%, rgba(2, 6, 12, 0.72) 100%);
+}
+
+/* ===================================================================== */
+/* Scenes. Each one retunes the layers above; none of them add DOM.       */
+/* ===================================================================== */
+
+/* --- aurora: the landing. Wide, calm, obviously arctic. --------------- */
+.bd-aurora-scene { /* placeholder so the naming stays symmetric */ }
+
+/* --- frozen: a lock that is still holding. Colder, stiller, deeper. --- */
+.bd-frozen .bd-sky {
+  background: radial-gradient(120% 80% at 50% -20%, #0c2036 0%, #05121f 48%, #020810 100%);
+}
+.bd-frozen .bd-aurora { opacity: 0.3; animation-duration: 60s; }
+.bd-frozen .bd-aurora-2 { opacity: 0.16; }
+.bd-frozen .bd-fall { opacity: 0.28; animation-duration: 34s; }
+.bd-frozen .bd-horizon {
+  background: radial-gradient(90% 40% at 50% 108%, rgba(77, 184, 232, 0.34), transparent 70%);
+}
+
+/* --- crack: the term elapsed. The room changes temperature. ----------- */
+.bd-crack .bd-sky {
+  background: radial-gradient(120% 80% at 50% -10%, #2a1608 0%, #140a10 46%, #050208 100%);
+}
+.bd-crack .bd-aurora {
+  background:
+    radial-gradient(40% 26% at 30% 18%, rgba(251, 191, 36, 0.5), transparent 70%),
+    radial-gradient(34% 22% at 74% 14%, rgba(255, 0, 255, 0.36), transparent 72%);
+  opacity: 0.6;
+  animation: bd-alarm 3.2s ease-in-out infinite;
+}
+.bd-crack .bd-aurora-2 { opacity: 0.2; }
+@keyframes bd-alarm {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 0.72; }
+}
+/* Shards instead of snow: same layer, steeper angle, harder edges. */
+.bd-crack .bd-fall {
+  background-image:
+    linear-gradient(112deg, transparent 46%, rgba(255, 216, 130, 0.5) 47%, transparent 48%),
+    linear-gradient(68deg, transparent 60%, rgba(255, 0, 255, 0.32) 61%, transparent 62%);
+  background-size: 260px 260px, 190px 190px;
+  opacity: 0.3;
+  animation: bd-shard 9s linear infinite;
+}
+@keyframes bd-shard {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 260px 260px, -190px 190px; }
+}
+.bd-crack .bd-horizon {
+  background: radial-gradient(90% 40% at 50% 108%, rgba(251, 191, 36, 0.3), transparent 70%);
+}
+
+/* --- thaw: everything claimed. Water, not ice. ------------------------ */
+.bd-thaw .bd-sky {
+  background: radial-gradient(120% 90% at 50% 120%, #0d3a58 0%, #061c2e 52%, #020a12 100%);
+}
+.bd-thaw .bd-aurora {
+  background: radial-gradient(50% 30% at 50% 96%, rgba(43, 127, 181, 0.6), transparent 72%);
+  opacity: 0.5;
+}
+.bd-thaw .bd-aurora-2 { opacity: 0.12; }
+.bd-thaw .bd-stars { opacity: 0.25; }
+/* Ripple rings rising from the bottom, where the puddle is. */
+.bd-thaw .bd-fall {
+  background-image:
+    repeating-radial-gradient(
+      circle at 50% 110%,
+      rgba(154, 220, 245, 0.16) 0 1px,
+      transparent 1px 58px
+    );
+  background-size: auto;
+  opacity: 0.55;
+  animation: bd-ripple 7s linear infinite;
+}
+@keyframes bd-ripple {
+  0%   { transform: scale(0.85); opacity: 0.5; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+.bd-thaw .bd-horizon {
+  background: radial-gradient(90% 46% at 50% 108%, rgba(154, 220, 245, 0.3), transparent 70%);
+}
+
+/* --- blizzard: making a lock. Loud, fast, magenta storm. -------------- */
+.bd-blizzard .bd-sky {
+  background: radial-gradient(120% 80% at 50% -20%, #1d0b2a 0%, #0a1020 46%, #03060e 100%);
+}
+.bd-blizzard .bd-aurora {
+  background:
+    radial-gradient(42% 28% at 26% 16%, rgba(255, 0, 255, 0.5), transparent 70%),
+    radial-gradient(36% 24% at 76% 20%, rgba(41, 182, 246, 0.44), transparent 72%);
+  opacity: 0.6;
+  animation-duration: 18s;
+}
+.bd-blizzard .bd-aurora-2 {
+  background: radial-gradient(44% 26% at 50% 6%, rgba(255, 255, 0, 0.22), transparent 74%);
+  opacity: 0.5;
+}
+/* Driven snow: the same tiles, tilted and four times faster. */
+.bd-blizzard .bd-fall {
+  background-image:
+    radial-gradient(2px 2px at 20% 10%, rgba(255, 255, 255, 0.95), transparent 62%),
+    radial-gradient(1.3px 1.3px at 70% 40%, rgba(216, 242, 253, 0.8), transparent 62%),
+    linear-gradient(72deg, transparent 48%, rgba(255, 255, 255, 0.16) 49%, transparent 50%);
+  background-size: 150px 150px, 96px 96px, 300px 300px;
+  opacity: 0.6;
+  animation: bd-blizzard 5.5s linear infinite;
+}
+@keyframes bd-blizzard {
+  0%   { background-position: 0 -150px, 0 -96px, 0 0; }
+  100% { background-position: -150px 150px, -96px 96px, -300px 300px; }
+}
+.bd-blizzard .bd-horizon {
+  background: radial-gradient(90% 40% at 50% 108%, rgba(255, 0, 255, 0.26), transparent 70%);
+}
+
+/* --- blueprint: the deploy console. This is a workshop, not a poster. -- */
+.bd-blueprint .bd-sky {
+  background: radial-gradient(120% 80% at 50% 0%, #06203a 0%, #041424 50%, #01070f 100%);
+}
+.bd-blueprint .bd-aurora { opacity: 0.14; }
+.bd-blueprint .bd-aurora-2 { opacity: 0.08; }
+.bd-blueprint .bd-stars { opacity: 0.18; }
+.bd-blueprint .bd-grid { opacity: 1; animation: bd-grid-crawl 24s linear infinite; }
+@keyframes bd-grid-crawl {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 0 46px, 46px 0; }
+}
+/* A single scanline sweeping the console. */
+.bd-blueprint .bd-fall {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(41, 182, 246, 0.16) 48%,
+    rgba(41, 182, 246, 0.3) 50%,
+    rgba(41, 182, 246, 0.16) 52%,
+    transparent 100%
+  );
+  background-size: 100% 260px;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  animation: bd-scan 6s linear infinite;
+}
+@keyframes bd-scan {
+  0%   { background-position: 0 -260px; }
+  100% { background-position: 0 120%; }
+}
+.bd-blueprint .bd-horizon { opacity: 0.35; }
+
+/* --- reduced motion ---------------------------------------------------
+   The scenes still differ — colour and composition carry the meaning — but
+   nothing moves. Someone who gets motion sick from a drifting gradient
+   should still be able to tell a frozen lock from a cracked one. */
+@media (prefers-reduced-motion: reduce) {
+  .bd > * { animation: none !important; }
+  .bd-fall { opacity: 0.16; }
+}

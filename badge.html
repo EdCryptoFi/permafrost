@@ -5,8 +5,20 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="robots" content="noindex" />
     <title>PermaFrost badge</title>
+    <!--
+      This document renders inside other people's pages, so it states its own
+      limits rather than relying on theirs. It loads no scripts but its own,
+      talks to exactly one host, and can navigate nothing: a badge that could
+      be turned into a redirect is a badge nobody should paste on a homepage.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data:; connect-src https://graphql.mainnet.sui.io; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://graphql.mainnet.sui.io" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=JetBrains+Mono:wght@500;800&family=Plus+Jakarta+Sans:wght@400;600&family=Space+Grotesk:wght@700&display=swap"

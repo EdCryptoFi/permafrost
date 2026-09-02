@@ -3,18 +3,36 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>PermaFrost — proof of lock on Epoch</title>
+    <title>PermaFrost — frozen liquidity you can actually verify</title>
     <meta
       name="description"
-      content="Verify Epoch locks and vesting vaults on Sui, and embed a live proof-of-lock badge on your own site."
+      content="Verify Epoch locks and vesting vaults live on Sui, freeze your own, and share a proof card nobody can forge — because the link on it re-reads the chain."
     />
+    <meta name="theme-color" content="#040d1a" />
+    <meta name="color-scheme" content="dark" />
+    <!--
+      Defence in depth. Vercel sets the real policy as a header (with
+      frame-ancestors, which a meta tag cannot express), but this build is also
+      published as a single Walrus blob served by a gateway that sets no
+      headers at all — and that copy is the one people embed. The tightest part
+      is `connect-src`: this page talks to exactly one host, and anything that
+      ever tried to send a wallet address anywhere else would simply not
+      connect.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src https://graphql.mainnet.sui.io; frame-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta property="og:type" content="website" />
     <meta property="og:title" content="PermaFrost — frozen liquidity you can verify" />
     <meta
       property="og:description"
-      content="Read any Epoch lock straight from Sui. Get a badge your visitors can trust because you cannot edit it."
+      content="Read any Epoch lock straight from Sui. Freeze your own. Get a badge your visitors can trust, because you cannot edit what it says."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://graphql.mainnet.sui.io" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=JetBrains+Mono:wght@500;800&family=Newsreader:ital,wght@1,600&family=Plus+Jakarta+Sans:wght@400;600&family=Space+Grotesk:wght@700&display=swap"
@@ -22,6 +40,14 @@
   </head>
   <body>
     <div id="app" class="grain"></div>
+    <noscript>
+      <p style="font:15px system-ui;color:#d9e3f6;padding:32px;max-width:56ch">
+        PermaFrost reads Epoch locks directly from Sui in your browser — there is no
+        server to render this without JavaScript. You can still verify any lock by
+        opening its object id on
+        <a style="color:#29b6f6" href="https://suiscan.xyz/mainnet">Suiscan</a>.
+      </p>
+    </noscript>
     <script type="module" src="/src/app/main.tsx"></script>
   </body>
 </html>

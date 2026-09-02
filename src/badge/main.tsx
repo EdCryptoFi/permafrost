@@ -20,7 +20,23 @@ function readOpts(): BadgeOpts | null {
     id,
     variant: q.get('variant') === 'card' ? 'card' : 'pill',
     mascot: q.get('mascot') !== '0',
-    locale: q.get('locale') ?? undefined,
+    // Every one of these comes from a URL an embedder wrote, so each is
+    // validated rather than trusted. `locale` in particular reaches
+    // `toLocaleDateString`, which throws a RangeError on anything that is not
+    // a well-formed tag — `?locale=x` would take the badge down on somebody
+    // else's homepage, which is the one place it must never fail.
+    locale: validLocale(q.get('locale')),
+  }
+}
+
+const LOCALE_RE = /^[A-Za-z]{2,8}(-[A-Za-z0-9]{2,8})*$/
+function validLocale(v: string | null): string | undefined {
+  if (!v || !LOCALE_RE.test(v)) return undefined
+  try {
+    new Intl.DateTimeFormat(v)
+    return v
+  } catch {
+    return undefined
   }
 }
 
@@ -28,8 +44,13 @@ const root = document.getElementById('app')!
 const opts = readOpts()
 
 if (!opts) {
-  root.innerHTML =
-    '<span style="font:12px system-ui;color:#8aa0b2">PermaFrost badge: pass ?id=&lt;lock object id&gt;</span>'
+  // Built as a node rather than assigned as HTML: this file is the entry point
+  // for a document that renders inside other people's pages, and "no string
+  // ever becomes markup here" is a property worth being able to grep for.
+  const hint = document.createElement('span')
+  hint.style.cssText = 'font:12px system-ui;color:#8aa0b2'
+  hint.textContent = 'PermaFrost badge: pass ?id=<lock object id>'
+  root.replaceChildren(hint)
 } else {
   render(<Badge opts={opts} />, root)
 }

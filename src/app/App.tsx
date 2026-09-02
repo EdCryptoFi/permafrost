@@ -13,6 +13,8 @@ import { Results } from './Results'
 import { useWallet } from '@/wallet/useWallet'
 import { shortAddr } from '@/format'
 import { HeroTitle } from '@/ui/HeroTitle'
+import { Backdrop, sceneFor } from '@/ui/Backdrop'
+import { ProofCard } from '@/share/ProofCard'
 import './app.css'
 
 type Status = 'idle' | 'loading' | 'ready' | 'error'
@@ -39,6 +41,8 @@ export function App() {
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState('')
   const [view, setView] = useState<View>(viewFromUrl)
+  /** The lock whose share card is open, and whether we just made it. */
+  const [share, setShare] = useState<{ frost: Frost; celebrate: boolean } | null>(null)
 
   const go = (next: View) => {
     const url = new URL(location.href)
@@ -113,10 +117,33 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  /**
+   * A read that has been going for a while.
+   *
+   * The transport retries with backoff, which is right — but it means a bad
+   * moment on the public endpoint can take the better part of ten seconds to
+   * resolve, and a button that has said "Reading chain…" for nine of them is
+   * indistinguishable from a page that has died. Saying what is happening
+   * costs nothing and keeps people from reloading into a fresh cold start.
+   */
+  const [slow, setSlow] = useState(false)
+  useEffect(() => {
+    if (status !== 'loading') {
+      setSlow(false)
+      return
+    }
+    const t = setTimeout(() => setSlow(true), 3500)
+    return () => clearTimeout(t)
+  }, [status])
+
   const nothingFound = status === 'ready' && !selected && result?.frosts.length === 0
 
+  const scene = sceneFor(view, view === 'verify' ? selected : null)
+
   return (
-    <div class="wrap">
+    <>
+      <Backdrop scene={scene} />
+      <div class="wrap">
       <header class="head">
         <div class="brand">
           <span class="brand-mark" aria-hidden="true">❄</span>
@@ -145,18 +172,29 @@ export function App() {
       </header>
       <div class="rule" />
 
-      <span class="sticker s-yellow" style="--tilt:-5deg; top:118px; right:34px" aria-hidden="true">
-        Walrus status: chill
-      </span>
-      <span class="sticker s-pink" style="--tilt:4deg; top:186px; right:96px" aria-hidden="true">
-        Read-only proof
-      </span>
+      <Stickers view={view} frost={view === 'verify' ? selected : null} />
 
-      <HeroTitle />
+      {/* The full ransom-note headline is the landing page's argument. Once
+          somebody is reading a specific lock, or filling in a form, it is a
+          poster in the way — so it stands down to one line and the copy
+          underneath starts describing the thing they are actually doing. */}
+      {view === 'verify' && status === 'idle' && !selected ? (
+        <HeroTitle />
+      ) : (
+        <h1 class="hero-mini">
+          {view === 'new'
+            ? 'Freeze something.'
+            : view === 'deploy'
+              ? 'Ship the blob.'
+              : 'Read it from the chain.'}
+        </h1>
+      )}
       <p class="lede">
-        Paste a project's address and see everything it has locked with Epoch — LP positions,
-        vesting vaults, the lot. Then embed a badge that reads the chain live, so nobody has to
-        take your word for it.
+        {view === 'new'
+          ? 'Pick anything this wallet holds that the contract accepts, set a date, sign once. Locks are shared objects — after that, anybody can verify it and nobody can undo it.'
+          : view === 'deploy'
+            ? 'Publish each build to Walrus, then point a .epoch name at the blob it returns. The NameCap never leaves your wallet.'
+            : "Paste a project's address and see everything it has locked with Epoch — LP positions, vesting vaults, the lot. Then embed a badge that reads the chain live, so nobody has to take your word for it."}
       </p>
 
       {view === 'verify' && (
@@ -190,9 +228,16 @@ export function App() {
       {view === 'new' && (
         <Create
           wallet={wallet}
-          onCreated={() => {
+          onCreated={(frost) => {
             go('verify')
-            setStatus('idle')
+            setResult(null)
+            setSelected(frost)
+            setStatus('ready')
+            setUrl('id', frost.id)
+            // The card is the point of the whole flow: they froze something in
+            // order to be able to show it.
+            setShare({ frost, celebrate: true })
+            scrollTo({ top: 0, behavior: 'smooth' })
           }}
           onCancel={() => go('verify')}
         />
@@ -200,6 +245,12 @@ export function App() {
 
       {view === 'deploy' && <Deploy wallet={wallet} onCancel={() => go('verify')} />}
 
+      {slow && (
+        <p class="muted small">
+          Still reading. The public Sui endpoint is slow right now, so this is retrying
+          with a back-off rather than hammering it.
+        </p>
+      )}
       {status === 'error' && <p class="err">{error}</p>}
       {nothingFound && (
         <p class="err">
@@ -238,6 +289,14 @@ export function App() {
               <Frozen frost={selected} size={200} />
             </div>
             <Verdict frost={selected} />
+            {selected.phase !== 'absent' && (
+              <button
+                class="btn stage-share"
+                onClick={() => setShare({ frost: selected, celebrate: false })}
+              >
+                Share this proof
+              </button>
+            )}
           </section>
 
           {selected.phase !== 'absent' && (
@@ -267,7 +326,50 @@ export function App() {
           Built on Epoch ↗
         </a>
       </footer>
-    </div>
+      </div>
+
+      {share && (
+        <ProofCard
+          frost={share.frost}
+          celebrate={share.celebrate}
+          onClose={() => setShare(null)}
+        />
+      )}
+    </>
+  )
+}
+
+/**
+ * The decals pinned to the page.
+ *
+ * They are aria-hidden decoration, so they are allowed to be jokes — but they
+ * are jokes about the current state, not fixed text. A page that says "walrus
+ * status: chill" over a lock that cracked open this morning is lying in the
+ * one register the reader has not been taught to distrust.
+ */
+function Stickers({ view, frost }: { view: View; frost: Frost | null }) {
+  const pair: [string, string] =
+    view === 'new'
+      ? ['Blizzard mode', 'One signature, no undo']
+      : view === 'deploy'
+        ? ['Name cap required', 'Ships one blob']
+        : frost?.phase === 'cracked'
+          ? ['Walrus status: awake', 'Term elapsed']
+          : frost?.phase === 'thawed'
+            ? ['Walrus status: swimming', 'Nothing left to hold']
+            : frost
+              ? ['Walrus status: asleep', 'Read-only proof']
+              : ['Walrus status: chill', 'Read-only proof']
+
+  return (
+    <>
+      <span class="sticker s-yellow" style="--tilt:-5deg; top:118px; right:34px" aria-hidden="true">
+        {pair[0]}
+      </span>
+      <span class="sticker s-pink" style="--tilt:4deg; top:186px; right:96px" aria-hidden="true">
+        {pair[1]}
+      </span>
+    </>
   )
 }
 

@@ -49,6 +49,14 @@ export function Badge({ opts }: { opts: BadgeOpts }) {
 
   // Tell the embedding page how tall we are; without it every integration
   // ends up with a scrollbar inside the iframe.
+  //
+  // The target origin is `*` because we genuinely do not know who embedded us —
+  // that is the whole point of a public badge. It is safe here only because of
+  // what is in the message: two integers describing our own layout, and a
+  // `source` tag so a host can tell our frame apart from someone else's. No
+  // chain data, no ids, nothing about the visitor. Nothing is ever read back:
+  // this document registers no `message` listener at all, so an embedding page
+  // cannot talk to the badge, only measure it.
   useEffect(() => {
     const report = () =>
       parent.postMessage(
@@ -88,7 +96,7 @@ export function Badge({ opts }: { opts: BadgeOpts }) {
       class={`pf pf-${opts.variant} is-${frost.phase}`}
       href={EXPLORER(frost.id)}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer external"
       title={`${label} — ${detail}`}
     >
       <Frozen

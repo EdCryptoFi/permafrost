@@ -22,6 +22,8 @@ The contract was there. The thing that lets a non-developer act on it was not.
 
 ## What this is
 
+0. **Live at [permafrost-epoch.vercel.app](https://permafrost-epoch.vercel.app).**
+
 1. **A verifier with discovery.** One input, three meanings: paste a **project
    address** and get every lock and vault it created; paste a **coin type or
    symbol** (`0x2::sui::SUI`, or just `SUI`) and get everything frozen of that
@@ -37,7 +39,14 @@ The contract was there. The thing that lets a non-developer act on it was not.
 4. **A narrow write path.** Extend a lock, claim an unlocked object, claim vested
    tokens. Every action either strengthens a guarantee or moves value to the
    party the contract already designates. Nothing here can weaken a lock.
-5. **A deploy console** (`?view=deploy`). `update_blob` needs the NameCap held in
+5. **A share card.** The moment a lock exists, the thing its owner wants to do
+   next is tell people — and the only artefact the market had for that was a
+   screenshot, which is exactly the forgeable object this product replaces. So
+   freezing something ends in a 1200x630 card painted from the same `Frost` the
+   page is rendering, carrying the lock id and a URL that re-reads Sui. The
+   picture travels; the proof stays checkable. Post to X, native share sheet,
+   clipboard, or download.
+6. **A deploy console** (`?view=deploy`). `update_blob` needs the NameCap held in
    a browser wallet; doing it from the CLI would mean exporting that key.
 
 ## The ice
@@ -74,8 +83,8 @@ npm run size         # bundle budget check
 Current output:
 
 ```
-badge     28.8 KB  gzip   11.3 KB
-app      125.0 KB  gzip   40.5 KB
+badge      52.1 KB  gzip   18.3 KB   (budget 40 KB)
+app       199.2 KB  gzip   62.1 KB   (budget 220 KB)
 ```
 
 ## Why it is built this way
@@ -149,3 +158,94 @@ Then point each `.epoch` name at its blob via
 
 PermaFrost reads Epoch's public mainnet packages. It holds no keys, has no
 backend, and stores nothing off-chain.
+
+---
+
+## The character
+
+Glacia is not decoration with a random costume. Every prop she wears is a
+reading of the same chain data the numbers come from, derived in one pure
+function (`src/ice/character.ts`) so the badge on somebody else's homepage and
+the hero on ours cannot drift apart:
+
+| chain fact | what she does |
+| --- | --- |
+| term under 82% elapsed | asleep, breathing fog, Zs |
+| 82–97% elapsed | awake, unbothered |
+| over 97% elapsed | watching the clock, shorter breath |
+| unlock reached | wide eyes, tusks up, slides off the block |
+| fully claimed | floating in the water, delighted |
+| term ≥ 2 years | scarf |
+| term ≥ 5 years | scarf and beanie |
+| term ≤ 45 days | sunglasses — a month is a holiday, not a winter |
+| ≥ 1 year and 25% elapsed | snow settled on her head |
+
+**Why SVG and not a framework.** The reference composition builds her from
+Three.js primitives, which costs ~624 KB — four times the entire application —
+for one decorative animal, inside a budget where the site must collapse into a
+single Walrus blob and the badge has to stay small on somebody else's homepage.
+Layered SVG with gradients, an occlusion pass and fur strokes buys the same
+read for about 6 KB, animates on the compositor, and scales from a 34 px pill
+to a 1200 px share card with no second asset. Below 110 px the fine pass
+(pores, fur, breath) drops out rather than shipping grey mush.
+
+## Backdrops
+
+Which room you are standing in is itself information. `src/ui/Backdrop.tsx`
+switches one stack of composited layers by view and by lock phase — aurora on
+the landing, cold and still for a frozen lock, amber shards when the term
+elapses, water once everything is claimed, a magenta blizzard while you are
+freezing something, a blueprint grid in the deploy console. No canvas loop and
+no particle system: gradients and transforms the GPU can animate while the main
+thread parses a GraphQL response, and all of it inert under
+`prefers-reduced-motion`.
+
+## Talking to the chain politely
+
+`src/chain/net.ts` is the only way anything reaches Sui. A static page with no
+backend is the sole thing standing between a visitor and a shared public
+endpoint with a rate limit, and PermaFrost is chatty for its size: one search
+fans out into three type sweeps, and a badge is one request per visitor of
+somebody else's homepage. Every call passes, in order:
+
+1. **memo** — identical query+variables inside a TTL never leaves the tab
+2. **dedupe** — identical query+variables in flight share one response
+3. **breaker** — after 5 hard failures, fail fast for 12s instead of piling on
+4. **limiter** — 4 concurrent, spaced 55 ms apart, 20 s timeout each
+5. **retry** — 429/5xx/network back off with full jitter and honour `Retry-After`
+
+Aborting one caller never cancels a request other callers are waiting on: the
+shared work runs to completion and lands in the memo.
+
+Two schema changes cut the request count outright. `multiGetObjects` reads a
+whole results page in one round trip (it used to be one request per row, which
+is also one throttling opportunity per row), and coin metadata is resolved once
+per distinct type per list rather than once per row.
+
+## Frontend security
+
+There are no keys in this repository and none at runtime — every hex string in
+`src/chain/constants.ts` is a public mainnet package id. The app holds nothing,
+stores nothing off-chain, and has no backend to compromise. What is left is the
+browser surface:
+
+- **CSP**, as a header on Vercel and as a `<meta>` in the document so the copy
+  served from a Walrus gateway (which sets no headers) is covered too. The
+  tightest directive is `connect-src`: exactly one host. Anything that ever
+  tried to send a wallet address elsewhere would simply not connect.
+- **`frame-ancestors 'none'`** on the app, `*` on the badge — the badge exists
+  to be embedded, the verifier does not, and clickjacking a page with a
+  transaction button is the obvious attack.
+- No `innerHTML`, no `dangerouslySetInnerHTML`, no `eval` anywhere in `src/`.
+  The one place that built markup from a string now builds a node.
+- Every value an embedder controls is validated at the boundary: the lock id
+  against a hex pattern, and `locale` against a tag grammar *and*
+  `Intl.DateTimeFormat` — `?locale=x` used to throw a `RangeError` and take the
+  badge down on the embedder's own homepage.
+- The badge posts only its own dimensions to `parent`, and registers no
+  `message` listener at all, so an embedding page can measure it and nothing else.
+- `credentials: 'omit'` and `referrerPolicy: 'no-referrer'` on every chain read.
+- Every `target="_blank"` carries `rel="noopener noreferrer"`, including the
+  X intent window.
+- A beneficiary address that is well-formed but shorter than 32 bytes is
+  flagged before signing. Sui accepts it and the lock would be permanent.

@@ -84,13 +84,16 @@
 .panel {
   background: var(--bg-raised);
   border: 2px solid var(--cyan);
-  border-radius: 95% 5% 97% 3% / 4% 96% 5% 95%;
+  /* Hand-cut wobble in px, not percentages: a percentage radius is relative
+     to the box, so the same rule that looked torn on a tall panel drew a
+     half-circle across a wide, short one. */
+  border-radius: 16px 3px 20px 5px / 5px 18px 4px 16px;
   padding: 24px 26px; margin-bottom: 22px;
   box-shadow: 8px 8px 0 0 var(--highlighter);
 }
 .panel.accent {
   border-color: var(--ransom);
-  border-radius: 4% 96% 6% 94% / 95% 4% 96% 5%;
+  border-radius: 4px 18px 5px 16px / 16px 4px 20px 5px;
   box-shadow: 8px 8px 0 0 var(--cyan);
 }
 .panel h2 {
@@ -109,7 +112,7 @@
   display: flex; align-items: center; gap: 30px; flex-wrap: wrap;
   background: var(--bg-raised);
   border: 2px solid var(--ransom);
-  border-radius: 2% 98% 4% 96% / 98% 2% 97% 3%;
+  border-radius: 20px 4px 16px 5px / 4px 18px 5px 20px;
   padding: 28px 32px; margin-bottom: 22px;
   box-shadow: 8px 8px 0 0 var(--ransom);
 }
@@ -118,6 +121,9 @@
   font-family: var(--display); font-size: 2.2rem; font-weight: 800;
   text-transform: uppercase; display: inline-block; margin-bottom: 10px;
   letter-spacing: -1px; padding: 0 10px; color: #000;
+  /* Every phase below repaints this, but the default must still be legible:
+     one unstyled state and the headline is black text on a black panel. */
+  background: var(--paper);
 }
 .verdict.is-melting b { background: var(--highlighter); }
 .verdict.is-cracked b { background: var(--amber); }
@@ -214,7 +220,7 @@ a:hover { color: var(--ransom); }
   display: flex; align-items: center; gap: 28px; width: 100%; text-align: left;
   background: var(--bg-raised);
   border: 2px solid var(--cyan);
-  border-radius: 2% 98% 4% 96% / 98% 2% 97% 3%;
+  border-radius: 20px 4px 16px 5px / 4px 18px 5px 20px;
   padding: 26px 30px; margin-bottom: 22px; cursor: pointer; color: var(--tx);
   box-shadow: 8px 8px 0 0 var(--ransom);
 }
@@ -253,7 +259,7 @@ a:hover { color: var(--ransom); }
 .ex {
   display: flex; align-items: center; gap: 13px; text-align: left;
   background: var(--bg-raised); border: 2px solid var(--cyan);
-  border-radius: 4% 96% 6% 94% / 95% 4% 96% 5%;
+  border-radius: 4px 16px 5px 14px / 14px 4px 18px 5px;
   padding: 15px 17px; cursor: pointer; color: var(--tx);
   box-shadow: 5px 5px 0 0 var(--highlighter);
 }
@@ -401,3 +407,63 @@ a:hover { color: var(--ransom); }
 .hero-stage:hover, .ex:hover, .res:hover { color: var(--tx); }
 .ex-body b { color: var(--ransom); }
 .res-body b { color: var(--cyan); }
+
+/* --- confirmation slab -----------------------------------------------
+   The last thing between a person and an irreversible signature. It reads
+   back the three separate controls above as one sentence, because each can
+   be individually right and still add up to something nobody meant. */
+.confirm {
+  margin: 22px 0 6px;
+  padding: 16px 18px;
+  border: 2px dashed var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  display: flex; flex-direction: column; gap: 5px;
+}
+.confirm.is-ready {
+  border: 2px solid var(--highlighter);
+  background: rgba(255, 255, 0, 0.05);
+  box-shadow: 6px 6px 0 0 rgba(255, 0, 255, 0.35);
+}
+.confirm-eyebrow {
+  font-family: var(--mono); font-size: 0.64rem; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase; color: var(--mut-soft);
+}
+.confirm-line {
+  font-family: var(--display); font-size: clamp(1.1rem, 2.6vw, 1.7rem);
+  font-weight: 800; text-transform: uppercase; letter-spacing: -0.5px;
+  color: var(--paper); line-height: 1.15;
+}
+.confirm.is-ready .confirm-line { color: var(--highlighter); }
+.confirm-sub { font-size: 0.72rem; color: var(--cyan); word-break: break-all; }
+.confirm-warn {
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.5px; color: var(--mut);
+  margin-top: 4px;
+}
+
+.btn.big {
+  font-size: 0.98rem; padding: 18px 30px;
+  box-shadow: 8px 8px 0 0 var(--highlighter);
+}
+.btn.big:hover { box-shadow: 8px 8px 0 0 var(--ransom); }
+
+.stage-share { align-self: flex-start; }
+
+/* Panels sit on a live backdrop now, so they need their own ground or the
+   aurora reads straight through the data. */
+.panel, .stage, .hero-stage, .ex {
+  backdrop-filter: blur(3px);
+  background-color: rgba(10, 21, 36, 0.86);
+}
+.lede { background: rgba(4, 13, 26, 0.6); backdrop-filter: blur(2px); }
+
+/* The stood-down headline for every view that is not the landing pitch. */
+.hero-mini {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(1.9rem, 4.4vw, 3rem);
+  text-transform: uppercase; letter-spacing: -1.5px; line-height: 1;
+  color: var(--paper); margin-bottom: 16px;
+  display: inline-block; transform: rotate(-1.2deg);
+  border-bottom: 5px solid var(--highlighter);
+  padding-bottom: 4px;
+}

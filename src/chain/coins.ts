@@ -1,4 +1,4 @@
-import { gql } from './graphql'
+import { gql, metaCacheMs } from './graphql'
 import { innerTypeOf, normalizeType } from './frost'
 
 /**
@@ -42,7 +42,10 @@ async function lookupOne(coinType: string, signal?: AbortSignal): Promise<CoinIn
   const existing = inflight.get(coinType)
   if (existing) return existing
 
-  const p = gql<{ coinMetadata: CoinInfo | null }>(QUERY, { coinType }, signal)
+  const p = gql<{ coinMetadata: CoinInfo | null }>(QUERY, { coinType }, signal, {
+    cacheMs: metaCacheMs,
+    retries: 1,
+  })
     .then((d) => d.coinMetadata ?? null)
     .catch(() => null)
     .then((v) => {

@@ -7,7 +7,7 @@ import {
   VESTING_VAULT_TYPE,
 } from './constants'
 import { typeMatches, type Frost } from './frost'
-import { parseAny, resolveMany, withCoinInfo } from './resolve'
+import { parseAny, resolveMany, withCoinInfoAll } from './resolve'
 
 /**
  * Discovery.
@@ -62,6 +62,10 @@ async function allOfType(type: string, nowMs: number, viewer: string | null, sig
       OBJECTS_BY_TYPE,
       { type, first: PAGE, after },
       signal,
+      // A type sweep is the heaviest read in the app and the same three run on
+      // every landing visit. Half a minute of memo turns a re-search into zero
+      // requests without ever showing a lock that has since been claimed.
+      { cacheMs: 30_000 },
     )
     for (const n of d.objects.nodes) {
       const c = n.asMoveObject?.contents
@@ -87,7 +91,9 @@ const EVENTS_BY_SENDER = `
 type EventsResp = { events: { nodes: { contents: { json: Record<string, string> } }[] } }
 
 async function idsFromEvents(type: string, sender: string, key: string, signal?: AbortSignal) {
-  const d = await gql<EventsResp>(EVENTS_BY_SENDER, { type, sender }, signal)
+  const d = await gql<EventsResp>(EVENTS_BY_SENDER, { type, sender }, signal, {
+    cacheMs: 20_000,
+  })
   const ids = new Set<string>()
   for (const n of d.events.nodes) {
     const id = n.contents.json[key]
@@ -143,7 +149,7 @@ export async function findByCoinType(
     allOfType(MULTI_VAULT_TYPE, nowMs, viewer, signal).catch(() => []),
   ])
   const hits = groups.flat().filter((f) => typeMatches(f.innerType, needle))
-  return Promise.all(hits.map((f) => withCoinInfo(f, signal)))
+  return withCoinInfoAll(hits, signal)
 }
 
 const isAddressish = (s: string) => /^0x[0-9a-fA-F]{1,64}$/.test(s)
@@ -207,5 +213,5 @@ export async function listShowcase(
   const rank = (f: Frost) => (f.phase === 'melting' ? 0 : f.phase === 'cracked' ? 1 : 2)
   const all = groups.flat().sort((a, b) => rank(a) - rank(b) || b.lockedAtMs - a.lockedAtMs)
 
-  return Promise.all(all.slice(0, 6).map((f) => withCoinInfo(f, signal)))
+  return withCoinInfoAll(all.slice(0, 6), signal)
 }

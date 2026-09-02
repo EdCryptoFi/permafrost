@@ -1,4 +1,4 @@
-import { fetchObject, fetchChainNowMs } from './graphql'
+import { fetchObject, fetchObjects, fetchChainNowMs } from './graphql'
 import { isObjectLockType, parseLock } from './locks'
 import { isMultiVaultType, isVaultType, parseMultiVault, parseVault } from './vesting'
 import { ABSENT, type Frost } from './frost'
@@ -33,22 +33,55 @@ export async function withCoinInfo(frost: Frost, signal?: AbortSignal): Promise<
   return { ...frost, decimals: info?.decimals ?? null, symbol: info?.symbol ?? null }
 }
 
-/** Batch lookup sharing one clock read. */
+/**
+ * Batch lookup sharing one clock read — and, now, one network round trip.
+ *
+ * This used to map `fetchObject` over the list, which meant a project with
+ * twelve locks fired twelve requests before its results could paint and gave
+ * the endpoint twelve chances to throttle the viewer. `multiGetObjects` asks
+ * for the whole set at once.
+ */
 export async function resolveMany(
   addresses: string[],
   nowMs: number,
   viewer?: string | null,
   signal?: AbortSignal,
 ): Promise<Frost[]> {
-  const results = await Promise.all(
-    addresses.map(async (a) => {
-      const obj = await fetchObject(a, signal).catch(() => null)
-      if (!obj) return null
-      const parsed = parseAny(obj.address, obj.type, obj.json, nowMs, viewer)
-      return parsed ? withCoinInfo(parsed, signal) : null
-    }),
+  if (addresses.length === 0) return []
+  const objs = await fetchObjects(addresses, signal).catch(() => [])
+  const parsed = objs
+    .map((o) => parseAny(o.address, o.type, o.json, nowMs, viewer))
+    .filter((f): f is Frost => f !== null)
+
+  // Preserve the order the caller asked for: a results list that reshuffles
+  // between renders is a list nobody can point at.
+  const rank = new Map(addresses.map((a, i) => [a.toLowerCase(), i]))
+  parsed.sort(
+    (a, b) => (rank.get(a.id.toLowerCase()) ?? 0) - (rank.get(b.id.toLowerCase()) ?? 0),
   )
-  return results.filter((f): f is Frost => f !== null)
+
+  return withCoinInfoAll(parsed, signal)
+}
+
+/**
+ * Metadata for a whole list, one lookup per distinct coin type.
+ *
+ * Enriching row by row asked the endpoint for the same ticker once per row;
+ * a page of eight SUI locks was eight identical requests.
+ */
+export async function withCoinInfoAll(frosts: Frost[], signal?: AbortSignal): Promise<Frost[]> {
+  const types = [...new Set(frosts.map((f) => f.innerType).filter(Boolean))]
+  const infos = new Map(
+    await Promise.all(
+      types.map(
+        async (t) => [t, await resolveCoinInfo(t, signal).catch(() => null)] as const,
+      ),
+    ),
+  )
+  return frosts.map((f) => {
+    const info = infos.get(f.innerType) ?? null
+    return { ...f, decimals: info?.decimals ?? null, symbol: info?.symbol ?? null }
+  })
 }
 
 /**
