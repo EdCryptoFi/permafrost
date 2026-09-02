@@ -385,3 +385,19 @@ a:hover { color: var(--ransom); }
   transform: rotate(-1deg);
   box-shadow: 10px 10px 0 0 rgba(0, 0, 0, 0.5);
 }
+
+/* --- full addresses --------------------------------------------------
+   Never truncate an identifier on a page whose job is letting someone check
+   it. They wrap on the character, so a 66-char object id fits any column. */
+.addr {
+  word-break: break-all;
+  line-height: 1.35;
+  font-size: 0.74rem;
+}
+.fact dd { max-width: 62%; }
+
+/* Cards and rows are anchors now, so they must not inherit link colouring. */
+.hero-stage, .ex, .res { color: var(--tx); text-decoration: none; }
+.hero-stage:hover, .ex:hover, .res:hover { color: var(--tx); }
+.ex-body b { color: var(--ransom); }
+.res-body b { color: var(--cyan); }

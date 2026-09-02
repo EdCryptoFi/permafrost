@@ -2,13 +2,23 @@ import type { Frost } from '@/chain/frost'
 import { assetLabel } from '@/chain/frost'
 import type { SearchKind } from '@/chain/search'
 import { Frozen } from '@/ice/Frozen'
-import { fmtDate, shortAddr } from '@/format'
+import { fmtDate } from '@/format'
+import { InternalLink } from '@/ui/InternalLink'
 
 /**
  * Multi-result view. A project with five locked LP positions is the normal
  * case, not the exception, so a search that finds many has to show them all
  * rather than silently picking one.
  */
+import { EXPLORER } from '@/chain/constants'
+
+/** Full address, never elided: an address you cannot read is not a proof. */
+const Addr = ({ a }: { a: string }) => (
+  <a class="mono addr" href={EXPLORER(a)} target="_blank" rel="noopener noreferrer">
+    {a}
+  </a>
+)
+
 export function Results({
   kind,
   term,
@@ -27,7 +37,7 @@ export function Results({
       <h2>
         {frosts.length} {frosts.length === 1 ? 'result' : 'results'}{' '}
         {kind === 'creator' ? (
-          <>created by <span class="mono">{shortAddr(term)}</span></>
+          <>created by <Addr a={term} /></>
         ) : kind === 'coin' ? (
           <>matching <span class="mono">{term}</span></>
         ) : null}
@@ -40,7 +50,7 @@ export function Results({
 
       <div class="res-list">
         {frosts.map((f) => (
-          <button class="res" key={f.id} onClick={() => onPick(f.id)}>
+          <InternalLink class="res" key={f.id} id={f.id} onPick={onPick}>
             <Frozen frost={f} size={54} snow={false} mascot={false} />
             <span class="res-body">
               <b class="mono">{assetLabel(f)}</b>
@@ -50,7 +60,7 @@ export function Results({
               </span>
             </span>
             <span class="res-go" aria-hidden="true">→</span>
-          </button>
+          </InternalLink>
         ))}
       </div>
     </section>

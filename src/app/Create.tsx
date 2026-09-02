@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks'
 import { listLockable, type OwnedObject } from '@/chain/owned'
 import { buildLock } from '@/chain/tx'
 import type { useWallet } from '@/wallet/useWallet'
-import { fmtAsset, fmtDate, shortAddr } from '@/format'
+import { fmtAsset, fmtDate } from '@/format'
 
 const DAY = 24 * 3600e3
 const PRESETS = [
@@ -130,7 +130,7 @@ export function Create({
                       ? fmtAsset(o.balance, o.decimals, o.symbol ?? o.label)
                       : o.label}
                   </b>
-                  <span class="muted small mono">{shortAddr(o.id)}</span>
+                  <span class="muted small mono addr">{o.id}</span>
                 </span>
                 <span class="muted small">{o.isCoin ? 'coin' : 'object'}</span>
               </button>

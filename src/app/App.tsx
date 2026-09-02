@@ -126,15 +126,20 @@ export function App() {
           </div>
         </div>
         <nav class="nav">
-          <button class={view === 'verify' ? 'on' : ''} onClick={() => go('verify')}>
-            Verify
-          </button>
-          <button class={view === 'new' ? 'on' : ''} onClick={() => go('new')}>
-            Freeze
-          </button>
-          <button class={view === 'deploy' ? 'on' : ''} onClick={() => go('deploy')}>
-            Deploy
-          </button>
+          {(['verify', 'new', 'deploy'] as View[]).map((v) => (
+            <a
+              key={v}
+              class={view === v ? 'on' : ''}
+              href={v === 'verify' ? '?' : `?view=${v}`}
+              onClick={(e) => {
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+                e.preventDefault()
+                go(v)
+              }}
+            >
+              {v === 'verify' ? 'Verify' : v === 'new' ? 'Freeze' : 'Deploy'}
+            </a>
+          ))}
         </nav>
         <WalletButton wallet={wallet} />
       </header>
@@ -303,7 +308,11 @@ function WalletButton({ wallet }: { wallet: ReturnType<typeof useWallet> }) {
     return (
       <div class="wallet-state">
         {wallet.wrongNetwork && <span class="pill-warn">Wrong network</span>}
-        <button class="btn ghost mono" onClick={() => void wallet.disconnect()}>
+        <button
+          class="btn ghost mono"
+          title={`${wallet.address} — click to disconnect`}
+          onClick={() => void wallet.disconnect()}
+        >
           {shortAddr(wallet.address)}
         </button>
       </div>

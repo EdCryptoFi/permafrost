@@ -3,7 +3,7 @@ import { gql } from '@/chain/graphql'
 import { NAMES, EXPLORER } from '@/chain/constants'
 import { buildUpdateBlob } from '@/chain/tx'
 import type { useWallet } from '@/wallet/useWallet'
-import { shortAddr } from '@/format'
+
 
 /**
  * Deploy console.
@@ -97,7 +97,7 @@ node scripts/publish.mjs dist/app/index.html`}</pre>
               >
                 <span class="pick-main">
                   <b class="mono">{c.name}.epoch</b>
-                  <span class="muted small mono">{shortAddr(c.id)}</span>
+                  <span class="muted small mono addr">{c.id}</span>
                 </span>
               </button>
             ))}

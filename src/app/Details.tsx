@@ -1,6 +1,6 @@
 import { type Frost, assetLabel, msLeft } from '@/chain/frost'
 import { EXPLORER } from '@/chain/constants'
-import { fmtAsset, fmtCountdown, fmtDate, pct, shortAddr } from '@/format'
+import { fmtAsset, fmtCountdown, fmtDate, pct } from '@/format'
 import { useTick } from '@/useTick'
 
 export function Details({ frost }: { frost: Frost }) {
@@ -9,6 +9,7 @@ export function Details({ frost }: { frost: Frost }) {
   const unit = (v: bigint) => fmtAsset(v, frost.decimals, frost.symbol)
 
   const rows: [string, preact.ComponentChildren][] = [
+    ['Lock id', <Addr a={frost.id} />],
     [
       'Kind',
       frost.kind === 'lock'
@@ -26,6 +27,7 @@ export function Details({ frost }: { frost: Frost }) {
   ]
 
   if (frost.beneficiary) rows.push(['Beneficiary', <Addr a={frost.beneficiary} />])
+  rows.push(['Frozen item type', <span class="mono addr">{frost.innerType}</span>])
 
   if (frost.totalLocked !== undefined) {
     rows.push(['Total locked', <span class="mono">{unit(frost.totalLocked)}</span>])
@@ -75,8 +77,16 @@ export function Details({ frost }: { frost: Frost }) {
   )
 }
 
+/**
+ * Addresses render in full, never elided.
+ *
+ * A truncated address is something a reader has to take on trust, which is
+ * the exact opposite of what this page is for. They wrap instead of being
+ * cut, and each one links to the explorer so the claim can be checked
+ * somewhere that is not us.
+ */
 const Addr = ({ a }: { a: string }) => (
-  <a class="mono" href={EXPLORER(a)} target="_blank" rel="noopener noreferrer">
-    {shortAddr(a)}
+  <a class="mono addr" href={EXPLORER(a)} target="_blank" rel="noopener noreferrer" title={a}>
+    {a}
   </a>
 )

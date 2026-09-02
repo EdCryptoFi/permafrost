@@ -6,6 +6,7 @@ import { assetLabel, msLeft, type Frost } from '@/chain/frost'
 import { Frozen } from '@/ice/Frozen'
 import { fmtAsset, fmtCountdown, fmtDate } from '@/format'
 import { useTick } from '@/useTick'
+import { InternalLink } from '@/ui/InternalLink'
 
 /**
  * The landing state.
@@ -47,17 +48,17 @@ export function Landing({ onPick }: { onPick: (id: string) => void }) {
 
   return (
     <>
-      <button class="hero-stage" onClick={() => onPick(hero.id)}>
+      <InternalLink class="hero-stage" id={hero.id} onPick={onPick} title={`Inspect ${hero.id}`}>
         <Frozen frost={hero} size={190} />
         <HeroCopy frost={hero} />
-      </button>
+      </InternalLink>
 
       {rest.length > 0 && (
         <section class="examples">
           <h2 class="eyebrow">Everything else Epoch is holding</h2>
           <div class="ex-grid">
             {rest.slice(0, 3).map((f) => (
-              <button class="ex" key={f.id} onClick={() => onPick(f.id)}>
+              <InternalLink class="ex" key={f.id} id={f.id} onPick={onPick}>
                 <Frozen frost={f} size={64} snow={false} />
                 <span class="ex-body">
                   <b class="mono">{assetLabel(f)}</b>
@@ -68,7 +69,7 @@ export function Landing({ onPick }: { onPick: (id: string) => void }) {
                     {f.phase === 'melting' ? `unlocks ${fmtDate(f.unlockMs)}` : f.phase}
                   </span>
                 </span>
-              </button>
+              </InternalLink>
             ))}
           </div>
         </section>
