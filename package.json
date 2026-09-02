@@ -13,7 +13,8 @@
     "size": "node scripts/size.mjs",
     "publish:walrus": "node scripts/publish.mjs",
     "typecheck": "tsc --noEmit",
-    "og": "node scripts/og.mjs"
+    "og": "node scripts/og.mjs",
+    "build:site": "npm run build && rm -rf dist/site && mkdir -p dist/site/badge && cp dist/app/index.html dist/site/index.html && cp dist/badge/badge.html dist/site/badge/index.html"
   },
   "dependencies": {
     "@mysten/sui": "^1.44.0",
