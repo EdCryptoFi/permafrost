@@ -3,6 +3,15 @@ import { getWallets, type Wallet, type WalletAccount } from '@mysten/wallet-stan
 import type { Transaction } from '@mysten/sui/transactions'
 
 const CHAIN = 'sui:mainnet' as const
+
+/**
+ * Wallet Standard is a handshake: the page announces itself and extensions
+ * answer by registering. `getWallets()` is what performs that announcement,
+ * and it is memoised, so calling it here — at module load, before the first
+ * render — means an extension injected at document_start finds us ready.
+ * Doing it inside an effect ran it after first paint, which is late.
+ */
+const REGISTRY = getWallets()
 const LAST_WALLET_KEY = 'permafrost:wallet'
 
 type SignFeature = {
@@ -28,17 +37,16 @@ function supportsSui(w: Wallet) {
  * same protocol underneath, so this costs ~80 lines and saves ~250 KB.
  */
 export function useWallet() {
-  const [wallets, setWallets] = useState<Wallet[]>([])
+  const [wallets, setWallets] = useState<Wallet[]>(() => REGISTRY.get().filter(supportsSui))
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [account, setAccount] = useState<WalletAccount | null>(null)
   const [busy, setBusy] = useState(false)
 
   useEffect(() => {
-    const registry = getWallets()
-    const sync = () => setWallets(registry.get().filter(supportsSui))
+    const sync = () => setWallets(REGISTRY.get().filter(supportsSui))
     sync()
-    const offReg = registry.on('register', sync)
-    const offUnreg = registry.on('unregister', sync)
+    const offReg = REGISTRY.on('register', sync)
+    const offUnreg = REGISTRY.on('unregister', sync)
     return () => {
       offReg()
       offUnreg()

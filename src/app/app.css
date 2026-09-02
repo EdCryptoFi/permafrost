@@ -193,12 +193,10 @@
 .err {
   color: #000; background: var(--red); font-family: var(--mono); font-weight: 800;
   font-size: 0.78rem; margin: 12px 0; padding: 8px 12px; display: inline-block;
-  text-transform: uppercase;
 }
 .ok {
   color: #000; background: var(--green); font-family: var(--mono); font-weight: 800;
   font-size: 0.78rem; margin: 12px 0; padding: 8px 12px; display: inline-block;
-  text-transform: uppercase;
 }
 
 .foot {
