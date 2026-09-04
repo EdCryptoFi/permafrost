@@ -1,6 +1,7 @@
 import { type Frost, assetLabel, msLeft } from '@/chain/frost'
 import { EXPLORER } from '@/chain/constants'
 import { fmtAsset, fmtCountdown, fmtDate, pct } from '@/format'
+import { isHollow } from '@/chain/frost'
 import { useTick } from '@/useTick'
 
 export function Details({ frost }: { frost: Frost }) {
@@ -29,6 +30,17 @@ export function Details({ frost }: { frost: Frost }) {
   if (frost.beneficiary) rows.push(['Beneficiary', <Addr a={frost.beneficiary} />])
   rows.push(['Frozen item type', <span class="mono addr">{frost.innerType}</span>])
 
+  // An object lock of a coin has an amount, and it is the number that decides
+  // whether this proof means anything at all.
+  if (frost.lockedAmount !== undefined) {
+    rows.push([
+      'Amount frozen',
+      <span class={frost.lockedAmount === 0n ? 'mono empty' : 'mono'}>
+        {unit(frost.lockedAmount)}
+      </span>,
+    ])
+  }
+
   if (frost.totalLocked !== undefined) {
     rows.push(['Total locked', <span class="mono">{unit(frost.totalLocked)}</span>])
     rows.push(['Claimed', <span class="mono">{unit(frost.claimed ?? 0n)}</span>])
@@ -45,6 +57,14 @@ export function Details({ frost }: { frost: Frost }) {
   return (
     <section class="panel">
       <h2>On-chain record</h2>
+
+      {isHollow(frost) && (
+        <p class="hollow">
+          This lock is real, but it holds nothing: the coin inside has a balance of
+          zero. The date below is true and the object cannot be cancelled — there
+          is simply no value under it.
+        </p>
+      )}
       <dl class="facts">
         {rows.map(([k, v]) => (
           <div class="fact" key={k}>

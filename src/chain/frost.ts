@@ -58,6 +58,23 @@ export type Frost = {
   /** Filled in after the fact by `withCoinInfo`. Null for NFTs and LP objects. */
   decimals?: number | null
   symbol?: string | null
+  /**
+   * For an object lock holding a Coin: how much is actually in it.
+   *
+   * Without this a lock of an empty coin renders identically to one holding a
+   * fortune — same badge, same wording, same confident date. On a product
+   * whose entire claim is that the badge cannot lie, omitting the number that
+   * separates a real proof from a hollow one is the worst possible omission.
+   * `undefined` means "not a coin" (an NFT or LP position, where there is no
+   * amount to state); `0n` means the lock is genuinely empty, and the UI says
+   * so out loud.
+   */
+  lockedAmount?: bigint
+}
+
+/** A lock that holds a coin worth nothing. Callers must surface this. */
+export function isHollow(f: Frost): boolean {
+  return f.lockedAmount === 0n && f.phase !== 'thawed'
 }
 
 export const ABSENT: Frost = {

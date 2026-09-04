@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'preact/hooks'
 import { resolveFrost } from '@/chain/resolve'
-import { msLeft, type Frost } from '@/chain/frost'
+import { isHollow, msLeft, type Frost } from '@/chain/frost'
 import { swr, serialize, deserialize } from '@/chain/cache'
 import { Frozen } from '@/ice/Frozen'
-import { fmtCountdown, fmtDate, pct } from '@/format'
+import { fmtAsset, fmtCountdown, fmtDate, pct } from '@/format'
 import { EXPLORER } from '@/chain/constants'
 import { useTick, useCrossing } from '@/useTick'
 import './badge.css'
@@ -82,8 +82,24 @@ export function Badge({ opts }: { opts: BadgeOpts }) {
   // Derive the label from the same clock as the countdown, so the two can
   // never contradict each other mid-page.
   const past = left <= 0
+  const hollow = isHollow(frost)
+  // State the amount whenever the chain gives us one. A padlock over an
+  // unstated quantity is exactly the kind of claim this product exists to
+  // replace.
+  const amount =
+    frost.lockedAmount !== undefined
+      ? fmtAsset(frost.lockedAmount, frost.decimals, frost.symbol)
+      : frost.totalLocked !== undefined
+        ? fmtAsset(frost.totalLocked, frost.decimals, frost.symbol)
+        : null
   const label =
-    frost.phase === 'thawed' ? 'Unlocked & claimed' : past ? 'Unlocked' : 'Locked on Epoch'
+    frost.phase === 'thawed'
+      ? 'Unlocked & claimed'
+      : past
+        ? 'Unlocked'
+        : hollow
+          ? 'Locked — but empty'
+          : 'Locked on Epoch'
   const detail =
     frost.phase === 'thawed'
       ? `was locked until ${fmtDate(frost.unlockMs, opts.locale)}`
@@ -93,7 +109,7 @@ export function Badge({ opts }: { opts: BadgeOpts }) {
 
   return (
     <a
-      class={`pf pf-${opts.variant} is-${frost.phase}`}
+      class={`pf pf-${opts.variant} is-${frost.phase}${hollow ? ' is-hollow' : ''}`}
       href={EXPLORER(frost.id)}
       target="_blank"
       rel="noopener noreferrer external"
@@ -110,6 +126,7 @@ export function Badge({ opts }: { opts: BadgeOpts }) {
           <span aria-hidden="true">{past || frost.phase === 'thawed' ? '🔓' : '🔒'}</span> {label}
         </span>
         <span class="pf-detail mono">{detail}</span>
+        {amount && <span class="pf-amount mono">{amount}</span>}
         {opts.variant === 'card' && !past && (
           <span class="pf-sub mono">
             {fmtCountdown(left)} left · {pct(frost.progress)} elapsed

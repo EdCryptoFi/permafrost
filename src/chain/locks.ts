@@ -4,8 +4,11 @@ import { type Frost, innerTypeOf, ratio } from './frost'
 
 type LockJson = {
   id: string
-  /** `Option<T>` decodes to the value, or null once claimed. */
-  item: unknown | null
+  /**
+   * `Option<T>` decodes to the value, or null once claimed. When the locked
+   * item is a Coin, the decoded value carries its `balance`.
+   */
+  item: { balance?: string } | null
   unlock_ms: string
   beneficiary: string
   creator: string
@@ -23,6 +26,11 @@ export function parseLock(address: string, repr: string, json: unknown, nowMs: n
   const claimed = j.item === null || j.item === undefined
   const unlocked = nowMs >= unlockMs
 
+  // The balance was in the object all along and went unread, so a lock of an
+  // empty coin looked exactly like a lock of a million. Read it.
+  const rawBalance = j.item?.balance
+  const lockedAmount = rawBalance === undefined ? undefined : BigInt(rawBalance)
+
   // Object locks are cliff-only: the item is indivisible, so nothing is
   // released until unlock_ms and then all of it is.
   const phase: Frost['phase'] = claimed ? 'thawed' : unlocked ? 'cracked' : 'melting'
@@ -39,6 +47,7 @@ export function parseLock(address: string, repr: string, json: unknown, nowMs: n
     beneficiary: j.beneficiary,
     innerType: innerTypeOf(repr),
     nowMs,
+    lockedAmount,
   }
 }
 

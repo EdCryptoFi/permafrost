@@ -26,7 +26,17 @@ const BADGE_PATH = import.meta.env.VITE_BADGE_ORIGIN
     : '/badge/'
 
 /** Overridable so a Walrus deployment can point at its own .epoch name. */
-const PUBLIC_BADGE = import.meta.env.VITE_PUBLIC_BADGE_URL || `${location.origin}/badge/`
+/**
+ * What the copy button hands out.
+ *
+ * `${location.origin}/badge/` is right for a host that serves directories, and
+ * wrong for the primary target: every path on a .epoch name serves that name's
+ * single blob, so permafrost.epochsui.com/badge/ returns the APP — the whole
+ * site nested inside a 260x48 iframe. The badge lives under its own name, so
+ * that name is the default, and VITE_PUBLIC_BADGE_URL overrides it for mirrors.
+ */
+const PUBLIC_BADGE =
+  import.meta.env.VITE_PUBLIC_BADGE_URL || 'https://frostbadge.epochsui.com/'
 
 /**
  * Ids come from the chain, but this one is about to be pasted into a string

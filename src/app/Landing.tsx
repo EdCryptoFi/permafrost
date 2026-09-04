@@ -2,7 +2,7 @@ import { useEffect, useState } from 'preact/hooks'
 import { fetchChainNowMs } from '@/chain/graphql'
 import { listShowcase } from '@/chain/search'
 import { resolveMany } from '@/chain/resolve'
-import { assetLabel, msLeft, type Frost } from '@/chain/frost'
+import { assetLabel, isHollow, msLeft, type Frost } from '@/chain/frost'
 import { Frozen } from '@/ice/Frozen'
 import { fmtAsset, fmtCountdown, fmtDate } from '@/format'
 import { useTick } from '@/useTick'
@@ -88,8 +88,11 @@ function HeroCopy({ frost }: { frost: Frost }) {
       <b class="hero-amount">
         {frost.totalLocked !== undefined
           ? fmtAsset(frost.totalLocked, frost.decimals, frost.symbol)
-          : assetLabel(frost)}
+          : frost.lockedAmount !== undefined
+            ? fmtAsset(frost.lockedAmount, frost.decimals, frost.symbol)
+            : assetLabel(frost)}
       </b>
+      {isHollow(frost) && <span class="hollow-tag">holds nothing</span>}
       <span class="hero-line">
         {left > 0 ? (
           <>

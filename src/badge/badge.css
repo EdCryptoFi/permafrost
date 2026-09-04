@@ -58,3 +58,12 @@ body { display: inline-block; }
 .pf.is-error .pf-dot  { background: var(--red);         animation: none; }
 .pf.is-absent .pf-dot { background: var(--highlighter); animation: none; }
 @keyframes pf-pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+/* The amount is the number that decides whether the padlock means anything. */
+.pf-amount {
+  font-family: var(--mono); font-weight: 800; font-size: 11px;
+  color: var(--ice-100); letter-spacing: -0.2px;
+}
+.pf.is-hollow { border-color: var(--amber); box-shadow: 4px 4px 0 0 var(--amber); }
+.pf.is-hollow .pf-label { color: #000; background: var(--amber); padding: 0 5px; }
+.pf.is-hollow .pf-amount { color: var(--amber); }

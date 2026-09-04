@@ -31,7 +31,10 @@ const inflight = new Map<string, Promise<CoinInfo | null>>()
  */
 export function coinTypeOf(innerType: string): string[] {
   const candidates = [innerType]
-  if (/::coin::Coin</.test(normalizeType(innerType))) {
+  // normalizeType lowercases, so a case-sensitive `Coin<` never matched it and
+  // the wrapper was never unwrapped: every ObjectLock<Coin<T>> silently lost
+  // its decimals and ticker and printed raw base units.
+  if (/::coin::coin</.test(normalizeType(innerType))) {
     candidates.unshift(innerTypeOf(innerType))
   }
   return candidates
