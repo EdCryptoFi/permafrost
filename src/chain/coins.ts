@@ -12,6 +12,31 @@ import { innerTypeOf, normalizeType } from './frost'
 
 export type CoinInfo = { decimals: number; symbol: string; name?: string }
 
+/**
+ * A ticker is attacker-composable text.
+ *
+ * `CoinMetadata.symbol` is chosen by whoever published the coin, and it lands
+ * inside a badge whose entire claim is that it cannot overstate anything.
+ * Nothing stops someone publishing a coin called "1,000,000 SUI" or
+ * "SUI · AUDITED", locking one base unit of it, and embedding a badge that
+ * reads exactly that. No script runs — Preact escapes the text — but the
+ * damage here is not code execution, it is the badge saying something untrue,
+ * which is the only thing this product sells.
+ *
+ * So a symbol is accepted only if it looks like a ticker: short, and drawn
+ * from the characters real tickers use. Anything else falls back to the Move
+ * struct name, which Move's own identifier rules already constrain.
+ */
+const SYMBOL_MAX = 12
+const SYMBOL_SHAPE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,11}$/
+
+export function safeSymbol(symbol: string | null | undefined): string | null {
+  if (!symbol) return null
+  const s = symbol.trim()
+  if (s.length > SYMBOL_MAX) return null
+  return SYMBOL_SHAPE.test(s) ? s : null
+}
+
 const QUERY = `
   query Meta($coinType: String!) {
     coinMetadata(coinType: $coinType) { decimals symbol name }
@@ -49,7 +74,14 @@ async function lookupOne(coinType: string, signal?: AbortSignal): Promise<CoinIn
     cacheMs: metaCacheMs,
     retries: 1,
   })
-    .then((d) => d.coinMetadata ?? null)
+    .then((d) => {
+      const meta = d.coinMetadata
+      if (!meta) return null
+      // Keep the decimals — a number cannot lie about itself — but drop a
+      // ticker that does not look like one, rather than repeating it.
+      const symbol = safeSymbol(meta.symbol)
+      return symbol ? { ...meta, symbol } : null
+    })
     .catch(() => null)
     .then((v) => {
       cache.set(coinType, v)

@@ -15,6 +15,7 @@ import { useWallet } from '@/wallet/useWallet'
 import { shortAddr } from '@/format'
 import { HeroTitle } from '@/ui/HeroTitle'
 import { Backdrop, sceneFor } from '@/ui/Backdrop'
+import { Shader } from '@/ui/Shader'
 import { ProofCard } from '@/share/ProofCard'
 import './app.css'
 
@@ -143,6 +144,7 @@ export function App() {
 
   return (
     <>
+      <Shader />
       <Backdrop scene={scene} />
       <div class="wrap">
       <header class="head">

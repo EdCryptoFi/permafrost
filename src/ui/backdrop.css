@@ -6,7 +6,10 @@
 .bd {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  /* Below the shader, not above it. At z-index 0 these opaque layers painted
+     straight over the WebGL canvas and the field was invisible — running the
+     whole time, costing a frame loop, showing nothing. */
+  z-index: -2;
   pointer-events: none;
   overflow: hidden;
   contain: strict;
@@ -257,3 +260,20 @@
   .bd > * { animation: none !important; }
   .bd-fall { opacity: 0.16; }
 }
+
+/* --- the ice-versus-lava field ---------------------------------------
+   Behind everything, including the CSS backdrop, which stays as the floor
+   the shader paints on and as the whole picture when WebGL is unavailable.
+   Screened so the field reads as light in the room rather than as a
+   photograph pinned behind the text. */
+.shader {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.62;
+  mix-blend-mode: screen;
+}
+@media (prefers-reduced-motion: reduce) { .shader { display: none; } }

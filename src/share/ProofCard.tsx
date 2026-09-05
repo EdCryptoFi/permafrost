@@ -150,14 +150,48 @@ export function ProofCard({
     }
   }
 
-  const postToX = () => {
+  /**
+   * Post to X with the card attached.
+   *
+   * X's web intent takes text and a link and nothing else — there is no media
+   * parameter, and there never has been. So "attach the image" means putting
+   * it on the clipboard first and landing the composer one paste away, rather
+   * than opening an empty composer and leaving the person to work out that a
+   * card was ever generated.
+   *
+   * The copy happens BEFORE the window opens: a clipboard write needs the user
+   * gesture, and it is gone once focus moves to the new tab.
+   */
+  const postToX = async () => {
+    let attached = false
+    try {
+      const Item = window.ClipboardItem
+      if (blob && Item && navigator.clipboard?.write) {
+        await navigator.clipboard.write([new Item({ 'image/png': blob })])
+        attached = true
+      }
+    } catch {
+      // Clipboard blocked, unsupported, or the document lost focus. The post
+      // still goes out; the image just has to be attached by hand.
+    }
+
     const url = new URL('https://twitter.com/intent/tweet')
     url.searchParams.set('text', text)
     url.searchParams.set('url', verifyUrl)
     // `noopener` matters on an intent window: without it the opened tab keeps
     // a handle on this one through `window.opener`.
     window.open(url.toString(), '_blank', 'noopener,noreferrer')
+
+    flash(
+      attached
+        ? 'Card copied — paste it into the post with ' + pasteKey() + '.'
+        : 'Composer opened. Download the card and attach it by hand.',
+    )
   }
+
+  /** Say the shortcut the way this machine says it. */
+  const pasteKey = () =>
+    /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '\u2318V' : 'Ctrl+V'
 
   const copyLink = async () => {
     try {
