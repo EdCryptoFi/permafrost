@@ -23,11 +23,13 @@ export function Results({
   kind,
   term,
   frosts,
+  resolved,
   onPick,
 }: {
   kind: SearchKind
   term: string
   frosts: Frost[]
+  resolved?: { name: string; owner: string }
   onPick: (id: string) => void
 }) {
   const still = frosts.filter((f) => f.phase === 'melting').length
@@ -36,12 +38,21 @@ export function Results({
     <section class="panel">
       <h2>
         {frosts.length} {frosts.length === 1 ? 'result' : 'results'}{' '}
-        {kind === 'creator' ? (
+        {kind === 'name' && resolved ? (
+          <>
+            held by <span class="mono">{resolved.name}.epoch</span>
+          </>
+        ) : kind === 'creator' ? (
           <>created by <Addr a={term} /></>
         ) : kind === 'coin' ? (
           <>matching <span class="mono">{term}</span></>
         ) : null}
       </h2>
+      {kind === 'name' && resolved && (
+        <p class="muted small">
+          Resolved through the Epoch registry to <Addr a={resolved.owner} />
+        </p>
+      )}
       <p class="muted small">
         {still > 0
           ? `${still} still frozen.`

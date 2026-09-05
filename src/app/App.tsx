@@ -91,7 +91,7 @@ export function App() {
 
         if (res.kind === 'none') {
           setStatus('error')
-          setError('Paste a lock id, a project address, or a coin type like 0x2::sui::SUI.')
+          setError('Try a .epoch name, a project address, a lock id, or a coin type like 0x2::sui::SUI.')
           return
         }
         if (res.frosts.length === 1) {
@@ -209,7 +209,7 @@ export function App() {
           class="mono"
           value={query}
           onInput={(e) => setQuery(e.currentTarget.value)}
-          placeholder="project address, lock id, or coin type"
+          placeholder="name.epoch, project address, lock id, or coin type"
           spellcheck={false}
           autocomplete="off"
         />
@@ -279,7 +279,13 @@ export function App() {
       )}
 
       {view === 'verify' && result && result.frosts.length > 1 && (
-        <Results kind={result.kind} term={result.term} frosts={result.frosts} onPick={(id) => void pick(id)} />
+        <Results
+          kind={result.kind}
+          term={result.term}
+          frosts={result.frosts}
+          resolved={result.resolved}
+          onPick={(id) => void pick(id)}
+        />
       )}
 
       {view === 'verify' && selected && (

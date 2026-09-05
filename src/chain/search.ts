@@ -7,6 +7,7 @@ import {
   VESTING_VAULT_TYPE,
 } from './constants'
 import { typeMatches, type Frost } from './frost'
+import { resolveEpochName, normalizeName } from './names'
 import { parseAny, resolveMany, withCoinInfoAll } from './resolve'
 
 /**
@@ -21,13 +22,15 @@ import { parseAny, resolveMany, withCoinInfoAll } from './resolve'
 const PAGE = 50
 
 /** How the input was interpreted, so the UI can explain what it just did. */
-export type SearchKind = 'object' | 'creator' | 'coin' | 'none'
+export type SearchKind = 'object' | 'creator' | 'coin' | 'name' | 'none'
 
 export type SearchResult = {
   kind: SearchKind
   /** Echo of what we searched for, for the results header. */
   term: string
   frosts: Frost[]
+  /** Set when the term resolved through the Epoch registry. */
+  resolved?: { name: string; owner: string }
 }
 
 const OBJECTS_BY_TYPE = `
@@ -184,7 +187,22 @@ export async function smartSearch(
     return { kind: 'object', term, frosts: [] }
   }
 
-  // A bare word is almost always a coin symbol ("SUI", "TEMPLATE").
+  // A .epoch name, or a bare word that turns out to be one. This app is built
+  // on Epoch Names and hosted under one; not resolving them was the gap that
+  // sent someone typing their own site's name into a coin-symbol search.
+  if (normalizeName(term)) {
+    const rec = await resolveEpochName(term, signal).catch(() => null)
+    if (rec) {
+      return {
+        kind: 'name',
+        term,
+        resolved: { name: rec.name, owner: rec.owner },
+        frosts: await findByCreator(rec.owner, nowMs, viewer, signal),
+      }
+    }
+  }
+
+  // Otherwise a bare word is almost always a coin symbol ("SUI", "EPT").
   if (/^[A-Za-z][A-Za-z0-9_]{1,32}$/.test(term)) {
     return { kind: 'coin', term, frosts: await findByCoinType(term, nowMs, viewer, signal) }
   }
