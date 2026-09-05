@@ -29,8 +29,8 @@ export type PublishedBlob = {
 export const PUBLISHED: PublishedBlob[] = [
   {
     name: 'permafrost',
-    blobId: 'dtU1wqruxLYVK9f3SbG_tr9zbz1xU68V2zLBpNn_sD0',
-    bytes: 208221,
+    blobId: 'JAzhCID21l5GnMbNRp08EzZPEkpJHzPnOf26Hx5P3ak',
+    bytes: 209121,
     publishedAt: '2026-09-05',
   },
   {

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { listLockable, type OwnedObject } from '@/chain/owned'
 import { buildLock } from '@/chain/tx'
+import { ConnectButton } from '@/ui/ConnectButton'
 import { awaitCreatedLock } from '@/chain/created'
 import type { Frost } from '@/chain/frost'
 import type { useWallet } from '@/wallet/useWallet'
@@ -117,6 +118,9 @@ export function Create({
       <section class="panel accent">
         <h2>Freeze something</h2>
         <p class="muted">Connect the wallet holding what you want to lock.</p>
+        <div class="row">
+          <ConnectButton wallet={wallet} />
+        </div>
         <button class="btn ghost" onClick={onCancel}>
           ← Back
         </button>

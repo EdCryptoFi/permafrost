@@ -2,6 +2,7 @@ import { useEffect, useState } from 'preact/hooks'
 import { gql } from '@/chain/graphql'
 import { NAMES, EXPLORER } from '@/chain/constants'
 import { buildUpdateBlob } from '@/chain/tx'
+import { ConnectButton } from '@/ui/ConnectButton'
 import { suggestedBlobFor } from '@/chain/published'
 import type { useWallet } from '@/wallet/useWallet'
 
@@ -79,7 +80,12 @@ export function Deploy({
       <pre class="code mono">{`npm run publish:all   # builds, publishes, verifies, records the ids`}</pre>
 
       {!wallet.address ? (
-        <p class="muted small">Connect the wallet that owns the names.</p>
+        <>
+          <p class="muted small">Connect the wallet that owns the names.</p>
+          <div class="row">
+            <ConnectButton wallet={wallet} />
+          </div>
+        </>
       ) : caps === null ? (
         <p class="muted small">Looking for your names…</p>
       ) : caps.length === 0 ? (
