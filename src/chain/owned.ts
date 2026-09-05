@@ -48,7 +48,9 @@ type Resp = {
   } | null
 }
 
-const isCoinType = (repr: string) => /::coin::Coin</.test(normalizeType(repr))
+// normalizeType lowercases, so a case-sensitive `Coin<` never matched: every
+// coin in the wallet came back tagged "object", with no balance and no sort.
+const isCoinType = (repr: string) => /::coin::coin</.test(normalizeType(repr))
 
 export async function listLockable(
   owner: string,
@@ -57,7 +59,7 @@ export async function listLockable(
   const out: OwnedObject[] = []
   let after: string | null = null
 
-  for (let page = 0; page < 5; page++) {
+  for (let page = 0; page < 24; page++) {
     const d: Resp = await gql<Resp>(QUERY, { address: owner, first: 50, after }, signal)
     const conn = d.address?.objects
     if (!conn) break
@@ -71,6 +73,11 @@ export async function listLockable(
 
       const repr = c.type.repr
       const coin = isCoinType(repr)
+      // A NameCap's whole identity is the name it carries. Labelling four of
+      // them "NameCap" makes them indistinguishable, and the filter useless
+      // for the one thing someone is most likely to come here looking for.
+      const named = (c.json as { name?: string })?.name
+      const isNameCap = /::walrus_names::namecap$/i.test(normalizeType(repr))
       const balance = coin
         ? BigInt(((c.json as { balance?: string })?.balance ?? '0'))
         : undefined
@@ -78,7 +85,7 @@ export async function listLockable(
       out.push({
         id: n.address,
         type: repr,
-        label: shortType(repr),
+        label: isNameCap && named ? `${named}.epoch` : shortType(repr),
         balance,
         isCoin: coin,
       })
@@ -100,11 +107,16 @@ export async function listLockable(
     }),
   )
 
-  // Biggest coin balances first, then everything else — the LP position or NFT
-  // someone wants to lock is usually easier to find by name than by scrolling.
+  // Non-coins first: an LP position, a NameCap or an NFT is the deliberate
+  // thing someone came here to lock, while coins are the long tail. Within
+  // coins, biggest balance first. Sorting by bigint through Number() would
+  // overflow, so compare the bigints directly.
   return out.sort((a, b) => {
-    if (a.isCoin !== b.isCoin) return a.isCoin ? -1 : 1
-    if (a.isCoin && b.isCoin) return Number((b.balance ?? 0n) - (a.balance ?? 0n))
+    if (a.isCoin !== b.isCoin) return a.isCoin ? 1 : -1
+    if (a.isCoin && b.isCoin) {
+      const d = (b.balance ?? 0n) - (a.balance ?? 0n)
+      return d > 0n ? 1 : d < 0n ? -1 : 0
+    }
     return a.label.localeCompare(b.label)
   })
 }

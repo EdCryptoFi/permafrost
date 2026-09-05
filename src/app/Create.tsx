@@ -149,7 +149,7 @@ export function Create({
             onInput={(e) => setFilter(e.currentTarget.value)}
           />
           <div class="pick-list">
-            {shown.slice(0, 40).map((o) => (
+            {shown.slice(0, 60).map((o) => (
               <button
                 class={`pick ${picked?.id === o.id ? 'on' : ''}`}
                 key={o.id}
@@ -167,6 +167,11 @@ export function Create({
               </button>
             ))}
             {shown.length === 0 && <p class="muted small">Nothing matches that filter.</p>}
+            {shown.length > 60 && (
+              <p class="muted small">
+                Showing 60 of {shown.length}. Type in the filter to narrow it down.
+              </p>
+            )}
           </div>
         </>
       )}
