@@ -1,69 +1,70 @@
-/* Badge shell — Arctic Chaos.
-   Lives inside an iframe on a third-party page, so: transparent background,
-   no body margin, nothing that can overflow the frame. */
+/* Badge shell — Crypto HUD.
+   Lives inside an iframe on a third-party page: transparent ground, no body
+   margin, nothing that can overflow the frame. Sharp geometry, one hard
+   offset, and thermal red the moment the lock turns out to hold nothing. */
 html, body { background: transparent; margin: 0; padding: 0; }
 body { display: inline-block; }
 
 .pf {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 13px 6px 7px;
-  border: 2px solid var(--cyan);
-  /* Status pills are the one element the system still lets be fully round. */
-  border-radius: 999px;
+  gap: 9px;
+  padding: 7px 13px 7px 8px;
+  border: 1px solid var(--cyan);
+  border-radius: 0;
   background: var(--bg-raised);
   color: var(--tx);
   text-decoration: none;
   font-family: var(--sans);
   font-size: 12px;
   white-space: nowrap;
-  box-shadow: 4px 4px 0 0 var(--ransom);
+  box-shadow: 4px 4px 0 0 var(--cyan);
 }
-.pf:hover { box-shadow: 4px 4px 0 0 var(--highlighter); }
+.pf:hover { box-shadow: 0 0 14px rgba(0, 240, 255, 0.45), 4px 4px 0 0 var(--cyan); }
 
-/* The card is a cut-out, not a pill: hand-cut edges and a hard offset. */
+/* The card is a monolith slab with a chamfered corner. */
 .pf-card {
-  border-radius: 0;
-  clip-path: polygon(0 0, 100% 0, 100% 92%, 97% 100%, 3% 100%, 0 92%);
-  padding: 13px 17px 13px 11px;
-  gap: 12px;
-  border-color: var(--ransom);
-  box-shadow: 7px 7px 0 0 var(--highlighter);
+  clip-path: polygon(0 0, 100% 0, 100% 78%, 92% 100%, 0 100%);
+  padding: 13px 20px 13px 11px;
+  gap: 13px;
 }
 
-.pf-text { display: flex; flex-direction: column; line-height: 1.25; }
+.pf-text { display: flex; flex-direction: column; line-height: 1.3; }
 .pf-label {
-  font-family: var(--mono); font-weight: 800; font-size: 11px;
-  text-transform: uppercase; letter-spacing: 0.5px; color: var(--paper);
+  font-family: var(--display); font-weight: 800; font-size: 10.5px;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--paper);
 }
-.pf-detail { font-family: var(--mono); color: var(--cyan); font-size: 10.5px; }
-.pf-sub { font-family: var(--mono); color: var(--highlighter); font-size: 10px; margin-top: 2px; }
+.pf-detail { font-family: var(--mono); color: var(--cyan); font-size: 10.5px; letter-spacing: 0.02em; }
+.pf-amount {
+  font-family: var(--mono); font-weight: 500; font-size: 11.5px;
+  color: var(--ice-100); letter-spacing: 0.01em;
+}
+.pf-sub { font-family: var(--mono); color: var(--mut); font-size: 9.5px; margin-top: 2px; letter-spacing: 0.04em; }
 
-.pf.is-cracked { border-color: var(--amber); }
-.pf.is-cracked .pf-label { color: #000; background: var(--amber); padding: 0 5px; }
-.pf.is-thawed  { opacity: 0.8; border-color: var(--line); box-shadow: 4px 4px 0 0 var(--line); }
-.pf.is-thawed  .pf-label { color: var(--mut); }
+.pf.is-cracked { border-color: var(--ember); box-shadow: 4px 4px 0 0 var(--ember); }
+.pf.is-cracked .pf-label { color: #241200; background: var(--ember); padding: 0 5px; }
+
+.pf.is-thawed {
+  opacity: 0.72; border-color: var(--mut); box-shadow: 4px 4px 0 0 var(--mut);
+}
+.pf.is-thawed .pf-label { color: var(--mut); }
+
+/* The lava trap. A lock holding nothing must never wear the safe colours. */
+.pf.is-hollow { border-color: var(--lava); box-shadow: 4px 4px 0 0 var(--lava); }
+.pf.is-hollow .pf-label { color: #240000; background: var(--lava); padding: 0 5px; }
+.pf.is-hollow .pf-detail { color: var(--lava); }
+.pf.is-hollow .pf-amount { color: var(--lava); }
 
 /* status shells */
 .pf.is-loading, .pf.is-error, .pf.is-absent {
-  padding: 6px 13px; color: var(--mut-soft); border-color: var(--line);
-  box-shadow: 3px 3px 0 0 var(--line);
+  padding: 7px 13px; color: var(--mut-soft); border-color: var(--line);
+  box-shadow: 3px 3px 0 0 rgba(0, 240, 255, 0.25);
 }
 .pf-dot {
-  width: 8px; height: 8px;
+  width: 7px; height: 7px;
   background: var(--mut);
-  animation: pf-pulse 1.4s ease-in-out infinite;
+  animation: pf-blink 1.4s steps(2) infinite;
 }
-.pf.is-error .pf-dot  { background: var(--red);         animation: none; }
-.pf.is-absent .pf-dot { background: var(--highlighter); animation: none; }
-@keyframes pf-pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-/* The amount is the number that decides whether the padlock means anything. */
-.pf-amount {
-  font-family: var(--mono); font-weight: 800; font-size: 11px;
-  color: var(--ice-100); letter-spacing: -0.2px;
-}
-.pf.is-hollow { border-color: var(--amber); box-shadow: 4px 4px 0 0 var(--amber); }
-.pf.is-hollow .pf-label { color: #000; background: var(--amber); padding: 0 5px; }
-.pf.is-hollow .pf-amount { color: var(--amber); }
+.pf.is-error .pf-dot  { background: var(--lava); animation: none; }
+.pf.is-absent .pf-dot { background: var(--hi);   animation: none; }
+@keyframes pf-blink { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }

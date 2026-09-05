@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Bangers&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@500;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}
+.comic-shadow-cyan { box-shadow: 5px 5px 0px 0px #00f0ff; }
+.comic-shadow-lava { box-shadow: 5px 5px 0px 0px #ff3b30; }
+.comic-shadow-yellow { box-shadow: 5px 5px 0px 0px #fde400; }
+.comic-border-3 { border-width: 3px; }
+.comic-bubble:after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 30px;
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: #00f0ff transparent;
+  display: block;
+  width: 0;
+}
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+.animate-float-ice { animation: floatGentle 4s ease-in-out infinite; }
+</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-background": "#e1e2ec",
+          "surface-bright": "#363941",
+          "inverse-on-surface": "#2d3038",
+          "error": "#ffb4ab",
+          "secondary-fixed": "#ffdad5",
+          "on-error-container": "#ffdad6",
+          "secondary-fixed-dim": "#ffb4aa",
+          "on-error": "#690005",
+          "primary-container": "#00f0ff",
+          "tertiary-container": "#f3db00",
+          "on-primary-fixed": "#002022",
+          "tertiary-fixed": "#fde400",
+          "on-secondary-fixed": "#410001",
+          "surface-tint": "#00dbe9",
+          "primary": "#dbfcff",
+          "surface-container": "#1d1f27",
+          "background": "#10131a",
+          "tertiary-fixed-dim": "#dec800",
+          "on-tertiary": "#373100",
+          "surface-container-high": "#272a32",
+          "surface-variant": "#32353d",
+          "error-container": "#93000a",
+          "on-surface": "#e1e2ec",
+          "surface-container-low": "#191b23",
+          "surface-container-highest": "#32353d",
+          "on-secondary-fixed-variant": "#930005",
+          "surface-container-lowest": "#0b0e15",
+          "outline": "#849495",
+          "on-tertiary-container": "#6b5f00",
+          "on-primary-fixed-variant": "#004f54",
+          "outline-variant": "#3b494b",
+          "surface": "#10131a",
+          "on-secondary": "#690003",
+          "on-tertiary-fixed-variant": "#504700",
+          "primary-fixed-dim": "#00dbe9",
+          "on-tertiary-fixed": "#201c00",
+          "surface-dim": "#10131a",
+          "on-primary": "#00363a",
+          "on-surface-variant": "#b9cacb",
+          "secondary": "#ffb4aa",
+          "on-secondary-container": "#ffd2cc",
+          "primary-fixed": "#7df4ff",
+          "inverse-surface": "#e1e2ec",
+          "on-primary-container": "#006970",
+          "inverse-primary": "#006970",
+          "tertiary": "#fff6d1",
+          "secondary-container": "#c5020b"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "gutter-desktop": "1.5rem",
+          "gutter-mobile": "0.75rem",
+          "grid-margin-desktop": "2.5rem",
+          "space-sm": "0.75rem",
+          "space-2xl": "3rem",
+          "space-xxs": "0.25rem",
+          "space-md": "1rem",
+          "grid-margin-mobile": "1rem",
+          "space-xs": "0.5rem",
+          "space-lg": "1.5rem",
+          "space-3xl": "4.5rem",
+          "space-xl": "2rem",
+          "gutter-tablet": "1rem",
+          "grid-margin-tablet": "1.5rem"
+        },
+        "fontFamily": {
+          "label-code-md": ["JetBrains Mono"],
+          "display-hero-mobile": ["Space Grotesk"],
+          "label-code-lg": ["JetBrains Mono"],
+          "body-sm": ["Space Grotesk"],
+          "label-code-sm": ["JetBrains Mono"],
+          "body-lg": ["Space Grotesk"],
+          "headline-lg": ["Space Grotesk"],
+          "display-hero": ["Space Grotesk"],
+          "headline-sm": ["Space Grotesk"],
+          "body-md": ["Space Grotesk"],
+          "headline-md": ["Space Grotesk"],
+          "headline-lg-mobile": ["Space Grotesk"]
+        }
+      }
+    }
+  };
+</script></head><body class="bg-background font-body-md text-body-md text-on-background min-h-screen selection:bg-primary-container selection:text-on-primary-container relative">
+<!-- Dynamic Cold vs Lava WebGL Shader Background -->
+<!-- STITCH_SHADER_START:ANIMATION_16 class="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0" -->
+<div class="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_16" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_16');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+varying vec2 v_texCoord;
+
+// Simplex-like 2D noise helper
+vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+
+float snoise(vec2 v) {
+  const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
+                      0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
+                     -0.577350269189626,  // -1.0 + 2.0 * C.x
+                      0.024390243902439); // 1.0 / 41.0
+  vec2 i  = floor(v + dot(v, C.yy) );
+  vec2 x0 = v -   i + dot(i, C.xx);
+  vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+  vec4 x12 = x0.xyxy + C.xxzz;
+  x12.xy -= i1;
+  i = mod289(i);
+  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+  m = m*m ;
+  m = m*m ;
+  vec3 x = 2.0 * fract(p * C.www) - 1.0;
+  vec3 h = abs(x) - 0.5;
+  vec3 ox = floor(x + 0.5);
+  vec3 a0 = x - ox;
+  m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+  vec3 g;
+  g.x  = a0.x  * x0.x  + h.x  * x0.y;
+  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+  return 130.0 * dot(m, g);
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    float t = u_time * 0.45;
+    
+    // Split screen dynamic wave between Ice (Top/Left) and Lava (Bottom/Right)
+    float n1 = snoise(uv * 3.5 + vec2(t * 0.2, -t * 0.15));
+    float n2 = snoise(uv * 7.0 - vec2(t * 0.35, t * 0.25)) * 0.5;
+    float combinedNoise = n1 + n2;
+    
+    // Diagonal frontier between Cold Tranquility and Volcanic Chaos
+    float frontier = (uv.x * 0.8 + (1.0 - uv.y) * 0.7) - 0.75 + combinedNoise * 0.18;
+    
+    // Ice Palette (Peace, Tranquility, Proof)
+    vec3 iceDeep = vec3(0.03, 0.07, 0.12);
+    vec3 iceCyan = vec3(0.0, 0.94, 1.0);
+    vec3 iceFrost = vec3(0.45, 0.85, 1.0);
+    
+    // Lava Palette (Danger, Fakes, Volcanic Heat)
+    vec3 lavaDeep = vec3(0.11, 0.02, 0.04);
+    vec3 lavaOrange = vec3(1.0, 0.25, 0.05);
+    vec3 lavaYellow = vec3(1.0, 0.85, 0.1);
+    
+    // Ice pattern
+    float icePulse = sin(uv.y * 12.0 + t + combinedNoise * 2.0) * 0.5 + 0.5;
+    vec3 iceColor = mix(iceDeep, iceCyan * 0.35 + iceFrost * 0.2, icePulse * 0.6);
+    
+    // Lava pattern
+    float lavaPulse = cos(uv.x * 14.0 - t * 1.5 + combinedNoise * 3.0) * 0.5 + 0.5;
+    vec3 lavaColor = mix(lavaDeep, lavaOrange * 0.5 + lavaYellow * 0.3, lavaPulse * 0.8);
+    
+    // Dynamic boundary clash: sparks and crystal freeze line
+    float borderLine = smoothstep(0.08, 0.0, abs(frontier));
+    vec3 clashEnergy = mix(vec3(1.0, 0.95, 0.6), vec3(0.2, 1.0, 1.0), sin(t * 3.0 + uv.x * 10.0) * 0.5 + 0.5);
+    
+    vec3 baseColor = mix(iceColor, lavaColor, smoothstep(-0.06, 0.06, frontier));
+    baseColor += borderLine * clashEnergy * 0.65;
+    
+    // Vignette for dramatic contrast
+    float vig = uv.x * (1.0 - uv.x) * uv.y * (1.0 - uv.y) * 16.0;
+    baseColor *= clamp(pow(vig, 0.35), 0.2, 1.0);
+    
+    gl_FragColor = vec4(baseColor, 0.92);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_16 -->
+<header class="fixed top-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl border-b-2 border-primary-container/40"><div class="h-20 w-full max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center justify-between gap-4"><div class="flex items-center gap-3 shrink-0">
+<!-- STITCH_SVG_START:ANIMATION_17 class="h-14 w-auto" --><div class="h-14 w-auto" id="animated-svg-ANIMATION_17" style="display:block;"><svg fill="none" height="120" viewbox="0 0 400 120" width="400" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="iceNeon" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#00F0FF"></stop>
+<stop offset="60%" stop-color="#38BDF8"></stop>
+<stop offset="100%" stop-color="#818CF8"></stop>
+</lineargradient>
+<lineargradient id="lavaNeon" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#FF3B30"></stop>
+<stop offset="50%" stop-color="#FF9500"></stop>
+<stop offset="100%" stop-color="#FFE600"></stop>
+</lineargradient>
+<filter height="140%" id="iceGlow" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="3"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+<filter height="140%" id="lavaGlow" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="4"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+</defs>
+<!-- Cartoon Ice Cube with Molten Fire Base -->
+<g transform="translate(16, 12)">
+<!-- Molten Lava Splash Shadow -->
+<ellipse cx="48" cy="88" fill="#FF3B30" filter="url(#lavaGlow)" opacity="0.3" rx="44" ry="12">
+<animate attributename="rx" dur="2.5s" repeatcount="indefinite" values="44;48;44"></animate>
+<animate attributename="opacity" dur="2.5s" repeatcount="indefinite" values="0.3;0.5;0.3"></animate>
+</ellipse>
+<!-- Lava Bubbles -->
+<circle cx="85" cy="80" fill="#FFE600" r="5">
+<animate attributename="cy" dur="2s" repeatcount="indefinite" values="80;55;80"></animate>
+<animate attributename="opacity" dur="2s" repeatcount="indefinite" values="0.9;0;0.9"></animate>
+<animate attributename="r" dur="2s" repeatcount="indefinite" values="5;1;5"></animate>
+</circle>
+<circle cx="12" cy="76" fill="#FF9500" r="4">
+<animate attributename="cy" dur="1.7s" repeatcount="indefinite" values="76;50;76"></animate>
+<animate attributename="opacity" dur="1.7s" repeatcount="indefinite" values="0.8;0;0.8"></animate>
+</circle>
+<!-- Cartoon Isometric Ice Block (Thick outline, sticker style) -->
+<!-- Base / Left Face -->
+<polygon fill="#0A2540" points="48,16 88,36 88,74 48,94" stroke="#00F0FF" stroke-linejoin="round" stroke-width="4"></polygon>
+<!-- Right Face (Molten reflection) -->
+<polygon fill="#06182B" points="48,94 88,74 88,36 48,16" stroke="#00F0FF" stroke-linejoin="round" stroke-width="4" transform="scale(-1, 1) translate(-96, 0)"></polygon>
+<!-- Top Face (Crystalline cyan) -->
+<polygon fill="#38BDF8" points="48,16 88,36 48,56 8,36" stroke="#FFFFFF" stroke-linejoin="round" stroke-width="3">
+<animate attributename="fill" dur="3s" repeatcount="indefinite" values="#38BDF8;#00F0FF;#38BDF8"></animate>
+</polygon>
+<!-- Inner Frost Geometrics -->
+<polygon fill="#E0F2FE" opacity="0.8" points="48,26 72,38 48,50 24,38"></polygon>
+<circle cx="48" cy="38" fill="#FFFFFF" r="4"></circle>
+<!-- Cartoon Eyes inside Ice Block (Alert / Confident) -->
+<circle cx="34" cy="62" fill="#00F0FF" filter="url(#iceGlow)" r="5"></circle>
+<circle cx="34" cy="62" fill="#020813" r="2.5"></circle>
+<circle cx="36" cy="60" fill="#FFFFFF" r="1.2"></circle>
+<circle cx="62" cy="62" fill="#00F0FF" filter="url(#iceGlow)" r="5"></circle>
+<circle cx="62" cy="62" fill="#020813" r="2.5"></circle>
+<circle cx="64" cy="60" fill="#FFFFFF" r="1.2"></circle>
+<!-- Ice Shards & Sparkles -->
+<path d="M48,6 L52,14 L48,12 L44,14 Z" fill="#FFFFFF">
+<animatetransform attributename="transform" dur="2s" repeatcount="indefinite" type="translate" values="0,0; 0,-6; 0,0"></animatetransform>
+</path>
+<polygon fill="#00F0FF" points="86,18 92,20 86,22 84,20"></polygon>
+</g>
+<!-- Typography Brand PERMAFROST -->
+<g transform="translate(120, 20)">
+<!-- Comic Sticker Shadow -->
+<text fill="#040911" font-family="'Space Grotesk', 'Impact', sans-serif" font-size="36" font-weight="900" letter-spacing="3" x="0" y="44">PERMAFROST</text>
+<text fill="#FF3B30" font-family="'Space Grotesk', 'Impact', sans-serif" font-size="36" font-weight="900" letter-spacing="3" opacity="0.6" x="3" y="47">PERMAFROST</text>
+<!-- Main Text Dual Split: PERMA (Ice) + FROST (Sub-zero crystalline) -->
+<text fill="#FFFFFF" font-family="'Space Grotesk', 'Impact', sans-serif" font-size="36" font-weight="900" letter-spacing="3" x="0" y="42">
+      PERMA<tspan fill="url(#iceNeon)">FROST</tspan>
+</text>
+<!-- Cartoon Badge / Banner below -->
+<g transform="translate(0, 52)">
+<rect fill="#00F0FF" height="22" rx="6" stroke="#050C1A" stroke-width="2" width="145" x="0" y="0"></rect>
+<text fill="#040911" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" letter-spacing="1" x="10" y="15">❄️ SUB-ZERO PROOF</text>
+<rect fill="#FF3B30" height="22" rx="6" stroke="#050C1A" stroke-width="2" width="105" x="153" y="0"></rect>
+<text fill="#FFFFFF" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" letter-spacing="1" x="162" y="15">🔥 ZERO LAVA</text>
+</g>
+</g>
+</svg></div><!-- STITCH_SVG_END:ANIMATION_17 -->
+</div><nav class="hidden xl:flex items-center gap-1.5 p-1 bg-surface-container-low rounded border border-outline-variant/50"><a class="px-3 py-1 font-label-code-sm text-label-code-sm uppercase text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" data-path="verify" href="#">VERIFY</a><a class="px-3 py-1 font-label-code-sm text-label-code-sm uppercase text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" data-path="freeze" href="#">FREEZE</a><a class="px-3 py-1 font-label-code-sm text-label-code-sm uppercase text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" data-path="deploy" href="#">DEPLOY</a><a aria-current="page" class="px-3 py-1 font-label-code-sm uppercase rounded bg-primary-container text-on-primary font-bold shadow-[2px_2px_0px_0px_#000]" data-path="guide" href="#">GUIDE: GELO VS LAVA</a></nav><div class="flex items-center gap-3 shrink-0"><div class="hidden lg:flex items-center gap-2 px-3 py-1 bg-surface-container-high border-2 border-primary-container/40 rounded font-label-code-sm text-primary-fixed-dim shadow-[2px_2px_0px_0px_#00f0ff]"><span class="inline-block w-2 h-2 rounded-full bg-primary-container animate-ping"></span><span>SUI: 100% SUB-ZERO // WALRUS: CHILL</span></div><div class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-surface-container-lowest border-2 border-outline-variant rounded font-label-code-sm text-on-surface-variant" title="0x474bfe301c8505b13d0149cbbc106fa5ef7d9edf896aaa938789ed6a691b8d1d"><span class="material-symbols-outlined text-[16px] text-primary-fixed-dim">shield</span><span>0x474b...8d1d</span></div><button class="px-3 py-1.5 bg-secondary-container text-on-secondary font-label-code-sm uppercase rounded border-2 border-black shadow-[3px_3px_0px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 transition-transform" type="button">DISCONNECT</button></div></div></header>
+<main class="w-full pt-24 bg-transparent relative z-10"><div class="flex flex-col w-full">
+<div class="relative w-full max-w-[1280px] mx-auto px-4 sm:px-6 py-8 flex flex-col gap-10">
+<!-- Floating HUD Badges & Coordinates -->
+<div class="absolute top-4 right-8 hidden lg:flex flex-col items-end pointer-events-none select-none font-label-code-sm text-primary-fixed-dim space-y-1 bg-surface-container-lowest/80 p-2 border-2 border-primary-container/30">
+<span>EPISODE: #01 // GELO_VS_LAVA</span>
+<span>CANONICAL: SUI::EPOCH_OBJECT_LOCK</span>
+<span>THERMAL_INDEX: -273.15°C [ZERO ABSOLUTO]</span>
+<span>COMIC_CELL: [SECTOR 07 / WALRUS RUNTIME]</span>
+</div>
+<!-- COMIC HERO HEADER -->
+<section class="relative flex flex-col gap-4 pt-2">
+<div class="flex flex-wrap items-center gap-3">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-primary-container text-on-primary-container font-label-code-sm font-bold uppercase comic-shadow-cyan comic-border-3 border-black -rotate-1 hover:rotate-0 transition-transform">
+<span class="w-2.5 h-2.5 rounded-full bg-black animate-ping"></span>
+❄️ EDIÇÃO ESPECIAL: GELO VS LAVA
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#ff3b30] text-white font-label-code-sm font-bold uppercase comic-shadow-lava comic-border-3 border-black rotate-1">
+<span class="material-symbols-outlined text-[15px]">local_fire_department</span>
+ALERTA DE FAKE SCREENSHOT
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 bg-tertiary-container text-on-tertiary-container font-label-code-sm font-bold uppercase comic-shadow-yellow comic-border-3 border-black -rotate-1">
+<span class="material-symbols-outlined text-[15px]">verified</span>
+A MATEMÁTICA NÃO DERRETE
+</div>
+</div>
+<div class="flex flex-col gap-2 mt-2">
+<div class="flex items-baseline gap-4 flex-wrap">
+<h1 class="font-display-hero text-3xl sm:text-5xl md:text-6xl text-primary font-black tracking-tight uppercase selection:bg-primary-container selection:text-black drop-shadow-[0_4px_12px_rgba(0,240,255,0.4)]">
+GELO VS LAVA: THE ICE MECHANICS<span class="text-primary-container">!</span>
+</h1>
+<span class="font-label-code-md text-primary-fixed-dim bg-surface-container-high px-2 py-0.5 border border-primary-container/40">SUI ON-CHAIN COMIC #42</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl leading-relaxed">
+Por que prints de liquidez evaporam na primeira onda de calor, enquanto o cofre de gelo do PermaFrost permanece inquebrável, imutável e matematicamente congelado na blockchain Sui.
+</p>
+</div>
+<!-- Philosophy Callout Box (Comic Speech style) -->
+<div class="relative bg-surface-container-low p-5 comic-border-3 border-primary-container comic-shadow-cyan mt-2">
+<div class="absolute -top-3.5 left-4 px-3 py-0.5 bg-tertiary-fixed text-black font-label-code-sm font-extrabold uppercase comic-border-3 border-black shadow-[2px_2px_0px_0px_#000]">
+REGRA DE OURO DO PROTOCOLO
+</div>
+<p class="font-headline-sm text-base sm:text-lg text-on-surface leading-relaxed mt-1">
+<span class="text-primary-container font-black">"A geometria é calculada, não ilustrada."</span> O componente visual não aceita legendas inventadas, fotos editadas ou maquiagem de Telegram. Ele renderiza exclusivamente os vetores matemáticos retornados pela RPC da Sui para aquele ID de objeto em tempo real.
+</p>
+</div>
+</section>
+<!-- SECTION 1: BATTLE SECTION - LAVA SCREENSHOT VS ICE MONOLITH -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-[#ff3b30] text-white font-display-hero text-2xl font-black comic-border-3 border-black comic-shadow-lava">01</span>
+<h2 class="font-headline-lg text-2xl sm:text-3xl text-primary uppercase font-black tracking-tight">
+POR QUE PRINTS DERRETEM NA LAVA &amp; O GELO SUI É ETERNO
+</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+<!-- Traditional Fake Screenshot Panel (Lava Chaos) -->
+<div class="lg:col-span-6 bg-[#18080a] p-6 comic-border-3 border-[#ff3b30] comic-shadow-lava flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-8 -bottom-8 opacity-20 pointer-events-none text-[#ff3b30]">
+<span class="material-symbols-outlined text-[160px]">local_fire_department</span>
+</div>
+<div class="flex flex-col gap-4 relative z-10">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-2 px-3 py-1 bg-[#ff3b30] text-white font-label-code-sm font-black uppercase comic-border-3 border-black">
+🔥 LADO LAVA: SCREENSHOT MORTO
+</span>
+<span class="font-label-code-sm text-[#ff9500] font-bold">FALSIFICÁVEL EM 30s</span>
+</div>
+<!-- Burning Comic Paper Graphic -->
+<div class="relative bg-stone-900 border-2 border-dashed border-[#ff3b30] p-4 rounded-sm rotate-1 shadow-lg">
+<div class="absolute -top-3 right-4 px-2 py-0.5 bg-[#ff3b30] text-white text-[10px] font-black uppercase rotate-3 shadow">
+PAPEL QUEIMADO
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between border-b border-stone-700 pb-2">
+<span class="font-label-code-sm text-stone-400">Telegram_Proof_Final_v2.png</span>
+<span class="material-symbols-outlined text-[#ff3b30] text-[18px]">dangerous</span>
+</div>
+<div class="bg-black/60 p-3 relative overflow-hidden border border-[#ff3b30]/30">
+<p class="font-mono text-xs text-yellow-400 font-bold">"LIQUIDEZ 100% TRAVADA POR 10 ANOS CONFIA"</p>
+<span class="text-[10px] text-stone-500 font-mono">Status: Hash expirado há 320 dias</span>
+<!-- Burn / Lava Flame Mask Effect -->
+<div class="absolute -bottom-2 right-0 left-0 h-8 bg-gradient-to-t from-[#ff3b30]/80 via-[#ff9500]/50 to-transparent flex items-end justify-center">
+<span class="text-black font-black font-label-code-sm bg-yellow-400 px-2 uppercase shadow">DERRETIDO PELO RUGPULL</span>
+</div>
+</div>
+</div>
+</div>
+<p class="font-body-md text-on-surface-variant text-sm sm:text-base">
+Screenshots exportados e imagens estáticas de canais de suporte são forjados em segundos inspecionando elementos no navegador. Pior ainda: o print continua bonito enquanto a liquidez já foi sacada há meses. Na lava do mercado, PNGs não sobrevivem.
+</p>
+</div>
+<div class="mt-4 pt-3 border-t-2 border-[#ff3b30]/40 flex items-center justify-between font-label-code-sm relative z-10">
+<span class="text-stone-400">STATUS CRIPTOGRÁFICO:</span>
+<span class="text-[#ff3b30] font-black bg-stone-950 px-2 py-0.5 border border-[#ff3b30]">ZERO VALIDADE ON-CHAIN</span>
+</div>
+</div>
+<!-- PermaFrost Unyielding Diamond Ice Monolith Panel -->
+<div class="lg:col-span-6 bg-surface-container-low p-6 comic-border-3 border-primary-container comic-shadow-cyan flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-6 -top-6 opacity-15 pointer-events-none text-primary-container">
+<span class="material-symbols-outlined text-[160px]">ac_unit</span>
+</div>
+<div class="flex flex-col gap-4 relative z-10">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-2 px-3 py-1 bg-primary-container text-black font-label-code-sm font-black uppercase comic-border-3 border-black">
+❄️ LADO GELO: MONÓLITO SUI
+</span>
+<span class="font-label-code-sm text-primary-fixed-dim font-bold">VERIFICAÇÃO PURA</span>
+</div>
+<!-- Cartoon Diamond-Ice Monolith SVG Graphic -->
+<div class="bg-surface-container-lowest p-4 comic-border-3 border-primary-container/60 relative flex items-center justify-center gap-6">
+<!-- Cold mist backdrop glow -->
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#00f0ff]/10 to-transparent pointer-events-none"></div>
+<!-- Animated Diamond-Ice SVG -->
+<div class="w-24 h-24 shrink-0 animate-float-ice">
+<svg class="w-full h-full filter drop-shadow-[0_0_12px_rgba(0,240,255,0.7)]" viewbox="0 0 100 100">
+<!-- Diamond crystal outer polygon -->
+<polygon fill="rgba(0, 240, 255, 0.25)" points="50,6 88,38 50,94 12,38" stroke="#00F0FF" stroke-linejoin="round" stroke-width="3"></polygon>
+<!-- Facets -->
+<polygon fill="rgba(219, 252, 255, 0.45)" points="50,6 88,38 50,54 12,38"></polygon>
+<line stroke="#FFFFFF" stroke-width="2.5" x1="50" x2="50" y1="6" y2="94"></line>
+<line stroke="#00F0FF" stroke-width="2" x1="12" x2="88" y1="38" y2="38"></line>
+<line stroke="#DBFCFF" stroke-width="1.5" x1="50" x2="12" y1="54" y2="38"></line>
+<line stroke="#DBFCFF" stroke-width="1.5" x1="50" x2="88" y1="54" y2="38"></line>
+<!-- Ice Glint Sparkle -->
+<polygon fill="#FFFFFF" points="70,22 74,25 70,28 66,25"></polygon>
+<circle cx="50" cy="54" fill="#00F0FF" r="3"></circle>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-label-code-sm text-primary-container font-black">EPOCH LOCK VERIFICADO</span>
+<span class="font-headline-md text-xl text-primary font-black tracking-tight">1,000,000 SUI</span>
+<span class="font-label-code-sm text-tertiary-fixed font-bold">0x8a92...fc11</span>
+<span class="text-[11px] font-label-code-sm text-primary-fixed-dim mt-1">✓ Sui GraphQL • Sem intermediários</span>
+</div>
+</div>
+<p class="font-body-md text-on-surface-variant text-sm sm:text-base">
+O PermaFrost consulta os validadores da rede Sui a cada carregamento de página. O selo não é um arquivo PNG: é geometria SVG gerada proceduralmente a partir do Move Object ID. Se a trava foi quebrada ou sacada, o gelo muda instantaneamente de forma.
+</p>
+</div>
+<div class="mt-4 pt-3 border-t-2 border-primary-container/40 flex items-center justify-between font-label-code-sm relative z-10">
+<span class="text-outline">VEREDITO:</span>
+<span class="text-primary-container font-black bg-surface-container-lowest px-2 py-0.5 border border-primary-container">PROVA MATEMÁTICA DEFINITIVA</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: THE 6 ICE STATES (A GEOMETRIA É CALCULADA, NÃO ILUSTRADA) -->
+<section class="flex flex-col gap-4">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-tertiary-fixed text-black font-display-hero text-2xl font-black comic-border-3 border-black comic-shadow-yellow">02</span>
+<div class="flex flex-col">
+<h2 class="font-headline-lg text-2xl sm:text-3xl text-primary uppercase font-black tracking-tight">
+OS 6 ESTADOS DO GELO: A GEOMETRIA É CALCULADA, NÃO ILUSTRADA
+</h2>
+<span class="font-label-code-sm text-primary-fixed-dim uppercase tracking-wider font-bold">
+REGRAS MATEMÁTICAS RÍGIDAS • SEM ENFEITE ARTIFICIAL
+</span>
+</div>
+</div>
+<div class="font-label-code-sm text-primary-container bg-surface-container-lowest px-3 py-1 border-2 border-primary-container font-bold">
+SUI MOVE SPEC :: RFC-709
+</div>
+</div>
+<!-- 6 Comic-Strip Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- State 01: BLINDAGEM TOTAL -->
+<div class="bg-surface-container p-5 comic-border-3 border-primary-container comic-shadow-cyan flex flex-col justify-between hover:bg-surface-container-high transition-colors group">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 bg-primary-container text-black font-label-code-sm font-black border-2 border-black">01. BLINDAGEM TOTAL</span>
+<span class="font-label-code-sm text-primary font-bold">100% FROZEN</span>
+</div>
+<!-- Visual Chamber -->
+<div class="w-full h-40 bg-surface-container-lowest flex items-center justify-center relative overflow-hidden mb-3 border-2 border-primary-container/40">
+<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#00f0ff_1.5px,transparent_1.5px)] [background-size:10px_10px]"></div>
+<svg class="w-28 h-28 filter drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]" viewbox="0 0 100 100">
+<!-- Solid Ice Block -->
+<polygon fill="#dbfcff" opacity="0.9" points="42,16 78,28 58,40 22,28"></polygon>
+<polygon fill="#006970" opacity="0.8" points="22,28 58,40 54,78 18,66"></polygon>
+<polygon fill="rgba(0, 240, 255, 0.45)" points="22,40 64,40 68,74 18,74" stroke="#00f0ff" stroke-width="2.5"></polygon>
+<line stroke="#ffffff" stroke-dasharray="3 3" stroke-width="1.5" x1="22" x2="68" y1="40" y2="74"></line>
+<!-- Cartoon Ice Shine -->
+<polygon fill="#FFFFFF" opacity="0.8" points="30,46 36,46 32,56 26,56"></polygon>
+</svg>
+<span class="absolute bottom-1 right-2 text-[10px] font-label-code-sm text-primary-fixed-dim bg-black/70 px-1">GELO PURO</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary font-black uppercase">SOLID BLOCK</h3>
+<p class="font-body-md text-on-surface-variant text-sm mt-1">
+Bloqueio absoluto. O período de trava está em plena vigência. Nenhum token foi descongelado ou reivindicado.
+</p>
+</div>
+<div class="mt-4 pt-2 bg-surface-container-lowest px-3 py-1.5 border border-primary-container/40 flex items-center justify-between">
+<span class="font-label-code-sm text-outline">VETOR</span>
+<span class="font-label-code-sm text-primary-container font-mono">M22,40 L64,40 L68,74 L18,74 Z</span>
+</div>
+</div>
+<!-- State 02: DEGELO LINEAR -->
+<div class="bg-surface-container p-5 comic-border-3 border-primary-container comic-shadow-cyan flex flex-col justify-between hover:bg-surface-container-high transition-colors group">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 bg-primary-fixed-dim text-black font-label-code-sm font-black border-2 border-black">02. DEGELO LINEAR</span>
+<span class="font-label-code-sm text-primary-container font-bold">VESTING ATIVO</span>
+</div>
+<!-- Visual Chamber with dripping drops -->
+<div class="w-full h-40 bg-surface-container-lowest flex items-center justify-center relative overflow-hidden mb-3 border-2 border-primary-container/40">
+<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#00f0ff_1.5px,transparent_1.5px)] [background-size:10px_10px]"></div>
+<svg class="w-28 h-28" viewbox="0 0 100 100">
+<polygon fill="none" points="22,40 64,40 68,74 18,74" stroke="#3b494b" stroke-dasharray="2 2" stroke-width="1.5"></polygon>
+<!-- Melted half -->
+<polygon fill="rgba(0, 240, 255, 0.5)" points="20.5,58 65.5,58 68,74 18,74" stroke="#00f0ff" stroke-width="2.5"></polygon>
+<!-- Water drops falling -->
+<line stroke="#00f0ff" stroke-linecap="round" stroke-width="2.5" x1="32" x2="32" y1="58" y2="82"></line>
+<circle cx="32" cy="86" fill="#00f0ff" r="2.5">
+<animate attributename="cy" dur="1.2s" repeatcount="indefinite" values="82;92;82"></animate>
+</circle>
+<line stroke="#00f0ff" stroke-linecap="round" stroke-width="2" x1="54" x2="54" y1="58" y2="76"></line>
+<circle cx="54" cy="80" fill="#dbfcff" r="2">
+<animate attributename="cy" dur="1.5s" repeatcount="indefinite" values="76;88;76"></animate>
+</circle>
+<line stroke="#dbfcff" stroke-width="2" x1="16" x2="70" y1="58" y2="58"></line>
+</svg>
+<span class="absolute bottom-1 right-2 text-[10px] font-label-code-sm text-primary-container bg-black/70 px-1">GOTAS CAINDO</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary font-black uppercase">MELTING &amp; DRIPPING</h3>
+<p class="font-body-md text-on-surface-variant text-sm mt-1">
+Cofre de liberação contínua. A linha de derretimento do bloco representa a exata fração de tokens já liberada.
+</p>
+</div>
+<div class="mt-4 pt-2 bg-surface-container-lowest px-3 py-1.5 border border-primary-container/40 flex items-center justify-between">
+<span class="font-label-code-sm text-outline">FÓRMULA</span>
+<span class="font-label-code-sm text-primary-container font-mono">y = 40 + (34 * fraction)</span>
+</div>
+</div>
+<!-- State 03: GEADA DE CLIFF -->
+<div class="bg-surface-container p-5 comic-border-3 border-tertiary-fixed comic-shadow-yellow flex flex-col justify-between hover:bg-surface-container-high transition-colors group">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 bg-tertiary-fixed text-black font-label-code-sm font-black border-2 border-black">03. GEADA DE CLIFF</span>
+<span class="font-label-code-sm text-tertiary-fixed font-bold">CONTAGEM CLIFF</span>
+</div>
+<!-- Visual Chamber with cliff line -->
+<div class="w-full h-40 bg-surface-container-lowest flex items-center justify-center relative overflow-hidden mb-3 border-2 border-tertiary-fixed/40">
+<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#fde400_1.5px,transparent_1.5px)] [background-size:10px_10px]"></div>
+<svg class="w-28 h-28" viewbox="0 0 100 100">
+<polygon fill="rgba(0, 240, 255, 0.2)" points="22,40 64,40 68,74 18,74" stroke="#00f0ff" stroke-width="2"></polygon>
+<!-- Dashed Rime Cliff Line -->
+<line stroke="#fde400" stroke-dasharray="4 3" stroke-width="3" x1="10" x2="76" y1="52" y2="52"></line>
+<polygon fill="#fde400" points="76,52 84,48 84,56"></polygon>
+<text fill="#fde400" font-family="'JetBrains Mono'" font-size="7" font-weight="bold" x="12" y="47">CRONÔMETRO CLIFF</text>
+</svg>
+<span class="absolute bottom-1 right-2 text-[10px] font-label-code-sm text-tertiary-fixed bg-black/70 px-1">TEMPO DE ESPERA</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary font-black uppercase">DASHED RIME LINE</h3>
+<p class="font-body-md text-on-surface-variant text-sm mt-1">
+Tempo decorrido durante a carência total. Nenhum token pode ser resgatado até que o nível da geada atinja o ponto de corte.
+</p>
+</div>
+<div class="mt-4 pt-2 bg-surface-container-lowest px-3 py-1.5 border border-tertiary-fixed/40 flex items-center justify-between">
+<span class="font-label-code-sm text-outline">ALTURA</span>
+<span class="font-label-code-sm text-tertiary-fixed font-mono">y_rime = 40 + (34 * time)</span>
+</div>
+</div>
+<!-- State 04: RACHADURA DE CLAIM -->
+<div class="bg-surface-container p-5 comic-border-3 border-[#ff3b30] comic-shadow-lava flex flex-col justify-between hover:bg-surface-container-high transition-colors group">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 bg-[#ff3b30] text-white font-label-code-sm font-black border-2 border-black">04. RACHADURA DE CLAIM</span>
+<span class="font-label-code-sm text-[#ff9500] font-bold">LIBERADO</span>
+</div>
+<!-- Visual Chamber with lightning cracked ice -->
+<div class="w-full h-40 bg-surface-container-lowest flex items-center justify-center relative overflow-hidden mb-3 border-2 border-[#ff3b30]/40">
+<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#ff3b30_1.5px,transparent_1.5px)] [background-size:10px_10px]"></div>
+<svg class="w-28 h-28" viewbox="0 0 100 100">
+<polygon fill="rgba(0, 240, 255, 0.3)" points="20,40 40,40 36,54 44,62 38,74 16,74" stroke="#00f0ff" stroke-width="2"></polygon>
+<polygon fill="rgba(0, 240, 255, 0.3)" points="46,40 68,40 72,74 44,74 50,62 42,54" stroke="#00f0ff" stroke-width="2"></polygon>
+<!-- Lightning cracks in bright lava red/orange -->
+<polyline fill="none" points="40,40 36,54 44,62 38,74" stroke="#ff3b30" stroke-width="3"></polyline>
+<line stroke="#ff9500" stroke-width="2" x1="28" x2="34" y1="46" y2="49"></line>
+<line stroke="#ff9500" stroke-width="2" x1="56" x2="62" y1="60" y2="64"></line>
+</svg>
+<span class="absolute bottom-1 right-2 text-[10px] font-label-code-sm text-[#ff9500] bg-black/70 px-1">RACHADURA VIVA</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary font-black uppercase">CRACKED OPEN</h3>
+<p class="font-body-md text-on-surface-variant text-sm mt-1">
+A época de desbloqueio chegou! As amarras criptográficas se romperam; o beneficiário pode efetuar o saque a qualquer instante.
+</p>
+</div>
+<div class="mt-4 pt-2 bg-surface-container-lowest px-3 py-1.5 border border-[#ff3b30]/40 flex items-center justify-between">
+<span class="font-label-code-sm text-outline">STATUS</span>
+<span class="font-label-code-sm text-[#ff9500] font-mono">CURRENT_EPOCH &gt; UNLOCK</span>
+</div>
+</div>
+<!-- State 05: POÇA FINAL -->
+<div class="bg-surface-container p-5 comic-border-3 border-outline comic-shadow-cyan flex flex-col justify-between hover:bg-surface-container-high transition-colors group">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 bg-surface-bright text-white font-label-code-sm font-black border-2 border-black">05. POÇA FINAL</span>
+<span class="font-label-code-sm text-outline font-bold">100% SACADO</span>
+</div>
+<!-- Visual Chamber with puddle on volcanic stone -->
+<div class="w-full h-40 bg-surface-container-lowest flex items-center justify-center relative overflow-hidden mb-3 border-2 border-outline-variant">
+<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#849495_1.5px,transparent_1.5px)] [background-size:10px_10px]"></div>
+<svg class="w-28 h-28" viewbox="0 0 100 100">
+<polygon fill="none" points="22,40 64,40 68,74 18,74" stroke="#272a32" stroke-dasharray="2 2" stroke-width="1.5"></polygon>
+<!-- Melted Puddle -->
+<ellipse cx="44" cy="74" fill="rgba(0, 240, 255, 0.25)" rx="34" ry="8" stroke="#00f0ff" stroke-width="2"></ellipse>
+<ellipse cx="44" cy="74" fill="none" rx="20" ry="4" stroke="#dbfcff" stroke-dasharray="3 3" stroke-width="1.5"></ellipse>
+<!-- Steam Whisps -->
+<path d="M34,64 Q36,56 32,50" fill="none" stroke="#849495" stroke-linecap="round" stroke-width="2"></path>
+<path d="M48,62 Q51,54 46,48" fill="none" stroke="#849495" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+<span class="absolute bottom-1 right-2 text-[10px] font-label-code-sm text-outline bg-black/70 px-1">COFRE CONCLUÍDO</span>
+</div>
+<h3 class="font-headline-md text-xl text-primary font-black uppercase">POOL OF WATER</h3>
+<p class="font-body-md text-on-surface-variant text-sm mt-1">
+O ciclo terminou. Todo o colateral foi sacado pelo endereço de destino. O gelo evaporou completamente sobre a pedra vulcânica.
+</p>
+</div>
+<div class="mt-4 pt-2 bg-surface-container-lowest px-3 py-1.5 border border-outline-variant flex items-center justify-between">
+<span class="font-label-code-sm text-outline">SALDO</span>
+<span class="font-label-code-sm text-outline font-mono">0.00 SUI RESTANTES</span>
+</div>
+</div>
+<!-- State 06: ALERTA LAVA: COFRE OCO -->
+<div class="bg-surface-container p-5 comic-border-3 border-[#ff9500] comic-shadow-lava flex flex-col justify-between hover:bg-surface-container-high transition-colors group">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 bg-[#ff9500] text-black font-label-code-sm font-black border-2 border-black">06. ALERTA LAVA: COFRE OCO</span>
+<span class="font-label-code-sm text-[#ff3b30] font-bold">ARMADILHA ANTI-GOLPE</span>
+</div>
+<!-- Visual Chamber: glowing amber lava wireframe cage -->
+<div class="w-full h-40 bg-surface-container-lowest flex items-center justify-center relative overflow-hidden mb-3 border-2 border-[#ff9500]/40">
+<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#ff9500_1.5px,transparent_1.5px)] [background-size:10px_10px]"></div>
+<svg class="w-28 h-28 filter drop-shadow-[0_0_10px_rgba(255,149,0,0.5)]" viewbox="0 0 100 100">
+<polygon fill="none" points="22,40 64,40 68,74 18,74" stroke="#ff9500" stroke-width="2.5"></polygon>
+<line stroke="#ff3b30" stroke-dasharray="2 2" stroke-width="2" x1="22" x2="68" y1="40" y2="74"></line>
+<line stroke="#ff3b30" stroke-dasharray="2 2" stroke-width="2" x1="64" x2="18" y1="40" y2="74"></line>
+<circle cx="43" cy="57" fill="#ff3b30" r="4">
+<animate attributename="r" dur="1s" repeatcount="indefinite" values="3;5;3"></animate>
+</circle>
+<!-- Caution stripes inside cage -->
+<line stroke="#ff9500" stroke-width="1.5" x1="30" x2="26" y1="40" y2="74"></line>
+<line stroke="#ff9500" stroke-width="1.5" x1="42" x2="38" y1="40" y2="74"></line>
+<line stroke="#ff9500" stroke-width="1.5" x1="54" x2="50" y1="40" y2="74"></line>
+</svg>
+<span class="absolute bottom-1 right-2 text-[10px] font-label-code-sm text-[#ff3b30] bg-black/70 px-1 font-bold">VAZIO!</span>
+</div>
+<h3 class="font-headline-md text-xl text-[#ff9500] font-black uppercase">HOLLOW LATTICE</h3>
+<p class="font-body-md text-on-surface-variant text-sm mt-1">
+Objeto de lock formalmente válido criado na Sui, porém armazenando exatamente ZERO moedas. O sensor infalível contra farsas de liquidez!
+</p>
+</div>
+<div class="mt-4 pt-2 bg-surface-container-lowest px-3 py-1.5 border border-[#ff9500]/40 flex items-center justify-between">
+<span class="font-label-code-sm text-outline">DEFESA</span>
+<span class="font-label-code-sm text-[#ff3b30] font-mono font-bold">ALERTA "COFRE FANTASMA"</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: THE RESOLVER MATRIX -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-primary-container text-black font-display-hero text-2xl font-black comic-border-3 border-black comic-shadow-cyan">03</span>
+<h2 class="font-headline-lg text-2xl sm:text-3xl text-primary uppercase font-black tracking-tight">
+COMO O RESOLVER DISCRIMINA CADA ENTRADA SUI
+</h2>
+</div>
+<div class="bg-surface-container-low p-6 comic-border-3 border-primary-container comic-shadow-cyan flex flex-col gap-4">
+<p class="font-body-md text-on-surface leading-relaxed max-w-3xl">
+O motor discriminador do PermaFrost analisa automaticamente a estrutura sintática da sua consulta sem você precisar marcar nenhum dropdown:
+</p>
+<div class="flex flex-col bg-surface-container-lowest border-2 border-primary-container/30">
+<!-- Row 1 -->
+<div class="grid grid-cols-1 md:grid-cols-12 p-4 gap-2 items-center hover:bg-surface-container transition-colors border-b border-outline-variant/30">
+<div class="md:col-span-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary-container">alternate_email</span>
+<span class="font-headline-md text-base text-primary uppercase font-black">NOME .EPOCH / SUINS</span>
+</div>
+<div class="md:col-span-4 font-body-md text-sm text-on-surface-variant">
+Resolve domínios SuiNS registrados apontando diretamente para o vault do projeto.
+</div>
+<div class="md:col-span-4 flex justify-start md:justify-end">
+<span class="font-label-code-sm text-primary-fixed-dim bg-surface-container-high px-2 py-1 border border-primary-container/40">
+permafrost.epoch
+</span>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-1 md:grid-cols-12 p-4 gap-2 items-center hover:bg-surface-container transition-colors border-b border-outline-variant/30">
+<div class="md:col-span-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary-container">account_balance_wallet</span>
+<span class="font-headline-md text-base text-primary uppercase font-black">ENDEREÇO DO PROJETO</span>
+</div>
+<div class="md:col-span-4 font-body-md text-sm text-on-surface-variant">
+Varre e lista todos os cofres (ativos e históricos) associados à chave pública do deployer.
+</div>
+<div class="md:col-span-4 flex justify-start md:justify-end">
+<span class="font-label-code-sm text-primary-fixed-dim bg-surface-container-high px-2 py-1 border border-primary-container/40">
+0x474bfe301c8505b13d0149cbbc106fa5ef7d9edf896aaa938789ed6a691b8d1d
+</span>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="grid grid-cols-1 md:grid-cols-12 p-4 gap-2 items-center hover:bg-surface-container transition-colors border-b border-outline-variant/30">
+<div class="md:col-span-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary-container">lock_clock</span>
+<span class="font-headline-md text-base text-primary uppercase font-black">ID DO OBJETO VAULT</span>
+</div>
+<div class="md:col-span-4 font-body-md text-sm text-on-surface-variant">
+Inspeciona uma instância isolada do Move package <code class="text-tertiary font-mono">epoch_object_lock</code>.
+</div>
+<div class="md:col-span-4 flex justify-start md:justify-end">
+<span class="font-label-code-sm text-primary-fixed-dim bg-surface-container-high px-2 py-1 border border-primary-container/40">
+0xee7200ba3f21a44c9b98762191a2
+</span>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="grid grid-cols-1 md:grid-cols-12 p-4 gap-2 items-center hover:bg-surface-container transition-colors">
+<div class="md:col-span-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary-container">toll</span>
+<span class="font-headline-md text-base text-primary uppercase font-black">TICKER / TIPO DE COIN</span>
+</div>
+<div class="md:col-span-4 font-body-md text-sm text-on-surface-variant">
+Consolida o valor total de locks em gelo ativos em toda a Sui para esse tipo de moeda.
+</div>
+<div class="md:col-span-4 flex justify-start md:justify-end">
+<span class="font-label-code-sm text-primary-fixed-dim bg-surface-container-high px-2 py-1 border border-primary-container/40">
+0x2::sui::SUI • CETUS • DEEP
+</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: PLAYFUL DEVELOPER INTEGRATION & LIVE EMBED TESTER -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-tertiary-fixed text-black font-display-hero text-2xl font-black comic-border-3 border-black comic-shadow-yellow">04</span>
+<h2 class="font-headline-lg text-2xl sm:text-3xl text-primary uppercase font-black tracking-tight">
+EMBED HUD: WIDGET INTERATIVO PARA SEU DAPP
+</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+<!-- Embed Code & Technical Docs Left -->
+<div class="lg:col-span-7 bg-surface-container p-6 comic-border-3 border-primary-container comic-shadow-cyan flex flex-col justify-between">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2.5 py-0.5 bg-primary-container text-black font-label-code-sm font-black border-2 border-black">
+EMBED ZERO-DEPENDENCY
+</span>
+<span class="font-label-code-sm text-primary-fixed-dim font-bold">CARREGAMENTO &lt; 42KB</span>
+</div>
+<p class="font-body-md text-on-surface leading-relaxed text-sm sm:text-base">
+DEXs, launchpads e painéis de comunidade podem plugar o selo ao vivo em menos de um minuto. O iframe é estritamente autocontido, sem cookies, imune a adulteração e renderiza com zero Cumulative Layout Shift (CLS 0.00).
+</p>
+<!-- Copyable Code Snippet Container -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-outline uppercase font-bold">SNIPPET HTML OFICIAL</span>
+<span class="font-label-code-sm text-primary-fixed-dim">COPIAR &amp; COLAR</span>
+</div>
+<div class="relative bg-surface-container-lowest p-4 border-2 border-primary-container/40 overflow-x-auto">
+<button class="absolute top-2 right-2 px-3 py-1 bg-primary-container text-black font-label-code-sm font-black uppercase comic-border-3 border-black shadow-[2px_2px_0px_0px_#000] hover:scale-105 active:scale-95 transition-all flex items-center gap-1 z-20" id="copySnippetBtn" type="button">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+<span id="btnCopyLabel">COPIAR IFRAME</span>
+</button>
+<pre class="font-label-code-sm text-primary-container leading-relaxed whitespace-pre font-mono pt-6" id="embedCodeSnippet">&lt;iframe
+  src="https://permafrost.epoch/embed/0x474bfe301c8505b13d0149cbbc106fa5ef7d9edf896aaa938789ed6a691b8d1d"
+  width="300"
+  height="96"
+  frameborder="0"
+  loading="lazy"
+  title="PermaFrost On-Chain Proof"&gt;
+&lt;/iframe&gt;</pre>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4 pt-3 bg-surface-container-lowest p-3 border border-outline-variant/40">
+<div class="flex flex-col">
+<span class="font-label-code-sm text-outline text-xs">TAMANHO DO BUNDLE</span>
+<span class="font-label-code-sm text-primary font-bold">&lt; 42 KB GZIPPED</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-code-sm text-outline text-xs">LAYOUT SHIFT</span>
+<span class="font-label-code-sm text-primary-container font-bold">CLS 0.00 ESTÁVEL</span>
+</div>
+<div class="flex flex-col col-span-2 sm:col-span-1">
+<span class="font-label-code-sm text-outline text-xs">FINALIZAÇÃO SUI</span>
+<span class="font-label-code-sm text-tertiary font-bold">~ 480MS SUB-SECOND</span>
+</div>
+</div>
+</div>
+<!-- Interactive Live Widget Simulator Right -->
+<div class="lg:col-span-5 bg-surface-container-low p-6 comic-border-3 border-primary-container comic-shadow-cyan flex flex-col justify-between">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-primary font-black uppercase">SIMULADOR DO EMBED (300 x 96 PX)</span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-pulse"></span>
+</div>
+<!-- Comic Live Badge Tester -->
+<div class="w-full flex items-center justify-center p-4 bg-surface-container-lowest border-2 border-dashed border-primary-container/50">
+<!-- The 300x96 Frame -->
+<div class="w-[300px] h-[96px] bg-[#0c131d] border-2 border-primary-container p-2.5 shadow-[4px_4px_0px_0px_#00f0ff] flex items-center justify-between gap-3 relative overflow-hidden select-none" id="widgetPreviewCard">
+<!-- Frosty corner sparkle -->
+<div class="absolute -top-3 -right-3 w-8 h-8 bg-primary-container/20 rotate-45 pointer-events-none"></div>
+<!-- Ice Graphic inside card -->
+<div class="w-14 h-14 shrink-0 bg-surface-container-lowest border border-primary-container/40 flex items-center justify-center relative">
+<svg class="w-12 h-12" viewbox="0 0 100 100">
+<polygon fill="rgba(0, 240, 255, 0.4)" points="22,40 64,40 68,74 18,74" stroke="#00f0ff" stroke-width="2.5"></polygon>
+<line stroke="#ffffff" stroke-width="2" x1="22" x2="43" y1="40" y2="24"></line>
+<line stroke="#ffffff" stroke-width="2" x1="64" x2="43" y1="40" y2="24"></line>
+<line stroke="#00f0ff" stroke-dasharray="2 2" stroke-width="1.5" x1="18" x2="38" y1="74" y2="88"></line>
+</svg>
+<span class="absolute top-0.5 left-1 text-[8px] text-primary-container font-mono">LIVE</span>
+</div>
+<!-- Info Meta -->
+<div class="flex flex-col justify-center flex-1 min-w-0 pr-1">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-code-sm text-[10px] text-primary-fixed-dim uppercase tracking-wider truncate font-bold">PERMAFROST ON SUI</span>
+</div>
+<span class="font-headline-md text-[17px] text-primary font-black truncate tracking-tight" id="widgetCoinAmount">850,000 CETUS</span>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="font-label-code-sm text-[9px] text-black bg-tertiary-fixed px-1 font-bold">ATÉ EPOCH 620</span>
+<span class="font-label-code-sm text-[9px] text-outline truncate font-mono">0x474b...8d1d</span>
+</div>
+</div>
+<!-- Inspect Arrow -->
+<div class="shrink-0 h-full flex items-center">
+<span class="material-symbols-outlined text-primary-container text-[18px] hover:translate-x-0.5 hover:-translate-y-0.5 transition-transform cursor-pointer">north_east</span>
+</div>
+</div>
+</div>
+<!-- Playful Live Toggle Buttons -->
+<div class="flex flex-col gap-2">
+<span class="font-label-code-sm text-outline text-xs">TESTAR QUANTIAS NO EMBED:</span>
+<div class="grid grid-cols-3 gap-2">
+<button class="px-2 py-1.5 bg-surface-container-high hover:bg-primary-container hover:text-black font-label-code-sm text-xs border border-primary-container/40 transition-colors font-bold" onclick="updatePreview('500,000 SUI', 'ATÉ EPOCH 550')" type="button">500k SUI</button>
+<button class="px-2 py-1.5 bg-surface-container-high hover:bg-primary-container hover:text-black font-label-code-sm text-xs border border-primary-container/40 transition-colors font-bold" onclick="updatePreview('1,250,000 DEEP', 'ATÉ EPOCH 710')" type="button">1.25M DEEP</button>
+<button class="px-2 py-1.5 bg-surface-container-high hover:bg-primary-container hover:text-black font-label-code-sm text-xs border border-primary-container/40 transition-colors font-bold" onclick="updatePreview('850,000 CETUS', 'ATÉ EPOCH 620')" type="button">850k CETUS</button>
+</div>
+</div>
+<p class="font-label-code-sm text-xs text-on-surface-variant leading-relaxed">
+Qualquer auditor que clicar no widget é redirecionado instantaneamente ao blob Walrus com o bytecode original do contrato e prova de consenso Sui.
+</p>
+</div>
+<div class="mt-4 flex items-center gap-2">
+<a class="w-full py-2.5 bg-primary-container text-black font-label-code-sm font-black uppercase text-center comic-border-3 border-black comic-shadow-cyan hover:scale-[1.01] active:scale-[0.99] transition-transform" data-path="verify" href="#">
+TESTAR SEU OBJETO MOVE AGORA ⚡
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- BOTTOM TELEMETRY FOOTPRINT -->
+<div class="bg-surface-container-high p-4 comic-border-3 border-primary-container comic-shadow-cyan flex flex-col sm:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[22px]">sports_martial_arts</span>
+<span class="font-label-code-sm text-on-surface font-bold uppercase">
+PERMAFROST MOTOR DE COMBATE: 100% EXECUTADO VIA WALRUS BLOB #4812_SUI
+</span>
+</div>
+<div class="font-label-code-sm text-primary-fixed-dim bg-black/60 px-3 py-1 border border-primary-container/30">
+HASH INTEGRIDADE: SHA256//99b1c7...a3f0
+</div>
+</div>
+</div>
+</div></main>
+<footer class="w-full bg-surface-container-lowest border-t-2 border-primary-container/40 py-8 mt-12 relative z-10"><div class="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"><div class="flex flex-col gap-1.5"><span class="font-headline-md text-xl text-primary font-black tracking-tight">PERMAFROST CRYOGENICS: GELO VS LAVA</span><p class="font-label-code-sm text-on-surface-variant max-w-xl">Consultas nativas a epoch_object_lock e vesting_service na Sui Mainnet. Blob único na Walrus. Zero servidores de banco de dados.</p></div><div class="grid grid-cols-2 sm:grid-cols-3 gap-3 font-label-code-sm text-on-surface-variant border-2 border-outline-variant/40 p-3 bg-surface-container-low rounded"><div class="flex flex-col"><span class="text-outline text-xs">BLOCO ATUAL</span><span class="text-primary font-bold">#49,182,042</span></div><div class="flex flex-col"><span class="text-outline text-xs">ÉPOCA SUI</span><span class="text-primary font-bold">EPOCH 514</span></div><div class="flex flex-col col-span-2 sm:col-span-1"><span class="text-outline text-xs">SINCRONIA GRAPHQL</span><span class="text-primary-container font-bold">100% CONECTADO</span></div></div></div><div class="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 pt-4 border-t border-outline-variant/20 flex flex-col sm:flex-row items-center justify-between text-on-surface-variant font-label-code-sm gap-2"><div>COMIC GUIDE EDIÇÃO #01 // ARQUITETURA CRIPTOGRÁFICA DEFINITIVA</div><div>HOSPEDADO NO WALRUS BLOBSTORE &amp; REDE SUI MAINNET</div></div></footer>
+<script>
+  // Copy Snippet Interaction
+  (function() {
+    const copyBtn = document.getElementById('copySnippetBtn');
+    const snippet = document.getElementById('embedCodeSnippet');
+    const btnLabel = document.getElementById('btnCopyLabel');
+    
+    if (copyBtn && snippet) {
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(snippet.textContent.trim()).then(() => {
+          if (btnLabel) btnLabel.textContent = 'COPIADO COM SUCESSO! ❄️';
+          copyBtn.classList.add('bg-tertiary-fixed');
+          setTimeout(() => {
+            if (btnLabel) btnLabel.textContent = 'COPIAR IFRAME';
+            copyBtn.classList.remove('bg-tertiary-fixed');
+          }, 2000);
+        }).catch(err => console.error('Erro ao copiar', err));
+      });
+    }
+  })();
+
+  // Interactive Live Widget Preview switcher
+  function updatePreview(coin, epoch) {
+    const amountEl = document.getElementById('widgetCoinAmount');
+    if (amountEl) {
+      amountEl.textContent = coin;
+    }
+  }
+</script>
+</body></html>

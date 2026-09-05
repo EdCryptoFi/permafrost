@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+<!-- STITCH_SVG_START:ANIMATION_17 class="fixed inset-0 w-full h-full" --><div class="fixed inset-0 w-full h-full" id="animated-svg-ANIMATION_17" style="display:block;"><svg fill="none" height="120" viewbox="0 0 400 120" width="400" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="iceNeon" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#00F0FF"></stop>
+<stop offset="60%" stop-color="#38BDF8"></stop>
+<stop offset="100%" stop-color="#818CF8"></stop>
+</lineargradient>
+<lineargradient id="lavaNeon" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#FF3B30"></stop>
+<stop offset="50%" stop-color="#FF9500"></stop>
+<stop offset="100%" stop-color="#FFE600"></stop>
+</lineargradient>
+<filter height="140%" id="iceGlow" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="3"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+<filter height="140%" id="lavaGlow" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="4"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+</defs>
+<!-- Cartoon Ice Cube with Molten Fire Base -->
+<g transform="translate(16, 12)">
+<!-- Molten Lava Splash Shadow -->
+<ellipse cx="48" cy="88" fill="#FF3B30" filter="url(#lavaGlow)" opacity="0.3" rx="44" ry="12">
+<animate attributename="rx" dur="2.5s" repeatcount="indefinite" values="44;48;44"></animate>
+<animate attributename="opacity" dur="2.5s" repeatcount="indefinite" values="0.3;0.5;0.3"></animate>
+</ellipse>
+<!-- Lava Bubbles -->
+<circle cx="85" cy="80" fill="#FFE600" r="5">
+<animate attributename="cy" dur="2s" repeatcount="indefinite" values="80;55;80"></animate>
+<animate attributename="opacity" dur="2s" repeatcount="indefinite" values="0.9;0;0.9"></animate>
+<animate attributename="r" dur="2s" repeatcount="indefinite" values="5;1;5"></animate>
+</circle>
+<circle cx="12" cy="76" fill="#FF9500" r="4">
+<animate attributename="cy" dur="1.7s" repeatcount="indefinite" values="76;50;76"></animate>
+<animate attributename="opacity" dur="1.7s" repeatcount="indefinite" values="0.8;0;0.8"></animate>
+</circle>
+<!-- Cartoon Isometric Ice Block (Thick outline, sticker style) -->
+<!-- Base / Left Face -->
+<polygon fill="#0A2540" points="48,16 88,36 88,74 48,94" stroke="#00F0FF" stroke-linejoin="round" stroke-width="4"></polygon>
+<!-- Right Face (Molten reflection) -->
+<polygon fill="#06182B" points="48,94 88,74 88,36 48,16" stroke="#00F0FF" stroke-linejoin="round" stroke-width="4" transform="scale(-1, 1) translate(-96, 0)"></polygon>
+<!-- Top Face (Crystalline cyan) -->
+<polygon fill="#38BDF8" points="48,16 88,36 48,56 8,36" stroke="#FFFFFF" stroke-linejoin="round" stroke-width="3">
+<animate attributename="fill" dur="3s" repeatcount="indefinite" values="#38BDF8;#00F0FF;#38BDF8"></animate>
+</polygon>
+<!-- Inner Frost Geometrics -->
+<polygon fill="#E0F2FE" opacity="0.8" points="48,26 72,38 48,50 24,38"></polygon>
+<circle cx="48" cy="38" fill="#FFFFFF" r="4"></circle>
+<!-- Cartoon Eyes inside Ice Block (Alert / Confident) -->
+<circle cx="34" cy="62" fill="#00F0FF" filter="url(#iceGlow)" r="5"></circle>
+<circle cx="34" cy="62" fill="#020813" r="2.5"></circle>
+<circle cx="36" cy="60" fill="#FFFFFF" r="1.2"></circle>
+<circle cx="62" cy="62" fill="#00F0FF" filter="url(#iceGlow)" r="5"></circle>
+<circle cx="62" cy="62" fill="#020813" r="2.5"></circle>
+<circle cx="64" cy="60" fill="#FFFFFF" r="1.2"></circle>
+<!-- Ice Shards & Sparkles -->
+<path d="M48,6 L52,14 L48,12 L44,14 Z" fill="#FFFFFF">
+<animatetransform attributename="transform" dur="2s" repeatcount="indefinite" type="translate" values="0,0; 0,-6; 0,0"></animatetransform>
+</path>
+<polygon fill="#00F0FF" points="86,18 92,20 86,22 84,20"></polygon>
+</g>
+<!-- Typography Brand PERMAFROST -->
+<g transform="translate(120, 20)">
+<!-- Comic Sticker Shadow -->
+<text fill="#040911" font-family="'Space Grotesk', 'Impact', sans-serif" font-size="36" font-weight="900" letter-spacing="3" x="0" y="44">PERMAFROST</text>
+<text fill="#FF3B30" font-family="'Space Grotesk', 'Impact', sans-serif" font-size="36" font-weight="900" letter-spacing="3" opacity="0.6" x="3" y="47">PERMAFROST</text>
+<!-- Main Text Dual Split: PERMA (Ice) + FROST (Sub-zero crystalline) -->
+<text fill="#FFFFFF" font-family="'Space Grotesk', 'Impact', sans-serif" font-size="36" font-weight="900" letter-spacing="3" x="0" y="42">
+      PERMA<tspan fill="url(#iceNeon)">FROST</tspan>
+</text>
+<!-- Cartoon Badge / Banner below -->
+<g transform="translate(0, 52)">
+<rect fill="#00F0FF" height="22" rx="6" stroke="#050C1A" stroke-width="2" width="145" x="0" y="0"></rect>
+<text fill="#040911" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" letter-spacing="1" x="10" y="15">❄️ SUB-ZERO PROOF</text>
+<rect fill="#FF3B30" height="22" rx="6" stroke="#050C1A" stroke-width="2" width="105" x="153" y="0"></rect>
+<text fill="#FFFFFF" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" letter-spacing="1" x="162" y="15">🔥 ZERO LAVA</text>
+</g>
+</g>
+</svg></div><!-- STITCH_SVG_END:ANIMATION_17 -->
+</body>
+</html>
