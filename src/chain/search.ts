@@ -228,7 +228,18 @@ export async function listShowcase(
     allOfType(MULTI_VAULT_TYPE, nowMs, null, signal).catch(() => []),
   ])
 
-  const rank = (f: Frost) => (f.phase === 'melting' ? 0 : f.phase === 'cracked' ? 1 : 2)
+  // Still-frozen first, and among those the ones that actually hold something.
+  // Ranking by recency alone put an empty lock at the top of the landing page:
+  // the first thing a visitor met was a proof with nothing under it, which is
+  // the one exhibit that argues against the product.
+  const holdsSomething = (f: Frost) =>
+    (f.lockedAmount ?? f.totalLocked ?? 0n) > 0n || f.lockedAmount === undefined
+
+  const rank = (f: Frost) => {
+    const phase = f.phase === 'melting' ? 0 : f.phase === 'cracked' ? 2 : 4
+    return phase + (holdsSomething(f) ? 0 : 1)
+  }
+
   const all = groups.flat().sort((a, b) => rank(a) - rank(b) || b.lockedAtMs - a.lockedAtMs)
 
   return withCoinInfoAll(all.slice(0, 6), signal)
