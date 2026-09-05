@@ -31,6 +31,11 @@ export type SearchResult = {
   frosts: Frost[]
   /** Set when the term resolved through the Epoch registry. */
   resolved?: { name: string; owner: string }
+  /**
+   * Set when a bare word matched a coin AND is also a registered name, so the
+   * UI can offer the other reading instead of silently picking one.
+   */
+  alsoName?: { name: string; owner: string }
 }
 
 const OBJECTS_BY_TYPE = `
@@ -187,27 +192,49 @@ export async function smartSearch(
     return { kind: 'object', term, frosts: [] }
   }
 
-  // A .epoch name, or a bare word that turns out to be one. This app is built
-  // on Epoch Names and hosted under one; not resolving them was the gap that
-  // sent someone typing their own site's name into a coin-symbol search.
-  if (normalizeName(term)) {
+  // Written with the suffix, the intent is unambiguous: resolve the name.
+  const explicitName = /\.epoch$/i.test(term)
+  const nameShape = normalizeName(term)
+
+  if (explicitName && nameShape) {
     const rec = await resolveEpochName(term, signal).catch(() => null)
-    if (rec) {
-      return {
-        kind: 'name',
-        term,
-        resolved: { name: rec.name, owner: rec.owner },
-        frosts: await findByCreator(rec.owner, nowMs, viewer, signal),
-      }
-    }
+    if (rec) return nameResult(term, rec, await findByCreator(rec.owner, nowMs, viewer, signal))
+    return { kind: 'name', term, frosts: [] }
   }
 
-  // Otherwise a bare word is almost always a coin symbol ("SUI", "EPT").
-  if (/^[A-Za-z][A-Za-z0-9_]{1,32}$/.test(term)) {
-    return { kind: 'coin', term, frosts: await findByCoinType(term, nowMs, viewer, signal) }
+  // A bare word is ambiguous: tickers and names share the same shape, and
+  // popular tickers tend to be registered as names too — "SUI" resolved to
+  // whoever owns sui.epoch and buried the SUI locks someone actually wanted.
+  // Ask both, prefer the ticker, and only fall back to the name when the
+  // ticker finds nothing.
+  if (/^[A-Za-z][A-Za-z0-9_-]{1,32}$/.test(term)) {
+    const [coins, rec] = await Promise.all([
+      findByCoinType(term, nowMs, viewer, signal).catch(() => []),
+      nameShape ? resolveEpochName(term, signal).catch(() => null) : null,
+    ])
+
+    if (coins.length > 0) {
+      // Say so when the word is also a name, rather than silently choosing.
+      return {
+        kind: 'coin',
+        term,
+        frosts: coins,
+        alsoName: rec ? { name: rec.name, owner: rec.owner } : undefined,
+      }
+    }
+    if (rec) return nameResult(term, rec, await findByCreator(rec.owner, nowMs, viewer, signal))
+    return { kind: 'coin', term, frosts: [] }
   }
 
   return { kind: 'none', term, frosts: [] }
+}
+
+function nameResult(
+  term: string,
+  rec: { name: string; owner: string },
+  frosts: Frost[],
+): SearchResult {
+  return { kind: 'name', term, resolved: { name: rec.name, owner: rec.owner }, frosts }
 }
 
 /**

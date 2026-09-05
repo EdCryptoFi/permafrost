@@ -24,12 +24,16 @@ export function Results({
   term,
   frosts,
   resolved,
+  alsoName,
+  onSearch,
   onPick,
 }: {
   kind: SearchKind
   term: string
   frosts: Frost[]
   resolved?: { name: string; owner: string }
+  alsoName?: { name: string; owner: string }
+  onSearch?: (term: string) => void
   onPick: (id: string) => void
 }) {
   const still = frosts.filter((f) => f.phase === 'melting').length
@@ -48,6 +52,23 @@ export function Results({
           <>matching <span class="mono">{term}</span></>
         ) : null}
       </h2>
+      {alsoName && (
+        <p class="muted small">
+          <span class="mono">{alsoName.name}.epoch</span> is also a registered name —{' '}
+          <a
+            class="inline-link"
+            href={`?q=${alsoName.name}.epoch`}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+              if (!onSearch) return
+              e.preventDefault()
+              onSearch(`${alsoName.name}.epoch`)
+            }}
+          >
+            see what it holds
+          </a>
+        </p>
+      )}
       {kind === 'name' && resolved && (
         <p class="muted small">
           Resolved through the Epoch registry to <Addr a={resolved.owner} />

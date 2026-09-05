@@ -315,6 +315,8 @@ export function App() {
           term={result.term}
           frosts={result.frosts}
           resolved={result.resolved}
+          alsoName={result.alsoName}
+          onSearch={(t) => { setQuery(t); void search(t) }}
           onPick={(id) => void pick(id)}
         />
       )}
