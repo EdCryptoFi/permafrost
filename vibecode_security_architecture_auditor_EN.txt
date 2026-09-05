@@ -1,0 +1,384 @@
+================================================================================
+PERMAFROST — SECURITY & ARCHITECTURE AUDIT
+================================================================================
+Audited commit : f0d63d5
+Date           : 2026-09-05
+Auditor        : Senior Application Security Engineer / Software Architect
+Method         : Zero Trust · Defense in Depth · Least Privilege · Assume Breach
+
+================================================================================
+1. EXECUTIVE SUMMARY
+================================================================================
+
+PermaFrost is a static, backend-less browser application that reads public Sui
+blockchain state and renders an embeddable proof-of-lock badge. The output is a
+single self-contained HTML file stored as an immutable Walrus blob.
+
+This shape removes most of the classic attack surface outright. There is no
+server, no database, no session, no cookie, no upload path, no webhook, no
+server-side fetch, and no privileged credential anywhere in the system. There is
+therefore nothing to authenticate to and no tenant to escape.
+
+The real threat model is different, and narrower: PERMAFROST IS A TRUST
+ARTEFACT. Its entire value is that the badge cannot overstate anything. The
+meaningful attack is not code execution — it is getting the badge to display
+something untrue on a third party's homepage.
+
+Exactly one such vulnerability was found, and it was real and exploitable.
+It has been fixed and covered by a regression test.
+
+Overall risk before fix : MEDIUM  (product-critical, not infrastructure-critical)
+Overall risk after fix  : LOW
+
+================================================================================
+2. RECONNAISSANCE
+================================================================================
+
+Language / runtime .... TypeScript, browser only
+Framework ............. Preact 10 (no SSR, no router, no meta-framework)
+Build ................. Vite 7 + vite-plugin-singlefile -> one HTML file
+Backend ............... NONE
+Database / ORM / BaaS . NONE
+Authentication ........ NONE (no accounts exist; identity is a wallet signature)
+APIs / server actions . NONE
+Webhooks .............. NONE
+Uploads / storage ..... NONE
+Server-side fetch ..... NONE
+Middleware / proxy .... NONE
+Infrastructure ........ Immutable Walrus blob behind Epoch's Cloudflare;
+                        a Vercel mirror serving the same static output
+External integrations . Sui GraphQL (read-only, public)
+                        Wallet Standard browser extension (user-signed writes)
+                        Google Fonts (stylesheet only)
+Dependencies .......... @mysten/sui, @mysten/wallet-standard, preact
+                        npm audit --omit=dev -> 0 vulnerabilities
+Tests ................. scripts/security-test.mjs (added by this audit)
+
+Trust boundaries:
+  1. URL query string ................ attacker-controlled
+  2. Sui chain data .................. partly attacker-controlled (see VULN-001)
+  3. Wallet extension ................ user-controlled, trusted for signing only
+  4. Embedding page (badge iframe) ... hostile by assumption
+
+================================================================================
+3. VULNERABILITIES
+================================================================================
+
+--------------------------------------------------------------------------------
+[VULN-001] Attacker-composable text rendered inside the trust artefact
+--------------------------------------------------------------------------------
+Severity   : HIGH  (CRITICAL relative to this product's single claim)
+Location   : src/chain/coins.ts (metadata fetch) -> assetLabel()/fmtAsset()
+             -> src/badge/Badge.tsx, src/app/Details.tsx, src/app/Landing.tsx
+Category   : CWE-451 User Interface Misrepresentation of Critical Information
+             OWASP A04:2021 Insecure Design
+Status     : FIXED  (confirmed in code, exploit reproduced)
+
+Problem
+  `CoinMetadata.symbol` is chosen by whoever published the coin. It was read
+  from chain and rendered verbatim, with no length bound and no character
+  restriction, directly inside the badge — the one surface whose entire premise
+  is that its holder cannot edit what it says.
+
+Attack scenario
+  1. Attacker publishes a Sui coin whose CoinMetadata.symbol is
+     "1,000,000 SUI"  (or "SUI - AUDITED", or "VERIFIED SAFE").
+  2. Attacker locks one base unit of it with Epoch. Cost: dust.
+  3. Attacker embeds the resulting badge on their project page.
+  4. The badge renders, live from chain, reading:
+         LOCKED ON EPOCH / until 2027-01-01 / 0.000001 1,000,000 SUI
+     Every word of it sourced from the blockchain, exactly as advertised.
+
+  Reproduced against the real renderer before the fix:
+     "1,000,000 SUI"   -> rendered verbatim  (13 chars)
+     "VERIFIED SAFE"   -> rendered verbatim  (15 chars)
+     "A" x 120         -> rendered verbatim (120 chars, breaks layout)
+
+Impact
+  Defeats the product's only value proposition. A visitor checking a lock is
+  shown a fabricated quantity or a fabricated endorsement while every mechanism
+  behind it behaves correctly. Also a layout-denial vector on a third party's
+  homepage.
+
+  Note this is NOT XSS: Preact escapes text nodes, so no markup executes. The
+  damage is misrepresentation, which for this product is worse.
+
+Fix
+  `safeSymbol()` in src/chain/coins.ts accepts a symbol only if it has a
+  ticker's shape and length (max 12 chars, /^[A-Za-z0-9][A-Za-z0-9._-]{0,11}$/).
+  Anything else is discarded and the label falls back to the Move struct name,
+  which Move's own identifier rules already constrain to a safe character set.
+  Decimals are still honoured — a number cannot misrepresent itself.
+
+  Rejected after fix: "1,000,000 SUI", "SUI - AUDITED", "<img src=x>", 120xA
+  Still accepted:     "SUI", "CCTOO", "AF_LP_IRON"
+
+================================================================================
+4. VECTORS REVIEWED — NO ISSUE FOUND
+================================================================================
+
+Each of these was inspected in code. Where a category does not exist in this
+architecture, that is stated rather than reported as a pass.
+
+A. AUTHENTICATION / AUTHORIZATION ......... NOT APPLICABLE, then VERIFIED
+   No accounts, sessions, tokens, cookies or roles exist. Authority is a wallet
+   signature, and the ultimate authority is the Move contract.
+
+   The one client-side gate — availableAction() in src/chain/tx.ts — was
+   audited: it compares `frost.beneficiary` (chain data) against the connected
+   wallet and returns null otherwise. Critically, it is a UX gate, not the
+   security boundary: object_lock::extend and ::claim both assert
+   `ctx.sender() == lock.beneficiary` on chain. Bypassing the UI produces a
+   transaction the validators reject. Correct defense in depth.
+
+B. IDOR / BOLA ............................ VERIFIED SAFE
+   Every id in this app addresses PUBLIC blockchain state; there is no private
+   resource to enumerate. Changing ?id= shows another public lock, which is the
+   product working as designed.
+   The id used to build a MoveCall is `obj.address` — the node's normalised
+   echo — not the raw URL string. src/chain/resolve.ts:98-100.
+
+C. DATABASE / RLS / TENANT ISOLATION ...... NOT APPLICABLE
+   No database, no RLS surface, no tenants. Nothing is stored off-chain.
+
+D. INPUT / INJECTION ...................... VERIFIED SAFE
+   Inputs: URL query string only (id, q, view on the app; id, variant, mascot,
+   locale on the badge). No listeners accept postMessage, so nothing enters
+   from an embedding page.
+   - SQL/NoSQL/command/LDAP injection: no such interpreter exists.
+   - XSS: zero occurrences of innerHTML, outerHTML, dangerouslySetInnerHTML,
+     document.write, eval or new Function across src/. Preact escapes all text.
+   - Path traversal: no filesystem, no server routes.
+   - Shape gates: isSuiObjectId (src/chain/resolve.ts), normalizeName
+     (src/chain/names.ts) — both tested.
+   - GraphQL is parameterised throughout; no query is string-concatenated.
+
+E. OUTPUT / DATA EXPOSURE ................. VERIFIED SAFE
+   The app only ever displays public chain state. There is no private data in
+   the system to leak. No stack traces reach the UI; errors surface as short
+   generic strings.
+
+F. RATE LIMITING / DOS .................... VERIFIED, WITH A CAVEAT
+   Client-side rate control exists and is well built (src/chain/net.ts): memo
+   cache, in-flight dedupe, circuit breaker, max 4 concurrent, 55ms spacing,
+   backoff honouring Retry-After.
+   CAVEAT, stated plainly: this protects the SHARED PUBLIC ENDPOINT and the
+   viewer's own experience. It is not a security control and cannot be — a
+   static page cannot constrain a caller with devtools open. The endpoint's own
+   limits are the actual boundary. Correctly documented as such in the module.
+   Pagination is bounded (24 pages x 50 in owned.ts, 10 x 50 in search.ts).
+
+G. UPLOADS ................................ NOT APPLICABLE
+   No upload path exists. scripts/publish.mjs uploads a built artefact from a
+   developer machine, never from a browser, and takes no user input.
+
+H. SSRF ................................... NOT APPLICABLE
+   No server exists. All fetches originate in the visitor's browser and target
+   one hardcoded endpoint (graphql.mainnet.sui.io). CSP connect-src pins it.
+
+I. SECRETS / ENVIRONMENT .................. VERIFIED CLEAN
+   No .env in the working tree or in git history. No private keys, API keys or
+   tokens in source, scripts or bundles.
+   Three VITE_* variables exist (VITE_BADGE_ORIGIN, VITE_PUBLIC_BADGE_URL,
+   VITE_OG_IMAGE). All are public URLs by design; none is a credential.
+   Wallet private keys never touch this code — signing happens inside the
+   extension. There is deliberately no CLI signing path for exactly this reason.
+
+J. BUSINESS LOGIC / RACE CONDITIONS ....... NOT APPLICABLE, then VERIFIED
+   No balances, payments, credits, coupons or counters are held by this app.
+   Every state-changing operation is a single atomic Sui transaction; the chain
+   is the concurrency authority. Double-claim is prevented in Move by
+   `option::is_some(&lock.item)`, not by this frontend.
+
+K. SECURITY HEADERS ....................... VERIFIED STRONG
+   CSP shipped in the document:
+     default-src 'none'; script-src 'self' 'unsafe-inline';
+     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+     font-src https://fonts.gstatic.com data:; img-src 'self' data: https:;
+     connect-src https://graphql.mainnet.sui.io;
+     base-uri 'none'; form-action 'none'; object-src 'none'
+   default-src 'none' with an explicit connect-src allowlist is the right
+   posture: even given script execution, exfiltration has nowhere to go.
+   'unsafe-inline' for script is unavoidable — the build is a single inlined
+   file — and is mitigated by the absence of any DOM sink.
+   frame-ancestors is intentionally open: the badge must be embeddable.
+   HTTPS/HSTS are provided by the hosts (Cloudflare, Vercel).
+
+L. DEPENDENCIES / SUPPLY CHAIN ............ VERIFIED CLEAN
+   Three runtime dependencies, all first-party to their ecosystems.
+   npm audit --omit=dev -> 0 vulnerabilities.
+   No phantom or invented imports; every import resolves.
+
+M. postMessage ............................ VERIFIED SAFE
+   The badge SENDS its height to `parent` with target '*' and never registers a
+   message listener. Broadcasting a height to an unknown embedder discloses
+   nothing, and the target cannot be narrowed because the badge cannot know its
+   embedder. Accepting messages would be the risk, and it accepts none.
+
+N. window.open / tabnabbing ............... VERIFIED SAFE
+   The X intent opens with 'noopener,noreferrer'. All external anchors carry
+   rel="noopener noreferrer".
+
+================================================================================
+5. VIBE-CODING ANTI-PATTERNS
+================================================================================
+
+A1  Security only on frontend ........ NOT PRESENT. The one client gate is
+                                       explicitly a UX gate; Move enforces.
+A2  Auth removed to fix a bug ........ NOT PRESENT.
+A3  Hardcoded secrets ................ NOT PRESENT.
+A4  Disabled / permissive RLS ........ NOT APPLICABLE.
+A5  Ghost middleware ................. NOT PRESENT. The rate limiter is wired
+                                       into graphql.ts and verified in use.
+A6  Error swallowing ................. PRESENT, BUT DELIBERATE AND DOCUMENTED.
+                                       Several catch blocks intentionally
+                                       swallow (clipboard blocked, metadata
+                                       missing, WebGL absent). Each is a
+                                       best-effort path with a working fallback
+                                       and a comment saying so. No catch hides a
+                                       failure the user needed to know about.
+A7  Excessive privileges ............. NOT PRESENT. No privileged credential
+                                       exists anywhere in the system.
+A8  Unvalidated actions .............. NOT PRESENT. Shape gates on every input
+                                       that reaches a MoveCall.
+A9  Admin exposed by default ......... NOT PRESENT. ?view=deploy is not an admin
+                                       route: it can only build an update_blob
+                                       transaction, which the contract rejects
+                                       unless the signer holds the NameCap.
+A10 Unlimited queries ................ NOT PRESENT. All pagination bounded.
+
+================================================================================
+6. ARCHITECTURE
+================================================================================
+
+The layering is already close to the shape this audit would recommend, and it
+was clearly deliberate:
+
+  Presentation ......... src/app/*, src/badge/*, src/ui/*, src/ice/*
+  Domain / model ....... src/chain/frost.ts   (Frost, phases, isHollow)
+  Use cases ............ src/chain/resolve.ts, search.ts, names.ts, owned.ts
+  Transactions ......... src/chain/tx.ts      (pure builders, no I/O)
+  Infrastructure ....... src/chain/net.ts, graphql.ts, cache.ts
+  Wallet adapter ....... src/wallet/useWallet.ts
+
+Strengths worth preserving
+  - Transaction builders are pure functions returning a Transaction. They
+    perform no I/O and no authorization, which makes them trivially testable —
+    the security tests exercise availableAction() with no network at all.
+  - One transport chokepoint. Every chain read passes through net.ts, so
+    caching, backoff and the circuit breaker cannot be bypassed by a new caller.
+  - The visual layer takes no free text. src/ice/Frozen.tsx accepts no caption
+    or label prop and can only draw values derived from chain data. This is an
+    architectural guarantee against the exact class of problem VULN-001 was.
+  - Badge isolation is enforced at build time, not by convention. Verified: the
+    badge bundle contains zero occurrences of signAndExecuteTransaction,
+    getWallets, moveCall, Transaction, ProofCard, Backdrop or the shader.
+
+Observations (maintainability, not security)
+  - src/app/App.tsx carries routing, search orchestration and view state in one
+    component. It is the largest file in the presentation layer and the most
+    likely place for a future regression. Extracting a useSearch() hook would
+    isolate the orchestration without changing behaviour. NOT urgent, and NOT
+    recommended before the contest deadline.
+  - Fetch-shaped logic lives in useEffect inside several components. Acceptable
+    at this size; would want a data layer if the app grows.
+
+No architectural refactor is recommended at this time. The structure is sound
+and the deadline is real.
+
+================================================================================
+7. SECURITY TESTS ADDED
+================================================================================
+
+scripts/security-test.mjs — run with `npm run test:security`
+18 assertions, all passing. Chosen over adding a test framework because the
+project ships a single HTML file and has no runner; these bundle the real
+modules through esbuild and execute them.
+
+  Misrepresentation (VULN-001 regression)
+    should reject a symbol that states a quantity
+    should reject a symbol that claims an audit
+    should reject a symbol carrying markup
+    should reject a symbol long enough to break layout
+    should still accept a real ticker
+    should still accept an underscored ticker
+
+  Input shape gates
+    should reject a non-hex object id
+    should reject an unprefixed object id
+    should reject an over-long object id
+    should accept a well-formed object id
+    should reject a name with a path traversal
+    should reject a purely numeric name
+    should reject a name that is too short
+    should accept a real name with or without suffix
+
+  Authorization gate
+    should offer nothing to a disconnected visitor
+    should offer nothing to a wallet that is not the beneficiary
+    should offer extend to the beneficiary
+    should offer nothing on a claimed lock
+
+================================================================================
+8. ITEMS REQUIRING EXTERNAL CONFIGURATION
+================================================================================
+
+1. Sui GraphQL endpoint is shared public infrastructure. The client-side
+   limiter protects it politely, but sustained badge traffic should eventually
+   move to a dedicated endpoint. NOT a vulnerability; a capacity dependency.
+
+2. Response headers on permafrost.epochsui.com are set by Epoch's Cloudflare
+   and are outside this repository's control. Verified in production as
+   permissive-but-appropriate for an embeddable artefact
+   (access-control-allow-origin: *, no X-Frame-Options, 300s cache).
+
+3. The Vercel mirror serves identical static output. No environment secret is
+   configured there and none is needed.
+
+================================================================================
+9. SECURITY SCORECARD
+================================================================================
+
+  Critical ...................... 0
+  High .......................... 1   (VULN-001 — FIXED)
+  Medium ........................ 0
+  Low ........................... 0
+
+  Vibe-coding anti-patterns ..... 0 harmful
+                                  (A6 present but deliberate and documented)
+  Architecture issues ........... 0 blocking, 2 maintainability observations
+
+  Overall risk .................. LOW (post-fix)
+
+================================================================================
+10. TOP 3 REMAINING PRIORITIES
+================================================================================
+
+1. TREAT ALL CHAIN-SOURCED TEXT AS ATTACKER INPUT — AS A STANDING RULE.
+   VULN-001 was one instance of a general truth this product must internalise:
+   the blockchain is a public write surface, so any string it returns is
+   attacker-composable. `innerType` and NameCap names are currently safe only
+   because Move's identifier grammar constrains them. Any future field that is
+   free-form (an NFT name, a description, a URL) must pass a shape gate before
+   it reaches the badge.
+
+2. KEEP THE VISUAL LAYER INCAPABLE OF ACCEPTING FREE TEXT.
+   That `Frozen` takes no caption prop is a security property, not a style
+   choice. It should be treated as an invariant and stated in the contributor
+   docs, because the natural next feature request — "let projects add a note to
+   their badge" — would reintroduce VULN-001 by design.
+
+3. MONITOR THE SHARED ENDPOINT AS ADOPTION GROWS.
+   Every visitor to every site embedding a badge is one request. The limiter
+   handles bursts from one viewer; it cannot handle aggregate load. Plan a
+   dedicated endpoint before the badge is widely embedded.
+
+================================================================================
+NOTE ON SCOPE
+================================================================================
+This audit covers the PermaFrost frontend only. The Epoch Move contracts
+(epoch_object_lock, vesting_service, walrus_names) are third-party code under a
+separate bug bounty and were read for behaviour, not audited here. Their asserts
+are load-bearing for several conclusions above and were verified by reading
+their source, not assumed.
+================================================================================
