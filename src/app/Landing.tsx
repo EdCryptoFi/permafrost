@@ -2,7 +2,7 @@ import { useEffect, useState } from 'preact/hooks'
 import { fetchChainNowMs } from '@/chain/graphql'
 import { listShowcase } from '@/chain/search'
 import { resolveMany } from '@/chain/resolve'
-import { assetLabel, isHollow, msLeft, type Frost } from '@/chain/frost'
+import { assetLabel, isHollow, msLeft, urgencyOf, type Frost } from '@/chain/frost'
 import { Frozen } from '@/ice/Frozen'
 import { fmtAsset, fmtCountdown, fmtDate } from '@/format'
 import { useTick } from '@/useTick'
@@ -93,6 +93,12 @@ function HeroCopy({ frost }: { frost: Frost }) {
             : assetLabel(frost)}
       </b>
       {isHollow(frost) && <span class="hollow-tag">holds nothing</span>}
+      {urgencyOf(frost, elapsed) === 'imminent' && (
+        <span class="expiring-tag">unlocks this week</span>
+      )}
+      {urgencyOf(frost, elapsed) === 'expiring' && (
+        <span class="expiring-tag">unlocking soon</span>
+      )}
       <span class="hero-line">
         {left > 0 ? (
           <>

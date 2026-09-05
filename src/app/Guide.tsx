@@ -1,4 +1,5 @@
 import { InternalLink } from '@/ui/InternalLink'
+import { IconBlock, IconCrack, IconExpiring, IconHollow, IconFrost, IconEmbed } from '@/ui/icons'
 
 /**
  * The guide.
@@ -35,6 +36,30 @@ export function Guide({
       </section>
 
       <section class="panel">
+        <h2>Why a screenshot is not proof</h2>
+        <div class="versus">
+          <div class="versus-side is-bad">
+            <span class="versus-tag">A screenshot</span>
+            <ul>
+              <li>Forged in thirty seconds with the browser's own inspector</li>
+              <li>Still looks convincing months after the lock expired</li>
+              <li>Says whatever the person posting it wants it to say</li>
+              <li>Proves nothing about the chain</li>
+            </ul>
+          </div>
+          <div class="versus-side is-good">
+            <span class="versus-tag">This badge</span>
+            <ul>
+              <li>Read from Sui on every page load</li>
+              <li>Changes by itself when the term elapses</li>
+              <li>The site holding it cannot edit a character</li>
+              <li>Every value links back to the object it came from</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
         <h2>1 · Verify something</h2>
         <p class="muted">The search box takes four different things and works out which is which:</p>
         <dl class="facts">
@@ -67,32 +92,60 @@ export function Guide({
           The picture is drawn from the same numbers as the table, so the two can never disagree.
           It accepts no caption and no label — it can only draw what the chain returned.
         </p>
-        <dl class="facts">
-          <div class="fact">
-            <dt>Solid block</dt>
-            <dd>Locked. The term is running.</dd>
+        <div class="legend">
+          <div class="legend-row">
+            <span class="legend-icon"><IconBlock size={20} /></span>
+            <div>
+              <b>Solid block</b>
+              <span class="muted small">Locked, and the term is running.</span>
+            </div>
           </div>
-          <div class="fact">
-            <dt>Melting, dripping</dt>
-            <dd>A vesting vault releasing. The melt is the vested share.</dd>
+          <div class="legend-row">
+            <span class="legend-icon"><IconFrost size={20} /></span>
+            <div>
+              <b>Melting, dripping</b>
+              <span class="muted small">
+                A vesting vault releasing. The melt is the vested share — not an
+                illustration of it, the same number drawn.
+              </span>
+            </div>
           </div>
-          <div class="fact">
-            <dt>Dashed rime line</dt>
-            <dd>Time elapsed, when nothing has been released yet.</dd>
+          <div class="legend-row">
+            <span class="legend-icon"><IconExpiring size={20} /></span>
+            <div>
+              <b class="is-ember">Unlocking soon · unlocks this week</b>
+              <span class="muted small">
+                Under 30 days left, then under 7. A lock expiring next week protects
+                almost nothing, and a date alone makes you do the arithmetic. The badge
+                turns amber and says so.
+              </span>
+            </div>
           </div>
-          <div class="fact">
-            <dt>Cracked open</dt>
-            <dd>The unlock date passed. The beneficiary can withdraw.</dd>
+          <div class="legend-row">
+            <span class="legend-icon"><IconCrack size={20} /></span>
+            <div>
+              <b>Cracked open</b>
+              <span class="muted small">The unlock date passed. The beneficiary can withdraw.</span>
+            </div>
           </div>
-          <div class="fact">
-            <dt>A puddle</dt>
-            <dd>Everything was claimed. Nothing is left.</dd>
+          <div class="legend-row">
+            <span class="legend-icon"><IconHollow size={20} /></span>
+            <div>
+              <b class="is-lava">Locked — but empty</b>
+              <span class="muted small">
+                A real, uncancellable lock holding a balance of zero. The contract behaves
+                perfectly; there is simply nothing underneath.
+              </span>
+            </div>
           </div>
-          <div class="fact">
-            <dt>Amber, "but empty"</dt>
-            <dd>A real lock holding a balance of zero.</dd>
+          <div class="legend-row">
+            <span class="legend-icon"><IconEmbed size={20} /></span>
+            <div>
+              <b>A puddle</b>
+              <span class="muted small">Everything was claimed. Nothing is left to verify.</span>
+            </div>
           </div>
-        </dl>
+        </div>
         <p class="muted small">
           That last one matters. A lock of an empty coin is still a lock, and without the amount
           it looks exactly like one holding a fortune. Compare{' '}

@@ -13,6 +13,7 @@ import { Guide } from './Guide'
 import { Results } from './Results'
 import { useWallet } from '@/wallet/useWallet'
 import { shortAddr } from '@/format'
+import { IconFrost, IconGuide } from '@/ui/icons'
 import { HeroTitle } from '@/ui/HeroTitle'
 import { Backdrop, sceneFor } from '@/ui/Backdrop'
 import { Shader } from '@/ui/Shader'
@@ -149,7 +150,9 @@ export function App() {
       <div class="wrap">
       <header class="head">
         <div class="brand">
-          <span class="brand-mark" aria-hidden="true">❄</span>
+          <span class="brand-mark">
+            <IconFrost size={20} />
+          </span>
           <div>
             <b class="glitch" data-text="PermaFrost">PermaFrost</b>
             <small>proof of lock · epoch on sui</small>
@@ -180,11 +183,7 @@ export function App() {
             go('guide')
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M9.6 9.2a2.6 2.6 0 1 1 3.3 2.5c-.6.2-.9.7-.9 1.3v.5" />
-            <path d="M12 16.8h.01" />
-          </svg>
+          <IconGuide size={14} />
           Guide
         </a>
         <WalletButton wallet={wallet} />

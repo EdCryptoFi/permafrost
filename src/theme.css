@@ -17,10 +17,17 @@
   --sky: #38bdf8;
   --teal: #14b8a6;
 
-  /* Thermal accents. Red is the alarm, not decoration. */
-  --lava: #ff3b30;
-  --lava-deep: #e11d48;
-  --ember: #ff9500;
+  /* Thermal accents. Orange is the alarm, not decoration.
+     The rose the reference used read as magenta beside the cyan, which is a
+     brand colour in this space rather than a warning one. Molten orange says
+     heat, and it is the colour the shader's own lava palette already burns. */
+  --lava: #e8590c;
+  --lava-deep: #9a3412;
+  --lava-bright: #ff7518;
+  /* The reference reserves this exact value for "decaying or expiring
+     locks". Pulled yellower than the lava orange on purpose: a clock and a
+     fraud must not read as the same warning. */
+  --ember: #f59e0b;
   --violet: #818cf8;
 
   /* High-visibility badging */

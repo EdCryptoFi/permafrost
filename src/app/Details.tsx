@@ -1,7 +1,7 @@
 import { type Frost, assetLabel, msLeft } from '@/chain/frost'
 import { EXPLORER } from '@/chain/constants'
 import { fmtAsset, fmtCountdown, fmtDate, pct } from '@/format'
-import { isHollow } from '@/chain/frost'
+import { isHollow, urgencyOf } from '@/chain/frost'
 import { useTick } from '@/useTick'
 
 export function Details({ frost }: { frost: Frost }) {
@@ -57,6 +57,14 @@ export function Details({ frost }: { frost: Frost }) {
   return (
     <section class="panel">
       <h2>On-chain record</h2>
+
+      {urgencyOf(frost, elapsed) !== 'none' && (
+        <p class={`expiring is-${urgencyOf(frost, elapsed)}`}>
+          {urgencyOf(frost, elapsed) === 'imminent'
+            ? 'This lock runs out in under a week. After that the beneficiary can withdraw at any moment, and this proof stops meaning anything.'
+            : 'This lock runs out within the month. Worth asking the project whether they intend to renew it.'}
+        </p>
+      )}
 
       {isHollow(frost) && (
         <p class="hollow">

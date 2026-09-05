@@ -152,3 +152,36 @@ export function typeMatches(innerType: string, needle: string): boolean {
 export function assetLabel(f: Frost): string {
   return f.symbol ?? shortType(f.innerType)
 }
+
+/**
+ * How close a lock is to running out.
+ *
+ * A lock expiring next week protects almost nothing, and until now it wore the
+ * same calm badge as one running for two years — same wording, same colour,
+ * only a date to tell them apart, and a date means nothing without doing the
+ * arithmetic. Somebody checking a project on the day the liquidity unlocks
+ * deserves to be told, not left to subtract.
+ *
+ * Two tiers, chosen to match how liquidity locks are actually discussed:
+ *   imminent — under 7 days. Effectively unlocked; treat it as a warning.
+ *   expiring — under 30 days. The window in which a project would normally
+ *              announce a renewal.
+ *
+ * A hollow lock is not graded: it is already flagged for holding nothing, and
+ * two alarms on one badge dilute both.
+ */
+export type Urgency = 'none' | 'expiring' | 'imminent'
+
+const DAY = 24 * 3600e3
+export const IMMINENT_MS = 7 * DAY
+export const EXPIRING_MS = 30 * DAY
+
+export function urgencyOf(f: Frost, elapsedMs = 0): Urgency {
+  if (f.phase !== 'melting') return 'none'
+  if (isHollow(f)) return 'none'
+  const left = msLeft(f, elapsedMs)
+  if (left <= 0) return 'none'
+  if (left < IMMINENT_MS) return 'imminent'
+  if (left < EXPIRING_MS) return 'expiring'
+  return 'none'
+}

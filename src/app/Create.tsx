@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks'
 import { listLockable, type OwnedObject } from '@/chain/owned'
 import { buildLock } from '@/chain/tx'
 import { ConnectButton } from '@/ui/ConnectButton'
+import { IconCoin, IconObject } from '@/ui/icons'
 import { awaitCreatedLock } from '@/chain/created'
 import type { Frost } from '@/chain/frost'
 import type { useWallet } from '@/wallet/useWallet'
@@ -167,7 +168,10 @@ export function Create({
                   </b>
                   <span class="muted small mono addr">{o.id}</span>
                 </span>
-                <span class="muted small">{o.isCoin ? 'coin' : 'object'}</span>
+                <span class="pick-kind muted small">
+                  {o.isCoin ? <IconCoin size={13} /> : <IconObject size={13} />}
+                  {o.isCoin ? 'coin' : 'object'}
+                </span>
               </button>
             ))}
             {shown.length === 0 && <p class="muted small">Nothing matches that filter.</p>}

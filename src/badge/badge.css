@@ -68,3 +68,13 @@ body { display: inline-block; }
 .pf.is-error .pf-dot  { background: var(--lava); animation: none; }
 .pf.is-absent .pf-dot { background: var(--hi);   animation: none; }
 @keyframes pf-blink { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+
+/* A lock running out reads amber — a clock, not the orange alarm of a fraud. */
+.pf.is-expiring { border-color: var(--ember); box-shadow: 4px 4px 0 0 var(--ember); }
+.pf.is-expiring .pf-detail { color: var(--ember); }
+.pf.is-imminent {
+  border-color: var(--ember);
+  box-shadow: 4px 4px 0 0 var(--ember);
+}
+.pf.is-imminent .pf-label { color: #241200; background: var(--ember); padding: 0 5px; }
+.pf.is-imminent .pf-detail { color: var(--ember); }

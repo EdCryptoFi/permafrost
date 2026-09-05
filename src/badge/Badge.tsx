@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'preact/hooks'
 import { resolveFrost } from '@/chain/resolve'
-import { isHollow, msLeft, type Frost } from '@/chain/frost'
+import { isHollow, msLeft, urgencyOf, type Frost } from '@/chain/frost'
 import { swr, serialize, deserialize } from '@/chain/cache'
 import { Frozen } from '@/ice/Frozen'
 import { fmtAsset, fmtCountdown, fmtDate, pct } from '@/format'
@@ -83,6 +83,7 @@ export function Badge({ opts }: { opts: BadgeOpts }) {
   // never contradict each other mid-page.
   const past = left <= 0
   const hollow = isHollow(frost)
+  const urgency = urgencyOf(frost, elapsed)
   // State the amount whenever the chain gives us one. A padlock over an
   // unstated quantity is exactly the kind of claim this product exists to
   // replace.
@@ -99,7 +100,11 @@ export function Badge({ opts }: { opts: BadgeOpts }) {
         ? 'Unlocked'
         : hollow
           ? 'Locked — but empty'
-          : 'Locked on Epoch'
+          : urgency === 'imminent'
+            ? 'Unlocks this week'
+            : urgency === 'expiring'
+              ? 'Unlocking soon'
+              : 'Locked on Epoch'
   const detail =
     frost.phase === 'thawed'
       ? `was locked until ${fmtDate(frost.unlockMs, opts.locale)}`
@@ -109,7 +114,9 @@ export function Badge({ opts }: { opts: BadgeOpts }) {
 
   return (
     <a
-      class={`pf pf-${opts.variant} is-${frost.phase}${hollow ? ' is-hollow' : ''}`}
+      class={`pf pf-${opts.variant} is-${frost.phase}${hollow ? ' is-hollow' : ''}${
+        urgency !== 'none' ? ` is-${urgency}` : ''
+      }`}
       href={EXPLORER(frost.id)}
       target="_blank"
       rel="noopener noreferrer external"

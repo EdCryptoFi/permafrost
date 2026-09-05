@@ -67,13 +67,39 @@
 
 /* --- buttons --------------------------------------------------------- */
 .btn {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 8px;
   padding: 14px 22px; border: 1px solid var(--peak); border-radius: 0;
   font-family: var(--display); font-weight: 700; font-size: 0.78rem;
   text-transform: uppercase; letter-spacing: 0.08em;
   color: #000; cursor: pointer; background: var(--cyan);
   box-shadow: 4px 4px 0 0 var(--lava);
-  text-decoration: none; display: inline-block;
+  text-decoration: none;
 }
+/* The machined face. The same telemetry lattice that grids the page, milled
+   into the one control that commits something — so the button that signs
+   reads as part of the instrument rather than pasted onto it. */
+.btn::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.16) 1px, transparent 1px);
+  background-size: 8px 8px;
+  opacity: 0.55;
+}
+.btn::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(0, 0, 0, 0.14) 0 6px,
+    transparent 6px 14px
+  );
+  opacity: 0.5;
+}
+.btn > * { position: relative; z-index: 1; }
+.btn:hover::after { opacity: 0.75; }
+/* Ghost buttons stay flat: texture is what marks the committing control. */
+.btn.ghost::before, .btn.ghost::after { content: none; }
 .btn:hover { background: var(--peak); box-shadow: 4px 4px 0 0 var(--cyan); }
 .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 0 var(--cyan); }
 .btn:disabled { opacity: 0.4; cursor: default; box-shadow: 4px 4px 0 0 #1d2530; }
@@ -411,3 +437,72 @@ a:hover { color: var(--paper); }
 .hero .hl:nth-child(2) { margin-left: 0.4rem; }
 .hero .hl:nth-child(3) { margin-left: 0.1rem; }
 .hero .hl:nth-child(4) { margin-left: 0.6rem; margin-top: 0.12em; }
+
+/* --- a lock running out ----------------------------------------------
+   Ember, not the lava orange: this is a clock, not a fraud. The two must
+   stay distinguishable at a glance, because one means "ask them about it"
+   and the other means "do not trust this at all". */
+.expiring {
+  background: rgba(255, 149, 0, 0.1); color: var(--ember);
+  border: 1px solid var(--ember); border-left: 4px solid var(--ember);
+  font-family: var(--mono); font-size: 0.74rem; line-height: 1.6;
+  padding: 12px 14px; margin: 0 0 16px;
+}
+.expiring.is-imminent {
+  background: rgba(255, 149, 0, 0.16);
+  border-left-width: 6px;
+}
+.expiring-tag {
+  align-self: flex-start; background: var(--ember); color: #241200;
+  font-family: var(--display); font-size: 0.6rem; font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 9px; margin-bottom: 6px;
+}
+
+.pick-kind {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 0.66rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+/* --- guide: the comparison and the legend ---------------------------- */
+.versus { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 14px; }
+@media (max-width: 780px) { .versus { grid-template-columns: 1fr; } }
+.versus-side { border: 1px solid var(--line); padding: 16px 18px; background: var(--bg-sunken); }
+.versus-side.is-bad { border-color: var(--lava); }
+.versus-side.is-good { border-color: var(--cyan); }
+.versus-tag {
+  display: inline-block; font-family: var(--display); font-size: 0.62rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 9px; margin-bottom: 12px;
+  color: #000;
+}
+.versus-side.is-bad .versus-tag { background: var(--lava); }
+.versus-side.is-good .versus-tag { background: var(--cyan); }
+.versus-side ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.versus-side li {
+  position: relative; padding-left: 18px; color: var(--mut-soft);
+  font-size: 0.86rem; line-height: 1.5;
+}
+.versus-side li::before {
+  content: ""; position: absolute; left: 0; top: 0.55em;
+  width: 7px; height: 7px;
+}
+.versus-side.is-bad li::before { background: var(--lava); }
+.versus-side.is-good li::before { background: var(--cyan); }
+
+.legend { display: flex; flex-direction: column; margin: 16px 0; }
+.legend-row {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 0; border-bottom: 1px dashed rgba(224, 242, 254, 0.2);
+}
+.legend-row > div { display: flex; flex-direction: column; gap: 3px; }
+.legend-row b {
+  font-family: var(--mono); font-size: 0.8rem; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--cyan);
+}
+.legend-row b.is-ember { color: var(--ember); }
+.legend-row b.is-lava { color: var(--lava); }
+.legend-icon {
+  flex-shrink: 0; width: 36px; height: 36px; display: grid; place-items: center;
+  border: 1px solid var(--line); color: var(--cyan); background: var(--bg-elevated);
+}
