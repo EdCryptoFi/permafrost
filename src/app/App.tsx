@@ -9,6 +9,7 @@ import { Actions } from './Actions'
 import { Landing } from './Landing'
 import { Create } from './Create'
 import { Deploy } from './Deploy'
+import { Guide } from './Guide'
 import { Results } from './Results'
 import { useWallet } from '@/wallet/useWallet'
 import { shortAddr } from '@/format'
@@ -24,11 +25,11 @@ type Status = 'idle' | 'loading' | 'ready' | 'error'
  * are no server routes to hang a second page off. Deep links still work, which
  * matters because every badge click lands on `?id=`.
  */
-type View = 'verify' | 'new' | 'deploy'
+type View = 'verify' | 'new' | 'deploy' | 'guide'
 
 const viewFromUrl = (): View => {
   const v = new URLSearchParams(location.search).get('view')
-  return v === 'new' || v === 'deploy' ? v : 'verify'
+  return v === 'new' || v === 'deploy' || v === 'guide' ? v : 'verify'
 }
 
 export function App() {
@@ -168,6 +169,22 @@ export function App() {
             </a>
           ))}
         </nav>
+        <a
+          class={`guide-link${view === 'guide' ? ' on' : ''}`}
+          href="?view=guide"
+          onClick={(e) => {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+            e.preventDefault()
+            go('guide')
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M9.6 9.2a2.6 2.6 0 1 1 3.3 2.5c-.6.2-.9.7-.9 1.3v.5" />
+            <path d="M12 16.8h.01" />
+          </svg>
+          Guide
+        </a>
         <WalletButton wallet={wallet} />
       </header>
       <div class="rule" />
@@ -186,7 +203,9 @@ export function App() {
             ? 'Freeze something.'
             : view === 'deploy'
               ? 'Ship the blob.'
-              : 'Read it from the chain.'}
+              : view === 'guide'
+                ? 'How it works.'
+                : 'Read it from the chain.'}
         </h1>
       )}
       <p class="lede">
@@ -194,7 +213,9 @@ export function App() {
           ? 'Pick anything this wallet holds that the contract accepts, set a date, sign once. Locks are shared objects — after that, anybody can verify it and nobody can undo it.'
           : view === 'deploy'
             ? 'Publish each build to Walrus, then point a .epoch name at the blob it returns. The NameCap never leaves your wallet.'
-            : "Paste a project's address and see everything it has locked with Epoch — LP positions, vesting vaults, the lot. Then embed a badge that reads the chain live, so nobody has to take your word for it."}
+            : view === 'guide'
+              ? 'Every step, and what each part of the picture means. Nothing here is a roadmap — it all works right now.'
+              : "Paste a project's address and see everything it has locked with Epoch — LP positions, vesting vaults, the lot. Then embed a badge that reads the chain live, so nobody has to take your word for it."}
       </p>
 
       {view === 'verify' && (
@@ -244,6 +265,16 @@ export function App() {
       )}
 
       {view === 'deploy' && <Deploy wallet={wallet} onCancel={() => go('verify')} />}
+
+      {view === 'guide' && (
+        <Guide
+          onPick={(id) => {
+            go('verify')
+            void pick(id)
+          }}
+          onGo={go}
+        />
+      )}
 
       {slow && (
         <p class="muted small">

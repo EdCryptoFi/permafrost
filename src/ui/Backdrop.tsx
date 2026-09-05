@@ -21,9 +21,14 @@ import './backdrop.css'
 export type Scene = 'aurora' | 'frozen' | 'crack' | 'thaw' | 'blizzard' | 'blueprint'
 
 /** The scene a given view and lock imply. One place, so nothing contradicts. */
-export function sceneFor(view: 'verify' | 'new' | 'deploy', frost: Frost | null): Scene {
+export function sceneFor(
+  view: 'verify' | 'new' | 'deploy' | 'guide',
+  frost: Frost | null,
+): Scene {
   if (view === 'new') return 'blizzard'
   if (view === 'deploy') return 'blueprint'
+  // The guide is reading, not doing: keep the backdrop calm behind it.
+  if (view === 'guide') return 'aurora'
   if (!frost) return 'aurora'
   switch (frost.phase) {
     case 'thawed':
