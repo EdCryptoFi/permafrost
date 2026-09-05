@@ -1,7 +1,7 @@
 import type { Frost } from '@/chain/frost'
 import { assetLabel } from '@/chain/frost'
 import type { SearchKind } from '@/chain/search'
-import { Frozen } from '@/ice/Frozen'
+import { IceMark } from '@/ice/IceMark'
 import { fmtDate } from '@/format'
 import { InternalLink } from '@/ui/InternalLink'
 
@@ -83,7 +83,7 @@ export function Results({
       <div class="res-list">
         {frosts.map((f) => (
           <InternalLink class="res" key={f.id} id={f.id} onPick={onPick}>
-            <Frozen frost={f} size={54} snow={false} mascot={false} />
+            <IceMark frost={f} size={40} />
             <span class="res-body">
               <b class="mono">{assetLabel(f)}</b>
               <span class="muted small">

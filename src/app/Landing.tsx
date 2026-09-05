@@ -4,6 +4,7 @@ import { listShowcase } from '@/chain/search'
 import { resolveMany } from '@/chain/resolve'
 import { assetLabel, isHollow, msLeft, urgencyOf, type Frost } from '@/chain/frost'
 import { Frozen } from '@/ice/Frozen'
+import { IceMark } from '@/ice/IceMark'
 import { fmtAsset, fmtCountdown, fmtDate } from '@/format'
 import { useTick } from '@/useTick'
 import { InternalLink } from '@/ui/InternalLink'
@@ -59,7 +60,7 @@ export function Landing({ onPick }: { onPick: (id: string) => void }) {
           <div class="ex-grid">
             {rest.slice(0, 3).map((f) => (
               <InternalLink class="ex" key={f.id} id={f.id} onPick={onPick}>
-                <Frozen frost={f} size={64} snow={false} />
+                <IceMark frost={f} size={48} />
                 <span class="ex-body">
                   <b class="mono">{assetLabel(f)}</b>
                   <span class="muted small">

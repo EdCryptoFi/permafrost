@@ -88,6 +88,9 @@
 
 /* --- grid ------------------------------------------------------------ */
 .bd-grid {
+  /* Off while the shader carries the room: two grids at different scales
+     read as moire, not as structure. */
+  display: none;
   background-image:
     linear-gradient(rgba(41, 182, 246, 0.15) 1px, transparent 1px),
     linear-gradient(90deg, rgba(41, 182, 246, 0.15) 1px, transparent 1px);
@@ -226,7 +229,11 @@
 .bd-blueprint .bd-aurora { opacity: 0.14; }
 .bd-blueprint .bd-aurora-2 { opacity: 0.08; }
 .bd-blueprint .bd-stars { opacity: 0.18; }
-.bd-blueprint .bd-grid { opacity: 1; animation: bd-grid-crawl 24s linear infinite; }
+.bd-blueprint .bd-grid {
+  /* Off while the shader carries the room: two grids at different scales
+     read as moire, not as structure. */
+  display: none;
+}
 @keyframes bd-grid-crawl {
   0%   { background-position: 0 0, 0 0; }
   100% { background-position: 0 46px, 46px 0; }

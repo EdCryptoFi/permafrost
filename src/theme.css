@@ -41,7 +41,9 @@
   --peak: #ffffff;
   --mut: #849495;
   --mut-soft: #b9cacb;
-  --line: rgba(0, 240, 255, 0.22);
+  /* Outlines are orange; cyan is reserved for values. A border and a
+     figure competing in the same colour made every panel look like data. */
+  --line: rgba(232, 89, 12, 0.34);
   --line-soft: rgba(224, 242, 254, 0.14);
 
   /* legacy accents still referenced by components */
@@ -89,21 +91,11 @@ body {
 
 .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
 
-/* --- Level 0: the abyss grid -----------------------------------------
-   Cyan hairlines on a 32px telemetry lattice. Fixed, so panning the page
-   does not drag the coordinate system with it. */
-.grain::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image:
-    linear-gradient(rgba(0, 240, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 240, 255, 0.07) 1px, transparent 1px);
-  background-size: var(--grid) var(--grid);
-  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 78%);
-}
+/* --- Level 0 ---------------------------------------------------------
+   The telemetry lattice used to be painted here, above the shader, and it
+   diced the field into squares — a grid drawn over weather. The shader is
+   the floor now; all that is left is a faint warming at the corners so the
+   page still has a top and a bottom. */
 .grain::after {
   content: "";
   position: fixed;
@@ -111,8 +103,8 @@ body {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(60% 45% at 12% 0%, rgba(0, 240, 255, 0.09), transparent 62%),
-    radial-gradient(55% 45% at 92% 100%, rgba(255, 59, 48, 0.06), transparent 62%);
+    radial-gradient(60% 45% at 12% 0%, rgba(0, 240, 255, 0.05), transparent 62%),
+    radial-gradient(55% 45% at 92% 100%, rgba(232, 89, 12, 0.05), transparent 62%);
 }
 
 /* --- Hazard tape -----------------------------------------------------
@@ -123,7 +115,7 @@ body {
   margin: 0 0 34px;
   background: repeating-linear-gradient(
     -45deg,
-    var(--hi) 0 10px,
+    var(--lava) 0 10px,
     #0b0f16 10px 20px
   );
   opacity: 0.85;
@@ -171,9 +163,9 @@ body {
    Level 2: a recessed chamber, dotted frost border, scanlines. */
 .crt {
   position: relative;
-  border: 1px solid var(--line);
+  border: 1px solid var(--lava);
   background: var(--bg-sunken);
-  box-shadow: 5px 5px 0 0 var(--cyan);
+  box-shadow: 5px 5px 0 0 var(--lava);
   overflow: hidden;
 }
 .crt::before {
@@ -215,9 +207,9 @@ body {
   font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
   padding: 8px 13px; cursor: pointer; text-decoration: none;
 }
-.nav a:hover { color: var(--cyan); border-color: var(--line); }
+.nav a:hover { color: var(--lava-bright); border-color: var(--lava); }
 .nav a.on {
-  color: #00232a; background: var(--cyan); border-color: var(--cyan);
-  box-shadow: 3px 3px 0 0 rgba(0, 240, 255, 0.25);
+  color: #240b00; background: var(--lava); border-color: var(--lava);
+  box-shadow: 3px 3px 0 0 rgba(232, 89, 12, 0.3);
 }
-.nav a.on:hover { color: #00232a; }
+.nav a.on:hover { color: #240b00; }
