@@ -27,6 +27,21 @@ export const VESTING = {
   TYPE_PKG: '0x848cb7edf8b5f7650b3188dec459394472c8ccf206a031497bf55fe40c165da2',
   CALL_PKG: '0x848cb7edf8b5f7650b3188dec459394472c8ccf206a031497bf55fe40c165da2',
   MODULE: 'vesting',
+  /** Shared. Holds the deploy fee every vault pays, in SUI. */
+  TREASURY: '0x31bd863db14dd552a28f85641888b7ddc3a4866c4ffde286b30eaf7ac2841553',
+} as const
+
+/**
+ * The EPT gateway: pay a vesting vault's protocol fee in $EPT instead of SUI,
+ * burned to @0x0 by the contract. Published 30 Aug 2026, version 1, so origin
+ * and latest are the same id — there is no upgrade to get wrong yet.
+ */
+export const EPT_GATEWAY = {
+  TYPE_PKG: '0xfe47be69142372eacab34f66b936989079840501a0d85209ac68c8ba6f74eea5',
+  CALL_PKG: '0xfe47be69142372eacab34f66b936989079840501a0d85209ac68c8ba6f74eea5',
+  MODULE: 'ept_gateway',
+  /** The one shared Gateway. Anyone may pay through it; nobody may take from it. */
+  OBJECT: '0x75da1b355776cb2bbb7a5eed89710a63dffb5ff43a1f440bb058c4d31c2fbab3',
 } as const
 
 export const NAMES = {

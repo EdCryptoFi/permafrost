@@ -22,13 +22,16 @@ export type Scene = 'aurora' | 'frozen' | 'crack' | 'thaw' | 'blizzard' | 'bluep
 
 /** The scene a given view and lock imply. One place, so nothing contradicts. */
 export function sceneFor(
-  view: 'verify' | 'new' | 'deploy' | 'guide',
+  view: 'verify' | 'new' | 'deploy' | 'ept' | 'guide',
   frost: Frost | null,
 ): Scene {
   if (view === 'new') return 'blizzard'
   if (view === 'deploy') return 'blueprint'
   // The guide is reading, not doing: keep the backdrop calm behind it.
   if (view === 'guide') return 'aurora'
+  // A burn is the one thing here that is not cold. The crack scene is the
+  // room the app already uses when the ice loses.
+  if (view === 'ept') return 'crack'
   if (!frost) return 'aurora'
   switch (frost.phase) {
     case 'thawed':

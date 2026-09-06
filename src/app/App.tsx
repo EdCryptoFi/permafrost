@@ -17,6 +17,7 @@ import { IconFrost, IconGuide } from '@/ui/icons'
 import { ThemeToggle } from '@/ui/ThemeToggle'
 import { HeroTitle } from '@/ui/HeroTitle'
 import { Backdrop, sceneFor } from '@/ui/Backdrop'
+import { Ept } from './Ept'
 import { Shader } from '@/ui/Shader'
 import { ProofCard } from '@/share/ProofCard'
 import './app.css'
@@ -28,11 +29,11 @@ type Status = 'idle' | 'loading' | 'ready' | 'error'
  * are no server routes to hang a second page off. Deep links still work, which
  * matters because every badge click lands on `?id=`.
  */
-type View = 'verify' | 'new' | 'deploy' | 'guide'
+type View = 'verify' | 'new' | 'deploy' | 'ept' | 'guide'
 
 const viewFromUrl = (): View => {
   const v = new URLSearchParams(location.search).get('view')
-  return v === 'new' || v === 'deploy' || v === 'guide' ? v : 'verify'
+  return v === 'new' || v === 'deploy' || v === 'ept' || v === 'guide' ? v : 'verify'
 }
 
 export function App() {
@@ -163,7 +164,7 @@ export function App() {
           </div>
         </div>
         <nav class="nav">
-          {(['verify', 'new', 'deploy'] as View[]).map((v) => (
+          {(['verify', 'new', 'deploy', 'ept'] as View[]).map((v) => (
             <a
               key={v}
               class={view === v ? 'on' : ''}
@@ -174,7 +175,7 @@ export function App() {
                 go(v)
               }}
             >
-              {v === 'verify' ? 'Verify' : v === 'new' ? 'Freeze' : 'Deploy'}
+              {v === 'verify' ? 'Verify' : v === 'new' ? 'Freeze' : v === 'deploy' ? 'Deploy' : 'EPT'}
             </a>
           ))}
         </nav>
@@ -209,9 +210,11 @@ export function App() {
             ? 'Freeze something.'
             : view === 'deploy'
               ? 'Ship the blob.'
-              : view === 'guide'
-                ? 'How it works.'
-                : 'Read it from the chain.'}
+              : view === 'ept'
+                ? 'Burned, not promised.'
+                : view === 'guide'
+                  ? 'How it works.'
+                  : 'Read it from the chain.'}
         </h1>
       )}
       <p class="lede">
@@ -219,7 +222,9 @@ export function App() {
           ? 'Pick anything this wallet holds that the contract accepts, set a date, sign once. Locks are shared objects — after that, anybody can verify it and nobody can undo it.'
           : view === 'deploy'
             ? 'Publish each build to Walrus, then point a .epoch name at the blob it returns. The NameCap never leaves your wallet.'
-            : view === 'guide'
+            : view === 'ept'
+              ? 'Epoch lets a vesting vault pay its fee in $EPT instead of SUI, and the contract burns it in the same transaction. Its own counters say how much. Nothing was reading them.'
+              : view === 'guide'
               ? 'Every step, and what each part of the picture means. Nothing here is a roadmap — it all works right now.'
               : "Paste a project's address and see everything it has locked with Epoch — LP positions, vesting vaults, the lot. Then embed a badge that reads the chain live, so nobody has to take your word for it."}
       </p>
@@ -271,6 +276,8 @@ export function App() {
       )}
 
       {view === 'deploy' && <Deploy wallet={wallet} onCancel={() => go('verify')} />}
+
+      {view === 'ept' && <Ept />}
 
       {view === 'guide' && (
         <Guide
