@@ -540,3 +540,46 @@ a:hover { text-decoration: underline; }
   margin-top: 26px;
 }
 .stephead-art { flex: 0 0 auto; display: inline-flex; }
+
+/* --- narrow screens ---------------------------------------------------
+   There was almost nothing here, and it showed: the header is a single flex
+   row of brand, nav, guide, appearance and wallet, which has a min-content
+   width of roughly 700px. Below that it did not wrap — it pushed the document
+   wider than the viewport, so the whole page scrolled sideways and the lede
+   ran off the right edge with the nav somewhere past it.
+
+   The fix is to let the header wrap and to give the parts a sensible order,
+   not to hide the overflow: `overflow-x: hidden` on the body would have made
+   the scrollbar disappear while leaving the nav just as unreachable. */
+@media (max-width: 760px) {
+  .wrap { padding: 18px 16px 64px; }
+
+  .head { flex-wrap: wrap; gap: 10px 14px; }
+  .brand { flex: 1 1 100%; }
+  .brand b { font-size: 1.5rem; }
+  /* The nav owns its own line. Left to share one, it took most of the width
+     and pushed Guide onto a third line indented by whatever was left over. */
+  .nav { margin-left: 0; flex: 1 1 100%; }
+  .guide-link { margin-left: 0; }
+  .nav a { padding: 7px 12px; }
+  /* The wallet state pushed itself to the far right of a wrapped row and left
+     a gap the width of the screen. On its own line it is just a line. */
+  .head > :last-child { margin-left: 0; }
+
+  /* Decoration that is positioned against the page's right edge, which on a
+     phone is inside the text. It says nothing the page does not. */
+  .sticker { display: none; }
+
+  .hero { font-size: clamp(2.2rem, 11vw, 3.2rem); }
+  .lede { font-size: 1rem; }
+
+  /* A 66-character address cannot be right-aligned in a 358px column. */
+  .fact { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .fact dd { text-align: left; max-width: 100%; }
+  .copyaddr { justify-content: flex-start; max-width: 100%; }
+  .addr { font-size: 0.85rem; }
+
+  .preview-lg { padding: 18px; }
+  .variation { padding: 14px; }
+  .pagehead { flex-direction: row; gap: 14px; }
+}

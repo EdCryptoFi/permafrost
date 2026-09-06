@@ -64,6 +64,19 @@ const VARIATIONS = [
  * `src/badge/main.tsx`). Until then the frame uses `fallback`, so a host that
  * blocks scripts still gets a sensibly-sized box instead of a collapsed one.
  *
+ * No `sandbox` attribute, deliberately. It carried `allow-scripts` with
+ * `allow-same-origin`, which Chrome warns about by name because that pair
+ * voids the origin isolation a sandbox exists to give — the console said so
+ * on every page load. Dropping `allow-same-origin` is not the fix either:
+ * with it removed the badge sits on "Checking the chain…" forever, which is
+ * reproducible but which I could not pin to a cause (the endpoint answers an
+ * `Origin: null` request with `access-control-allow-origin: *`, so the CORS
+ * explanation this comment used to give was wrong).
+ *
+ * What is left is a plain frame, which is what this always was: the isolation
+ * that matters here comes from the badge's own origin, not from an attribute
+ * that only looked like protection.
+ *
  * The message crosses an origin boundary, so nothing in it is trusted: it has
  * to come from this frame's own window, carry our marker, and survive a range
  * check before it moves a pixel.
@@ -73,14 +86,12 @@ function BadgeFrame({
   fallback,
   title,
   lazy,
-  sandbox,
   onSize,
 }: {
   src: string
   fallback: { w: number; h: number }
   title: string
   lazy?: boolean
-  sandbox?: string
   onSize?: (d: { w: number; h: number }) => void
 }) {
   const ref = useRef<HTMLIFrameElement>(null)
@@ -116,7 +127,6 @@ function BadgeFrame({
       loading={lazy ? 'lazy' : undefined}
       title={title}
       referrerpolicy="no-referrer"
-      sandbox={sandbox}
     />
   )
 }
@@ -191,13 +201,6 @@ export function Embed({ frost }: { frost: Frost }) {
           fallback={variant === 'card' ? { w: 300, h: 96 } : { w: 260, h: 48 }}
           title="Badge preview"
           onSize={setDims}
-          /* `allow-same-origin` is here because without it the frame gets an
-             opaque origin, its GraphQL request goes out as `Origin: null`,
-             CORS refuses it, and the preview sits on "Checking the chain…"
-             forever — verified in a browser, not assumed. It grants nothing:
-             the frame is our own build, and when VITE_BADGE_ORIGIN points it
-             elsewhere the origin it gets back is the badge host's, not ours. */
-          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
         />
       </div>
 
