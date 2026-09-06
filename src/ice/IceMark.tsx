@@ -68,6 +68,22 @@ export function IceMark({ frost, size = 44 }: { frost: Frost; size?: number }) {
         <clipPath id={uid}>
           <path d={`${LEFT} ${RIGHT}`} />
         </clipPath>
+        {/* Light enters upper-left, so the lid brightens toward it and each
+            side face falls away from it. */}
+        <linearGradient id={`${uid}-top`} x1="0" y1="0" x2="0.8" y2="1">
+          <stop offset="0%" stop-color={t.edge} />
+          <stop offset="55%" stop-color={t.top} />
+          <stop offset="100%" stop-color={t.left} />
+        </linearGradient>
+        <linearGradient id={`${uid}-left`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color={t.top} stop-opacity="0.55" />
+          <stop offset="45%" stop-color={t.left} />
+          <stop offset="100%" stop-color={t.right} />
+        </linearGradient>
+        <linearGradient id={`${uid}-right`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color={t.left} />
+          <stop offset="100%" stop-color={t.right} />
+        </linearGradient>
       </defs>
 
       {/* the hollow it would occupy, so an emptied block is a cavity and not a hole */}
@@ -76,8 +92,10 @@ export function IceMark({ frost, size = 44 }: { frost: Frost; size?: number }) {
 
       {!empty && (
         <g clip-path={`url(#${uid})`}>
-          <rect x="0" y={fillTop} width="64" height="64" fill={t.left} />
-          <path d={RIGHT} fill={t.right} opacity="0.75" />
+          <rect x="0" y={fillTop} width="64" height="64" fill={`url(#${uid}-left)`} />
+          <path d={RIGHT} fill={`url(#${uid}-right)`} opacity="0.9" />
+          {/* Light travelling through the body rather than sitting on it. */}
+          <path d="M18 30 L26 34 L26 52 L18 48 Z" fill={t.edge} opacity="0.14" />
         </g>
       )}
 
@@ -85,7 +103,10 @@ export function IceMark({ frost, size = 44 }: { frost: Frost; size?: number }) {
           looking untouched — the one thing this mark exists to show. */}
       {!empty && (
         <g transform={`translate(0 ${fillTop - 34})`}>
-          <path d={TOP} fill={t.top} />
+          <path d={TOP} fill={`url(#${uid}-top)`} />
+          {/* The specular. Ice reflects; a flat lid reads as card stock. */}
+          <path d="M32 9 L50 19 L38 25 L20 15 Z" fill={t.edge} opacity="0.5" />
+          <path d="M32 9 L41 14 L34 17.5 L25 12.5 Z" fill="#ffffff" opacity="0.35" />
           <path d={TOP} fill="none" stroke={t.edge} stroke-width="1.4" stroke-linejoin="round" />
         </g>
       )}
