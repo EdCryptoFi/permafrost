@@ -50,6 +50,10 @@
   --bad-bg: #3d1f1c;
   --bad-line: #7d3a33;
   --bad-ink: #ffb3a9;
+  /* The startup field. Graphite boots into the dark it lives in. */
+  --boot-1: #1a222c;
+  --boot-2: #10161e;
+  --boot-3: #070b10;
   --good-bg: #1b3320;
   --good-ink: #9fe0a4;
   --gel-cap: rgba(255, 255, 255, 0.16);
@@ -118,6 +122,10 @@
   --bad-bg: #ffe6e2;
   --bad-line: #e9a49c;
   --bad-ink: #7a1810;
+  /* Aqua boots into the grey a Mac did: light, flat, slightly cool. */
+  --boot-1: #e9edf2;
+  --boot-2: #d7dee6;
+  --boot-3: #c3ccd6;
   --good-bg: #d9f5d3;
   --good-ink: #17520f;
   --gel-cap: rgba(255, 255, 255, 0.95);

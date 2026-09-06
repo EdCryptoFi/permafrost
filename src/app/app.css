@@ -440,3 +440,77 @@ a:hover { text-decoration: underline; }
 .variation figcaption {
   font-family: var(--display); font-size: 0.92rem; font-weight: 700; color: var(--mut);
 }
+
+/* --- the startup screen -----------------------------------------------
+   A Mac booting: a grey field, a mark, one bar, one line of text. The point
+   of copying it is that it never pretended the wait was not happening.
+
+   It sits above everything including the shader, because a startup screen
+   that lets the app show through is a splash, not a boot. */
+.boot {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 30px;
+  background: linear-gradient(180deg, var(--boot-1) 0%, var(--boot-2) 62%, var(--boot-3) 100%);
+  transition: opacity 440ms ease;
+  cursor: default;
+}
+.boot.is-leaving { opacity: 0; pointer-events: none; }
+.boot-stack { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.boot-name {
+  font-family: var(--display); font-size: 2.1rem; font-weight: 700;
+  letter-spacing: -0.4px; color: var(--paper); margin-top: 8px;
+}
+.boot-sub { font-size: 0.95rem; color: var(--mut); margin-top: -6px; }
+
+/* The Aqua capsule: a groove with a wet blue lozenge climbing it. */
+.boot-bar {
+  width: 268px; height: 15px; margin-top: 22px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--well-line);
+  background: var(--well);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.boot-bar i {
+  display: block; height: 100%; border-radius: var(--radius-pill);
+  background:
+    linear-gradient(to bottom, #cfe6fb 0%, var(--aqua) 48%, var(--aqua-lo) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transition: width 180ms linear;
+}
+.boot-step { font-family: var(--mono); font-size: 0.85rem; color: var(--mut); }
+.boot-skip {
+  position: absolute; bottom: 34px;
+  font-size: 0.8rem; color: var(--mut); opacity: 0.7;
+}
+@media (prefers-reduced-motion: reduce) { .boot { display: none; } }
+
+/* --- the three functions ----------------------------------------------
+   Icons big enough to be objects rather than glyphs. Mac OS X drew these at
+   128 and let you see the light on them; at 24px none of that survives and
+   they may as well be line art. */
+.chooser {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px; margin: 4px 0 30px;
+}
+.tile {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 8px; padding: 24px 20px 22px;
+  text-decoration: none; color: inherit;
+  border: 1px solid var(--sheet-line);
+  border-radius: 12px;
+  background: linear-gradient(to bottom, var(--sheet-top) 0%, var(--sheet) 54%, var(--sheet-2) 100%);
+  box-shadow: inset 0 1px 0 0 var(--sheet-top), 0 2px 6px rgba(11, 28, 52, 0.28);
+  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+}
+.tile b { font-family: var(--display); font-size: 1.32rem; color: var(--paper); }
+.tile .small { max-width: 27ch; line-height: 1.45; }
+.tile:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: inset 0 1px 0 0 var(--sheet-top), 0 6px 14px rgba(11, 28, 52, 0.34);
+}
+.tile:active { transform: translateY(0); filter: brightness(0.97); }
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
+.fact dd.road { font-family: var(--sans); font-size: 0.95rem; color: var(--mut); text-align: left; max-width: 62%; line-height: 1.5; }

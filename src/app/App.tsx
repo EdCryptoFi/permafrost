@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'preact/hooks'
 import { resolveFrost } from '@/chain/resolve'
+import { fetchChainNowMs } from '@/chain/graphql'
 import { smartSearch, type SearchResult } from '@/chain/search'
 import type { Frost } from '@/chain/frost'
 import { Frozen } from '@/ice/Frozen'
@@ -18,6 +19,8 @@ import { ThemeToggle } from '@/ui/ThemeToggle'
 import { HeroTitle } from '@/ui/HeroTitle'
 import { Backdrop, sceneFor } from '@/ui/Backdrop'
 import { Ept } from './Ept'
+import { Boot } from '@/ui/Boot'
+import { Chooser } from '@/ui/Chooser'
 import { Shader } from '@/ui/Shader'
 import { ProofCard } from '@/share/ProofCard'
 import './app.css'
@@ -46,6 +49,25 @@ export function App() {
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState('')
   const [view, setView] = useState<View>(viewFromUrl)
+  /**
+   * Whether the first chain read has landed. The startup bar advances on this
+   * rather than on a timer: a progress bar that finishes before the thing it
+   * is measuring is a lie told in a friendly voice.
+   *
+   * The clock read is memoised in `net.ts`, so this costs no extra request —
+   * the landing's own read is served from the same entry.
+   */
+  const [booted, setBooted] = useState(false)
+  useEffect(() => {
+    const ac = new AbortController()
+    // Failure resolves it too: the app works offline-ish and a startup screen
+    // is the wrong place to report a network problem.
+    fetchChainNowMs(ac.signal)
+      .catch(() => undefined)
+      .then(() => setBooted(true))
+    return () => ac.abort()
+  }, [])
+
   /** The lock whose share card is open, and whether we just made it. */
   const [share, setShare] = useState<{ frost: Frost; celebrate: boolean } | null>(null)
 
@@ -152,6 +174,7 @@ export function App() {
       </div>
       <Backdrop scene={scene} />
       <Shader />
+      <Boot ready={booted} />
       <div class="wrap">
       <header class="head">
         <div class="brand">
@@ -228,6 +251,8 @@ export function App() {
               ? 'Every step, and what each part of the picture means. Nothing here is a roadmap — it all works right now.'
               : "Paste a project's address and see everything it has locked with Epoch — LP positions, vesting vaults, the lot. Then embed a badge that reads the chain live, so nobody has to take your word for it."}
       </p>
+
+      {view === 'verify' && status === 'idle' && !selected && <Chooser onGo={go} />}
 
       {view === 'verify' && (
       <form
