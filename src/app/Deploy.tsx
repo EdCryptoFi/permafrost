@@ -61,12 +61,25 @@ export function Deploy({
     return () => ac.abort()
   }, [wallet.address])
 
-  const valid = capId && blobId.trim().length > 0 && blobId.trim().length <= 256
+/**
+ * What a Walrus blob id actually looks like: 256 bits, base64url, no padding.
+ *
+ * The contract accepts any string up to 256 characters, and the form used to
+ * accept the same. That is the wrong place to be permissive: a typo'd or
+ * half-pasted id is signed, costs gas, and leaves the name pointing at
+ * nothing — the site is simply gone until another transaction fixes it, and
+ * the failure is silent because the chain did exactly what it was told.
+ */
+const BLOB_ID = /^[A-Za-z0-9_-]{40,50}$/
+
+  const blob = blobId.trim()
+  const blobShaped = BLOB_ID.test(blob)
+  const valid = Boolean(capId) && blobShaped
 
   const submit = async () => {
     setMsg(null)
     try {
-      const res = await wallet.signAndExecute(buildUpdateBlob(capId, blobId.trim()))
+      const res = await wallet.signAndExecute(buildUpdateBlob(capId, blob))
       setMsg({ kind: 'ok', text: `Pointed — ${res.digest.slice(0, 14)}…` })
     } catch (e) {
       setMsg({ kind: 'err', text: e instanceof Error ? e.message : 'Transaction failed.' })
@@ -119,7 +132,7 @@ export function Deploy({
             const cap = caps.find((c) => c.id === capId)
             const s = cap ? suggestedBlobFor(cap.name) : undefined
             if (!s) return null
-            const matches = blobId.trim() === s.blobId
+            const matches = blob === s.blobId
             return (
               <p class={matches ? 'ok' : 'muted small'}>
                 {matches
@@ -134,6 +147,13 @@ export function Deploy({
             value={blobId}
             onInput={(e) => setBlobId(e.currentTarget.value)}
           />
+          {blob.length > 0 && !blobShaped && (
+            <p class="err small">
+              That is not a Walrus blob id. They are 43 characters of letters, digits,
+              <code> - </code> and <code>_</code> — check what <code>publish:all</code>
+              printed, and that the whole value was pasted.
+            </p>
+          )}
 
           <div class="row">
             <button class="btn" disabled={!valid || wallet.busy} onClick={() => void submit()}>

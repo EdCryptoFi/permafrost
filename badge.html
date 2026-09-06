@@ -3,6 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <!--
+      The icon is a data URI, and it has to be.
+
+      Every path under a .epoch name serves that name's single blob, so a
+      /favicon.ico would not 404 — it would return this whole page, and the
+      browser would try to decode an HTML document as an image. There is no
+      second file to point at, so the icon travels inside the one there is.
+    -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230b1c34'/><path d='M32 9 L55 22 L32 35 L9 22 Z' fill='%23eaf7ff'/><path d='M9 24 L32 37 L32 56 L9 43 Z' fill='%237fc0ee'/><path d='M55 24 L32 37 L32 56 L55 43 Z' fill='%233d7ba8'/></svg>" />
     <meta name="robots" content="noindex" />
     <title>PermaFrost badge</title>
     <!--

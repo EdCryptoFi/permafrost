@@ -175,6 +175,7 @@ export function App() {
       </div>
       <Backdrop scene={scene} />
       <Shader />
+      <div class="glow" aria-hidden="true" />
       <Boot ready={booted} />
       <div class="wrap">
       <header class="head">
