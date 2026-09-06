@@ -38,7 +38,20 @@
   --mut: #9aa8ba;
   --mut-soft: #b6c2d1;
   --on-sheet-shadow: rgba(0, 0, 0, 0.55);
-  --sheet-top: #333b47;
+  --sheet-top: #39414e;          /* the lit edge of a dark sheet, not white */
+  --well: #151a22;               /* sunken areas: darker than the sheet */
+  --well-line: #3c4655;
+  --control: #333b47;            /* unselected segment / inert control */
+  --control-2: #262d38;
+  --control-ink: #d3dbe6;
+  --warn-bg: #3a2f14;
+  --warn-line: #7a6321;
+  --warn-ink: #f5d489;
+  --bad-bg: #3d1f1c;
+  --bad-line: #7d3a33;
+  --bad-ink: #ffb3a9;
+  --good-bg: #1b3320;
+  --good-ink: #9fe0a4;
 
   /* Aliases the components already speak. Kept so nothing structural moves. */
   --bg: #2f5f9e;
@@ -93,6 +106,19 @@
   --mut-soft: #465364;
   --on-sheet-shadow: rgba(255, 255, 255, 0.9);
   --sheet-top: #ffffff;
+  --well: #f7f9fc;
+  --well-line: #d3dbe6;
+  --control: #ffffff;
+  --control-2: #dfe6f0;
+  --control-ink: #33404f;
+  --warn-bg: #fff3d9;
+  --warn-line: #e2bb6a;
+  --warn-ink: #6b4a00;
+  --bad-bg: #ffe6e2;
+  --bad-line: #e9a49c;
+  --bad-ink: #7a1810;
+  --good-bg: #d9f5d3;
+  --good-ink: #17520f;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -275,9 +301,10 @@ body {
   border-radius: 8px;
   margin: 0 0 26px;
   background:
-    repeating-linear-gradient(to bottom, rgba(0,0,0,.035) 0 1px, transparent 1px 2px),
-    linear-gradient(to bottom, #fbfcfe 0%, #dfe5ee 52%, #c6cfdc 100%);
-  box-shadow: inset 0 1px 0 0 #fff, 0 1px 2px rgba(11,28,52,.2);
+    repeating-linear-gradient(to bottom, rgba(0,0,0,.06) 0 1px, transparent 1px 2px),
+    linear-gradient(to bottom, var(--sheet-top) 0%, var(--sheet) 52%, var(--sheet-2) 100%);
+  border-color: var(--sheet-line);
+  box-shadow: inset 0 1px 0 0 var(--sheet-top), 0 1px 2px rgba(0,0,0,.3);
 }
 
 /* --- Headline scraps, in Aqua's vocabulary --------------------------- */
@@ -292,10 +319,10 @@ body {
 /* --- Inspection well: a sunken white sheet --------------------------- */
 .crt {
   position: relative;
-  border: 1px solid #aab6c6;
+  border: 1px solid var(--well-line);
   border-radius: 12px;
-  background: linear-gradient(to bottom, #ffffff, #eef2f8);
-  box-shadow: inset 0 2px 5px rgba(11, 28, 52, 0.18), 0 1px 0 0 #fff;
+  background: linear-gradient(to bottom, var(--well), var(--sheet-2));
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
   overflow: hidden;
 }
 .crt::before, .crt::after { content: none; }
