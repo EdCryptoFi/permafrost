@@ -17,6 +17,7 @@ import { IconFrost, IconGuide } from '@/ui/icons'
 import { ThemeToggle } from '@/ui/ThemeToggle'
 import { HeroTitle } from '@/ui/HeroTitle'
 import { Backdrop, sceneFor } from '@/ui/Backdrop'
+import { Shader } from '@/ui/Shader'
 import { ProofCard } from '@/share/ProofCard'
 import './app.css'
 
@@ -149,6 +150,7 @@ export function App() {
         <i /><i /><i /><i />
       </div>
       <Backdrop scene={scene} />
+      <Shader />
       <div class="wrap">
       <header class="head">
         <div class="brand">

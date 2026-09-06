@@ -159,6 +159,14 @@ body {
    Built from radial gradients on two fixed layers and animated with
    transform and opacity only — a full-screen loop has to be free, and this
    one composites without ever touching layout. */
+/* The CSS caustics. They carry the room on their own, and step back — but do
+   not leave — when the WebGL field is live, because they are what makes the
+   room blue. Hiding them entirely and letting the shader take over left the
+   page flatter and darker than before: `screen` can only add light, and the
+   field's own palette is nearly black away from its frontier.
+   `Shader.tsx` sets that flag only once it has a context and a linked
+   program, so this never fires on a machine showing the caustics alone. */
+:root[data-shader='on'] .frostfield { opacity: 0.4; }
 .frostfield {
   position: fixed;
   inset: -20%;
