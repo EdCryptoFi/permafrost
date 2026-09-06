@@ -1,13 +1,13 @@
-import { type Frost, assetLabel, msLeft } from '@/chain/frost'
+import { type Frost, assetLabel } from '@/chain/frost'
 import { EXPLORER } from '@/chain/constants'
 import { CopyAddr } from '@/ui/CopyAddr'
-import { fmtAsset, fmtCountdown, fmtDate, pct } from '@/format'
+import { fmtAsset, fmtDate, pct } from '@/format'
 import { isHollow, urgencyOf } from '@/chain/frost'
 import { useTick } from '@/useTick'
+import { Countdown } from '@/ui/Countdown'
 
 export function Details({ frost }: { frost: Frost }) {
   const elapsed = useTick(1000, frost.phase === 'melting')
-  const left = msLeft(frost, elapsed)
   const unit = (v: bigint) => fmtAsset(v, frost.decimals, frost.symbol)
 
   const rows: [string, preact.ComponentChildren][] = [
@@ -23,7 +23,7 @@ export function Details({ frost }: { frost: Frost }) {
     ['Frozen asset', <span class="mono">{assetLabel(frost)}</span>],
     ['Locked at', fmtDate(frost.lockedAtMs)],
     ['Unlocks', fmtDate(frost.unlockMs)],
-    ['Time left', left > 0 ? fmtCountdown(left) : '—'],
+    ['Time left', <Countdown frost={frost} showState />],
     ['Term elapsed', pct(frost.progress)],
     ['Creator', <CopyAddr value={frost.creator} label="the creator" />],
   ]

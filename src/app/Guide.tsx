@@ -183,6 +183,43 @@ export function Guide({
         </p>
       </section>
 
+      <section class="panel">
+        <h2>Things the guide used to leave out</h2>
+        <dl class="facts">
+          <div class="fact">
+            <dt>The countdown</dt>
+            <dd>
+              Every lock shows time remaining, ticking, and it counts from the chain's
+              clock rather than yours — so the number can never disagree with the state
+              beside it. Under an hour it goes to seconds.
+            </dd>
+          </div>
+          <div class="fact">
+            <dt>Two appearances</dt>
+            <dd>
+              Graphite and Aqua, switched by the two lozenges in the header. The choice
+              is yours and it is remembered.
+            </dd>
+          </div>
+          <div class="fact">
+            <dt>A badge for a light page</dt>
+            <dd>
+              The badge cannot know what page it lands on, so you tell it: tick
+              <span class="mono"> Light page </span> when you copy the snippet, and it
+              adds <span class="mono">&amp;appearance=aqua</span>.
+            </dd>
+          </div>
+          <div class="fact">
+            <dt>Copying an identifier</dt>
+            <dd>
+              Every address, object id and Move type has a copy button. They are shown in
+              full, never shortened — an address you cannot read end to end is not
+              something you can check.
+            </dd>
+          </div>
+        </dl>
+      </section>
+
       <section class="panel accent">
         <h2>4 · Freeze something</h2>
         <p class="muted">

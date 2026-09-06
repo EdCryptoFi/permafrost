@@ -7,6 +7,7 @@ import { Frozen } from '@/ice/Frozen'
 import { IceMark } from '@/ice/IceMark'
 import { fmtAsset, fmtCountdown, fmtDate } from '@/format'
 import { useTick } from '@/useTick'
+import { Countdown } from '@/ui/Countdown'
 import { InternalLink } from '@/ui/InternalLink'
 
 /**
@@ -66,8 +67,8 @@ export function Landing({ onPick }: { onPick: (id: string) => void }) {
                   <span class="muted small">
                     {f.kind === 'lock' ? 'object lock' : 'vesting vault'}
                   </span>
-                  <span class="ex-meta mono">
-                    {f.phase === 'melting' ? `unlocks ${fmtDate(f.unlockMs)}` : f.phase}
+                  <span class="ex-meta">
+                    <Countdown frost={f} showState />
                   </span>
                 </span>
               </InternalLink>

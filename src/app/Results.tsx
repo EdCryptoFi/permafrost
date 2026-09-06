@@ -2,6 +2,7 @@ import type { Frost } from '@/chain/frost'
 import { assetLabel } from '@/chain/frost'
 import type { SearchKind } from '@/chain/search'
 import { IceMark } from '@/ice/IceMark'
+import { Countdown } from '@/ui/Countdown'
 import { fmtDate } from '@/format'
 import { InternalLink } from '@/ui/InternalLink'
 
@@ -87,9 +88,9 @@ export function Results({
             <span class="res-body">
               <b class="mono">{assetLabel(f)}</b>
               <span class="muted small">
-                {f.kind === 'lock' ? 'object lock' : 'vesting vault'} ·{' '}
-                {f.phase === 'melting' ? `unlocks ${fmtDate(f.unlockMs)}` : f.phase}
+                {f.kind === 'lock' ? 'object lock' : 'vesting vault'} · {fmtDate(f.unlockMs)}
               </span>
+              <Countdown frost={f} showState />
             </span>
             <span class="res-go" aria-hidden="true">→</span>
           </InternalLink>

@@ -45,6 +45,18 @@ const PUBLIC_BADGE =
  */
 const safeId = (id: string) => (/^0x[0-9a-fA-F]{1,64}$/.test(id) ? id : '')
 
+/**
+ * Four real locks, one per state. Showing a badge in only the state the
+ * visitor happens to be looking at leaves them to imagine the rest, and the
+ * states are the product.
+ */
+const VARIATIONS = [
+  { id: '0x35e369ce6067fe1e28e8246389793b67089618455ccd5a93fb1f4c44b4d298d8', label: 'Unlocking soon' },
+  { id: '0xd473734948329b125b49d419ab8d62db1adb38b2936989e461ab077c0f53f7ed', label: 'Frozen, long term' },
+  { id: '0xf63d5c606b3af6665e174ebbb268b78b9da51f76d3bb17144ca98308505a8c77', label: 'Holding nothing' },
+  { id: '0x653cdb6285add1c2d76c7fc093d10b9c02218f53adf6f52b4dec388f9dd90771', label: 'Claimed and gone' },
+]
+
 export function Embed({ frost }: { frost: Frost }) {
   const [variant, setVariant] = useState<'pill' | 'card'>('pill')
   const [mascot, setMascot] = useState(true)
@@ -106,7 +118,7 @@ export function Embed({ frost }: { frost: Frost }) {
         </label>
       </div>
 
-      <div class="preview">
+      <div class="preview preview-lg">
         <iframe
           src={src}
           width={dims.w}
@@ -119,6 +131,29 @@ export function Embed({ frost }: { frost: Frost }) {
         />
       </div>
 
+      <h3>What it looks like in each state</h3>
+      <p class="muted small">
+        The same badge, on four locks the chain actually holds right now. Nothing here
+        is a mock-up — each one is reading its own object.
+      </p>
+      <div class="variations">
+        {VARIATIONS.map((v) => (
+          <figure class="variation" key={v.id}>
+            <iframe
+              src={`${BADGE_ORIGIN}${BADGE_PATH}?id=${v.id}&variant=pill${light ? '&appearance=aqua' : ''}`}
+              width="280"
+              height="52"
+              frameborder="0"
+              scrolling="no"
+              loading="lazy"
+              title={v.label}
+            />
+            <figcaption>{v.label}</figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <h3>The code</h3>
       <pre class="code mono">{iframe}</pre>
       <button class="btn" onClick={() => void copy(iframe, 'iframe')}>
         {copied === 'iframe' ? 'Copied' : copied === 'failed' ? 'Select it manually' : 'Copy embed code'}

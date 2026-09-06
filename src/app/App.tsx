@@ -345,10 +345,8 @@ export function App() {
           {selected.phase !== 'absent' && (
             <>
               <Actions frost={selected} wallet={wallet} onDone={() => void pick(selected.id)} />
-              <div class="cols">
-                <Details frost={selected} />
-                <Embed frost={selected} />
-              </div>
+              <Details frost={selected} />
+              <Embed frost={selected} />
             </>
           )}
 
