@@ -87,6 +87,11 @@ for (const p of published) console.log(`  ${p.name.padEnd(12)} ${p.blobId}`)
  * the ones that were just published, and now they are.
  */
 console.error('\nrebuilding so the deploy console carries these ids…')
-run('npm', ['run', 'build:site'])
+// Same env as the first build. Without it the rebuild silently drops the
+// og:image — the tag was set from VITE_OG_IMAGE, so a plain `build:site` here
+// left the local bundle 350 bytes lighter than the one that shipped and
+// missing its social card. The published blob was fine; the artifact left on
+// disk afterwards was not, and that is the one a person would reach for next.
+run('npm', ['run', 'build:site'], { VITE_OG_IMAGE: `${AGG}/${OG_BLOB}` })
 
 console.error('\nsign the two update_blob calls at ?view=deploy')
