@@ -288,9 +288,6 @@ body {
 
 @keyframes pf-ants { to { background-position: 0 0; } }
 
-/* Aqua does not glitch. */
-.glitch { animation: none; }
-.glitch::before, .glitch::after { content: none; }
 
 /* --- Inspection well: a sunken white sheet --------------------------- */
 .crt {

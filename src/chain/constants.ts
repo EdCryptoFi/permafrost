@@ -46,4 +46,3 @@ export const MULTI_VAULT_TYPE = `${VESTING.TYPE_PKG}::${VESTING.MODULE}::MultiVe
 export const BPS_BASE = 10_000n
 
 export const EXPLORER = (id: string) => `https://suiscan.xyz/mainnet/object/${id}`
-export const EPOCH_LOCKER_URL = 'https://epochsui.com'

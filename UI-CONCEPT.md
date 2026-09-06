@@ -161,14 +161,13 @@ Praticamente tudo o mais: estética, tipografia, paleta, layout, movimento,
 arquitetura de informação, número de telas, se a morsa existe, como as duas
 jornadas se separam.
 
-O visual atual ("Arctic Chaos", recorte de revista) foi escolha de uma sessão,
-não exigência do produto.
+O visual já mudou quatro vezes sem que nada acima mudasse junto — o que é a
+prova de que a estética é livre e o resto não é. Hoje são duas aparências
+estilo Mac OS X (Graphite e Aqua) com um campo de cáusticas no fundo; antes
+foi um HUD techno-brutalista, e antes disso um recorte de revista.
 
-**E ele tem uma tensão real:** o produto vende confiança, e estética de bilhete
-de resgate comunica subversão. No site isso diferencia de todo dashboard DeFi
-clínico. No selo, um projeto sério pode hesitar antes de pôr magenta e amarelo
-na própria landing page. Vale considerar que o selo tenha uma variante sóbria
-enquanto o site mantém personalidade.
+**A tensão que sobrevive a qualquer skin:** o selo vive na página de outra
+pessoa. Ele pode precisar ser mais sóbrio que o site, sempre.
 
 ---
 

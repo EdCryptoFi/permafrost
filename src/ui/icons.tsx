@@ -68,14 +68,6 @@ export const IconExpiring = ({ size = 18, class: c }: IconProps) => (
   </svg>
 )
 
-/** Radar sweep. Search across the chain. */
-export const IconScan = ({ size = 18, class: c }: IconProps) => (
-  <svg {...base(size, c)}>
-    <circle cx="11" cy="11" r="6.5" />
-    <path d="M11 4.5v6.5l4.6 2.6" />
-    <path d="m16 16 4 4" />
-  </svg>
-)
 
 /** Brackets. The embeddable artefact. */
 export const IconEmbed = ({ size = 18, class: c }: IconProps) => (
@@ -85,13 +77,6 @@ export const IconEmbed = ({ size = 18, class: c }: IconProps) => (
   </svg>
 )
 
-/** Upward arrow into a slab. Shipping a blob to a name. */
-export const IconShip = ({ size = 18, class: c }: IconProps) => (
-  <svg {...base(size, c)}>
-    <path d="M12 15.5V4.5M8.4 8.1 12 4.5l3.6 3.6" />
-    <path d="M4.5 14.5v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3.5" />
-  </svg>
-)
 
 /** Question in a ring. Help. */
 export const IconGuide = ({ size = 16, class: c }: IconProps) => (
@@ -118,10 +103,3 @@ export const IconObject = ({ size = 16, class: c }: IconProps) => (
   </svg>
 )
 
-/** Wallet. */
-export const IconWallet = ({ size = 16, class: c }: IconProps) => (
-  <svg {...base(size, c)}>
-    <path d="M4.5 7.5h13a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h11" />
-    <path d="M16.5 12.5h.01" />
-  </svg>
-)

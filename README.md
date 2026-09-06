@@ -49,6 +49,33 @@ The contract was there. The thing that lets a non-developer act on it was not.
 6. **A deploy console** (`?view=deploy`). `update_blob` needs the NameCap held in
    a browser wallet; doing it from the CLI would mean exporting that key.
 
+## Two things the badge will not let a project hide
+
+**A lock holding nothing.** An object lock's coin balance sat unread until an
+audit caught it: two of the three locks on mainnet are empty, and they rendered
+exactly like one holding a fortune. A hollow lock now wears the red light and
+says "Locked — but empty", with the amount stated beside it.
+
+**A lock about to run out.** A lock expiring next week protects almost nothing,
+and it used to wear the same calm badge as one running for two years, with only
+a date to tell them apart. Under 30 days it says "Unlocking soon"; under 7,
+"Unlocks this week".
+
+Both matter for the same reason: this product's only value is that it does not
+overstate, and an unsaid number is an overstatement.
+
+## Appearance
+
+Mac OS X shipped two appearances and let you pick; so does this. **Graphite**
+is the default — the product is read at night by somebody checking a lock
+before they commit money — and **Aqua**, the blue pinstriped desktop, is one
+click away in the header. The choice is written to the root element before
+first paint, so the page never flashes the wrong one.
+
+Under both, a field of caustics drifts across the desktop: four soft lobes at
+different speeds and scales, so the pattern never visibly repeats. Transform
+and opacity only, and frozen rather than removed under reduced motion.
+
 ## The ice
 
 One metaphor covers both Epoch products, because "frozen liquidity" is already
@@ -97,6 +124,12 @@ into one self-contained document — no code splitting, no external assets.
 pages, so it gets its own build with `__BADGE_ONLY__` set. The wallet and
 transaction layers tree-shake out completely (verified: zero occurrences of
 `signAndExecuteTransaction`, `getWallets` or `moveCall` in the badge output).
+
+**Chain-sourced text is attacker input.** `CoinMetadata.symbol` is chosen by
+whoever published the coin. Publishing one called "1,000,000 SUI", locking a
+single base unit and embedding the badge would have made it read exactly that
+— no script needed, just a string. Symbols are shape-gated now; anything that
+is not ticker-shaped falls back to the Move struct name.
 
 **Preact + Wallet Standard, not dapp-kit.** dapp-kit would pull React, Radix and
 React Query into a file that has to fit in one blob. Wallet Standard is the same

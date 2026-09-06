@@ -156,7 +156,7 @@ export function App() {
             <IconFrost size={20} />
           </span>
           <div>
-            <b class="glitch" data-text="PermaFrost">PermaFrost</b>
+            <b>PermaFrost</b>
             <small>proof of lock · epoch on sui</small>
           </div>
         </div>

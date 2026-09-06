@@ -1,4 +1,18 @@
 ================================================================================
+SUPERSEDED — kept as a record, not as a specification
+================================================================================
+This document describes the "Arctic Chaos" visual system, which the project
+used between 02/09 and 05/09/2026. It has since been replaced twice: first by
+the Crypto HUD, then by the current Aqua/Graphite appearances.
+
+Everything below about STRUCTURE, COPY, STATES and ANIMATION MECHANICS is still
+accurate — those did not change. Everything about COLOUR, TYPOGRAPHY and SHAPE
+describes a look the site no longer has.
+
+For the current design brief, read UI-CONCEPT.md.
+================================================================================
+
+================================================================================
 PERMAFROST — BRIEFING COMPLETO DE UI
 Documento para recriação das telas no Google Stitch (ou qualquer gerador de UI)
 ================================================================================

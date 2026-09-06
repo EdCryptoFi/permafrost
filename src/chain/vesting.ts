@@ -1,4 +1,3 @@
-import { fetchObject } from './graphql'
 import { BPS_BASE, MULTI_VAULT_TYPE, VESTING_VAULT_TYPE } from './constants'
 import { type Frost, innerTypeOf, ratio } from './frost'
 
@@ -191,17 +190,3 @@ export function parseMultiVault(
   }
 }
 
-export async function loadVault(
-  address: string,
-  nowMs: number,
-  viewer?: string | null,
-  signal?: AbortSignal,
-) {
-  const obj = await fetchObject(address, signal)
-  if (!obj) return null
-  if (isVaultType(obj.type)) return parseVault(obj.address, obj.type, obj.json, nowMs)
-  if (isMultiVaultType(obj.type)) {
-    return parseMultiVault(obj.address, obj.type, obj.json, nowMs, viewer)
-  }
-  return null
-}

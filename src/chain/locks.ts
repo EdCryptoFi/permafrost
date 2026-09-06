@@ -1,4 +1,3 @@
-import { fetchObject } from './graphql'
 import { OBJECT_LOCK_TYPE } from './constants'
 import { type Frost, innerTypeOf, ratio } from './frost'
 
@@ -51,8 +50,3 @@ export function parseLock(address: string, repr: string, json: unknown, nowMs: n
   }
 }
 
-export async function loadLock(address: string, nowMs: number, signal?: AbortSignal) {
-  const obj = await fetchObject(address, signal)
-  if (!obj || !isObjectLockType(obj.type)) return null
-  return parseLock(obj.address, obj.type, obj.json, nowMs)
-}
