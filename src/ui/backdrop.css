@@ -1,88 +1,44 @@
-/* The nexacore background.
+/* The cloth, and what stands in for it.
 
-   Two gradients, and that is the entire effect: a radial bloom 120% wide and
-   90% tall anchored at 50% 0%, so its centre sits off the top edge of the
-   page, and a linear wash at 160deg falling away from it into the ground
-   colour. No canvas, no loop, nothing to schedule.
+   The canvas is the real background: flowing folds, drawn by the shader in
+   `Backdrop.tsx`. What is here is the floor it covers, and the whole picture
+   on any machine that cannot run it — no WebGL context, or a reader who has
+   asked for less motion.
 
-   Six copies of it, one per scene, cross-fading on opacity — gradients do not
-   interpolate into one another, so a single element swapping its
-   `background-image` would cut instead of dissolve.
-
-   The palette keeps nexacore's blue and violet and drops its orange, except
-   in `crack`, where the term has elapsed. Orange is this product's expiry
-   colour; spending it on decoration everywhere would make the one place it
-   carries meaning quieter, and spending it exactly where it means something
-   is the reason it still reads. */
+   The fallback is not an apology. It is the same near-black violet ground and
+   a pair of broad diagonal washes in the same two colours, so a page without
+   the canvas looks like a still, quiet version of the page with it rather
+   than like something that failed to load. */
 
 .bg {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  overflow: hidden;
-  contain: strict;
+  background:
+    radial-gradient(70% 55% at 22% 32%, rgba(26, 111, 158, 0.42), transparent 68%),
+    radial-gradient(66% 52% at 78% 62%, rgba(139, 34, 150, 0.4), transparent 70%),
+    radial-gradient(120% 90% at 50% 0%, rgba(90, 40, 140, 0.3), transparent 72%);
 }
-.bg > i {
-  position: absolute;
+/* Once the canvas has actually painted a frame, the stand-in gets out of its
+   way. Set from the render loop rather than on mount: an element can have a
+   context and a linked program and still never draw. */
+:root[data-cloth='on'] .bg { display: none; }
+
+.cloth {
+  position: fixed;
   inset: 0;
-  display: block;
-  opacity: 0;
-  transition: opacity 900ms ease;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
 }
-.bg > i.on { opacity: 1; }
 
-/* Reading, and the landing. nexacore as published: violet over blue. */
-.bg-aurora {
+/* Aqua is paper. The shader drains itself to a watermark on its own — see
+   `u_light` — and the fallback does the same here. */
+:root[data-appearance='aqua'] .bg {
   background:
-    radial-gradient(120% 90% at 50% 0%, rgba(200, 111, 255, 0.45), transparent 70%),
-    linear-gradient(160deg, rgba(28, 78, 255, 0.35), rgba(10, 5, 20, 0) 60%);
+    radial-gradient(70% 55% at 22% 32%, rgba(26, 111, 158, 0.13), transparent 68%),
+    radial-gradient(66% 52% at 78% 62%, rgba(139, 34, 150, 0.11), transparent 70%),
+    radial-gradient(120% 90% at 50% 0%, rgba(90, 40, 140, 0.09), transparent 72%);
 }
-
-/* A lock still holding. Colder and deeper: the violet steps back and the blue
-   takes the top edge. */
-.bg-frozen {
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(96, 165, 250, 0.42), transparent 70%),
-    linear-gradient(160deg, rgba(28, 78, 255, 0.34), rgba(10, 5, 20, 0) 60%);
-}
-
-/* The term has elapsed. This is the one place the orange belongs. */
-.bg-crack {
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(254, 136, 27, 0.34), transparent 70%),
-    linear-gradient(160deg, rgba(172, 36, 255, 0.28), rgba(10, 5, 20, 0) 60%);
-}
-
-/* Everything claimed. Water, not ice: the light comes from lower and greener. */
-.bg-thaw {
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(45, 212, 191, 0.3), transparent 70%),
-    linear-gradient(160deg, rgba(28, 78, 255, 0.3), rgba(10, 5, 20, 0) 60%);
-}
-
-/* Making a lock. Brighter, because something is about to happen. */
-.bg-blizzard {
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(217, 140, 255, 0.5), transparent 70%),
-    linear-gradient(160deg, rgba(43, 167, 255, 0.4), rgba(10, 5, 20, 0) 60%);
-}
-
-/* The deploy console. A workshop: flatter, bluer, less atmosphere. */
-.bg-blueprint {
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(43, 167, 255, 0.34), transparent 70%),
-    linear-gradient(160deg, rgba(28, 78, 255, 0.26), rgba(10, 5, 20, 0) 60%);
-}
-
-/* Aqua is paper, and every colour above assumes it is falling onto near-black.
-   Screened onto a pale desktop they wash to nothing, so under the light
-   appearance the same six take their light away instead of adding it, at a
-   fraction of the strength: enough to give the page a top edge, not enough to
-   turn the light appearance into the dark one. */
-:root[data-appearance='aqua'] .bg > i {
-  mix-blend-mode: multiply;
-  filter: saturate(0.85);
-  opacity: 0;
-}
-:root[data-appearance='aqua'] .bg > i.on { opacity: 0.2; }

@@ -169,6 +169,7 @@ export function App() {
 
   return (
     <>
+      <div class="bg" aria-hidden="true" />
       <Backdrop scene={scene} />
       <Boot ready={booted} />
       <div class="wrap">
