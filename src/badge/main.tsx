@@ -40,6 +40,16 @@ function validLocale(v: string | null): string | undefined {
   }
 }
 
+/**
+ * The badge cannot know what page it lands on, so the embedder tells it.
+ * `&appearance=aqua` for a light host; graphite otherwise, which is what a
+ * dark page and most DEX widgets want.
+ */
+{
+  const a = new URLSearchParams(location.search).get('appearance')
+  document.documentElement.dataset.appearance = a === 'aqua' ? 'aqua' : 'graphite'
+}
+
 const root = document.getElementById('app')!
 const opts = readOpts()
 

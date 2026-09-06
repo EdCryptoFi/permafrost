@@ -48,10 +48,11 @@ const safeId = (id: string) => (/^0x[0-9a-fA-F]{1,64}$/.test(id) ? id : '')
 export function Embed({ frost }: { frost: Frost }) {
   const [variant, setVariant] = useState<'pill' | 'card'>('pill')
   const [mascot, setMascot] = useState(true)
+  const [light, setLight] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
 
   const id = safeId(frost.id)
-  const query = `?id=${id}&variant=${variant}${mascot ? '' : '&mascot=0'}`
+  const query = `?id=${id}&variant=${variant}${mascot ? '' : '&mascot=0'}${light ? '&appearance=aqua' : ''}`
   const src = `${BADGE_ORIGIN}${BADGE_PATH}${query}`
   const dims = variant === 'card' ? { w: 300, h: 96 } : { w: 260, h: 48 }
 
@@ -98,6 +99,10 @@ export function Embed({ frost }: { frost: Frost }) {
         <label class="check">
           <input type="checkbox" checked={mascot} onChange={(e) => setMascot(e.currentTarget.checked)} />
           Mascot
+        </label>
+        <label class="check" title="For a light host page">
+          <input type="checkbox" checked={light} onChange={(e) => setLight(e.currentTarget.checked)} />
+          Light page
         </label>
       </div>
 

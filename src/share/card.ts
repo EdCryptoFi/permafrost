@@ -22,12 +22,11 @@ import { svgToImage } from './svg'
 export const CARD_W = 1200
 export const CARD_H = 630
 
-export type Skin = 'chaos' | 'arctic' | 'blueprint'
+export type Skin = 'graphite' | 'aqua'
 
 export const SKINS: { id: Skin; label: string }[] = [
-  { id: 'chaos', label: 'Arctic Chaos' },
-  { id: 'arctic', label: 'Deep Freeze' },
-  { id: 'blueprint', label: 'Blueprint' },
+  { id: 'graphite', label: 'Graphite' },
+  { id: 'aqua', label: 'Aqua' },
 ]
 
 type Palette = {
@@ -41,36 +40,34 @@ type Palette = {
   glow: [string, string]
 }
 
+/**
+ * The card's palettes track the site's appearances.
+ *
+ * They were left behind twice — still named "Arctic Chaos" and still carrying
+ * the magenta of a look removed two reskins ago. A card posted to X is the
+ * first thing most people see of this product, and it advertising a site that
+ * no longer exists is worse than having no card.
+ */
 const PALETTES: Record<Skin, Palette> = {
-  chaos: {
-    bg: '#040d1a',
-    ink: '#e8eef6',
-    dim: '#8ea3bd',
-    hot: '#ff00ff',
-    cold: '#29b6f6',
-    warn: '#ffff00',
-    panel: 'rgba(10, 21, 36, 0.82)',
-    glow: ['rgba(255,0,255,0.34)', 'rgba(41,182,246,0.30)'],
+  graphite: {
+    bg: '#1a212b',
+    ink: '#eef3fa',
+    dim: '#9aa8ba',
+    hot: '#e4483d',
+    cold: '#5b9fe8',
+    warn: '#f0ab27',
+    panel: 'rgba(38, 45, 56, 0.92)',
+    glow: ['rgba(91,159,232,0.26)', 'rgba(169,205,245,0.16)'],
   },
-  arctic: {
-    bg: '#02101d',
-    ink: '#eaf5ff',
-    dim: '#8fb2cc',
-    hot: '#4db8e8',
-    cold: '#9adcf5',
-    warn: '#d8f2fd',
-    panel: 'rgba(6, 26, 44, 0.84)',
-    glow: ['rgba(77,184,232,0.36)', 'rgba(168,85,247,0.22)'],
-  },
-  blueprint: {
-    bg: '#02121f',
-    ink: '#d9f2ff',
-    dim: '#79a6c2',
-    hot: '#29b6f6',
-    cold: '#29b6f6',
-    warn: '#ffff00',
-    panel: 'rgba(3, 22, 38, 0.86)',
-    glow: ['rgba(41,182,246,0.28)', 'rgba(41,182,246,0.16)'],
+  aqua: {
+    bg: '#2f5f9e',
+    ink: '#ffffff',
+    dim: '#cfe0f5',
+    hot: '#e4483d',
+    cold: '#a9cdf5',
+    warn: '#ffd98a',
+    panel: 'rgba(237, 241, 246, 0.95)',
+    glow: ['rgba(169,205,245,0.34)', 'rgba(122,170,232,0.22)'],
   },
 }
 
@@ -178,9 +175,9 @@ function paintBackdrop(ctx: CanvasRenderingContext2D, p: Palette, skin: Skin) {
   ctx.fillStyle = b
   ctx.fillRect(0, 0, CARD_W, CARD_H)
 
-  if (skin === 'blueprint') {
+  if (skin === 'aqua') {
     ctx.save()
-    ctx.strokeStyle = 'rgba(41,182,246,0.16)'
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'
     ctx.lineWidth = 1
     for (let x = 0; x <= CARD_W; x += 40) {
       ctx.beginPath()
@@ -199,7 +196,7 @@ function paintBackdrop(ctx: CanvasRenderingContext2D, p: Palette, skin: Skin) {
     // Halftone: a dot grid that fades out to the right, so the left column
     // reads as printed paper and the artwork side stays clean.
     ctx.save()
-    ctx.fillStyle = skin === 'chaos' ? 'rgba(255,0,255,0.10)' : 'rgba(154,220,245,0.09)'
+    ctx.fillStyle = 'rgba(169,205,245,0.09)'
     for (let y = 24; y < CARD_H; y += 16) {
       for (let x = 24; x < 760; x += 16) {
         const r = 1.5 * (1 - x / 900)

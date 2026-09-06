@@ -35,7 +35,7 @@ export function ProofCard({
   celebrate?: boolean
 }) {
   const sceneRef = useRef<HTMLDivElement>(null)
-  const [skin, setSkin] = useState<Skin>('chaos')
+  const [skin, setSkin] = useState<Skin>('graphite')
   const [png, setPng] = useState<string | null>(null)
   const [blob, setBlob] = useState<Blob | null>(null)
   const [note, setNote] = useState<string | null>(null)

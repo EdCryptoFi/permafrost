@@ -52,6 +52,7 @@
   --bad-ink: #ffb3a9;
   --good-bg: #1b3320;
   --good-ink: #9fe0a4;
+  --gel-cap: rgba(255, 255, 255, 0.16);
 
   /* Aliases the components already speak. Kept so nothing structural moves. */
   --bg: #2f5f9e;
@@ -119,6 +120,7 @@
   --bad-ink: #7a1810;
   --good-bg: #d9f5d3;
   --good-ink: #17520f;
+  --gel-cap: rgba(255, 255, 255, 0.95);
 }
 
 @media (prefers-reduced-motion: reduce) {

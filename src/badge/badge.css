@@ -11,15 +11,15 @@ body { display: inline-block; }
   align-items: center;
   gap: 10px;
   padding: 8px 18px 8px 10px;
-  border: 1px solid #9fadc0;
+  border: 1px solid var(--sheet-line);
   border-radius: 999px;
-  background: linear-gradient(to bottom, #ffffff 0%, #eef2f8 52%, #d7dfeb 100%);
-  color: #1c2430;
+  background: linear-gradient(to bottom, var(--sheet-top) 0%, var(--sheet) 52%, var(--sheet-2) 100%);
+  color: var(--tx);
   text-decoration: none;
   font-family: "Lucida Grande", "Helvetica Neue", Helvetica, sans-serif;
   font-size: 12px;
   white-space: nowrap;
-  box-shadow: inset 0 1px 0 0 #fff, 0 1px 2px rgba(11, 28, 52, 0.28), 0 3px 8px rgba(11, 28, 52, 0.2);
+  box-shadow: inset 0 1px 0 0 var(--sheet-top), 0 1px 2px rgba(0, 0, 0, 0.3), 0 3px 8px rgba(0, 0, 0, 0.22);
   overflow: hidden;
 }
 /* the wet cap */
@@ -27,7 +27,7 @@ body { display: inline-block; }
   content: "";
   position: absolute; left: 3%; right: 3%; top: 1px; height: 46%;
   border-radius: 999px; pointer-events: none;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.15));
+  background: linear-gradient(to bottom, var(--gel-cap), transparent);
 }
 .pf > * { position: relative; z-index: 1; }
 .pf:hover { filter: brightness(1.04); }
@@ -36,28 +36,29 @@ body { display: inline-block; }
 .pf-card::before { border-radius: 12px; }
 
 .pf-text { display: flex; flex-direction: column; line-height: 1.32; }
-.pf-label { font-weight: 700; font-size: 11.5px; color: #16202c; text-shadow: 0 1px 0 rgba(255,255,255,.8); }
-.pf-detail { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; color: #1f5cb0; font-size: 10.5px; }
-.pf-amount { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-weight: 600; font-size: 11.5px; color: #16202c; }
-.pf-sub { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; color: #5d6b7e; font-size: 9.5px; margin-top: 1px; }
+.pf-label { font-weight: 700; font-size: 11.5px; color: var(--paper); text-shadow: 0 1px 0 var(--on-sheet-shadow); }
+.pf-detail { font-family: var(--mono); color: var(--aqua); font-size: 10.5px; }
+.pf-amount { font-family: var(--mono); font-weight: 600; font-size: 11.5px; color: var(--paper); }
+.pf-sub { font-family: var(--mono); color: var(--mut); font-size: 9.5px; margin-top: 1px; }
 
-.pf.is-cracked  { border-color: #c07c07; }
-.pf.is-cracked .pf-detail { color: #8a5a05; }
-.pf.is-expiring, .pf.is-imminent { border-color: #c07c07; }
-.pf.is-imminent .pf-label { color: #3a2a00; }
-.pf.is-expiring .pf-detail, .pf.is-imminent .pf-detail { color: #8a5a05; }
+.pf.is-cracked, .pf.is-expiring, .pf.is-imminent { border-color: var(--amber-lo); }
+.pf.is-cracked .pf-detail,
+.pf.is-expiring .pf-detail,
+.pf.is-imminent .pf-detail { color: var(--warn-ink); }
+.pf.is-imminent .pf-label { color: var(--warn-ink); }
 
-.pf.is-thawed { opacity: 0.85; border-color: #a9b6c6; }
-.pf.is-thawed .pf-label { color: #5d6b7e; }
+.pf.is-thawed { opacity: 0.85; border-color: var(--sheet-line); }
+.pf.is-thawed .pf-label { color: var(--mut); }
 
 /* A lock holding nothing wears the red light. */
-.pf.is-hollow { border-color: #b62b22; }
-.pf.is-hollow .pf-label { color: #7a1810; }
-.pf.is-hollow .pf-detail, .pf.is-hollow .pf-amount { color: #b62b22; }
+.pf.is-hollow { border-color: var(--red-lo); }
+.pf.is-hollow .pf-label,
+.pf.is-hollow .pf-detail,
+.pf.is-hollow .pf-amount { color: var(--bad-ink); }
 
-.pf.is-loading, .pf.is-error, .pf.is-absent { padding: 8px 18px; color: #5d6b7e; }
+.pf.is-loading, .pf.is-error, .pf.is-absent { padding: 8px 18px; color: var(--mut); }
 .pf-dot { width: 9px; height: 9px; border-radius: 50%; box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
-  background: linear-gradient(to bottom, #cdd6e2, #94a1b2); animation: pf-blink 1.4s ease-in-out infinite; }
-.pf.is-error .pf-dot  { background: linear-gradient(to bottom, #ff9d92, #e4483d); animation: none; }
-.pf.is-absent .pf-dot { background: linear-gradient(to bottom, #ffd98a, #f0ab27); animation: none; }
+  background: linear-gradient(to bottom, var(--control), var(--control-2)); animation: pf-blink 1.4s ease-in-out infinite; }
+.pf.is-error .pf-dot  { background: linear-gradient(to bottom, #ff9d92, var(--red)); animation: none; }
+.pf.is-absent .pf-dot { background: linear-gradient(to bottom, #ffd98a, var(--amber)); animation: none; }
 @keyframes pf-blink { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
