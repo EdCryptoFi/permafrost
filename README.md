@@ -72,9 +72,15 @@ before they commit money — and **Aqua**, the blue pinstriped desktop, is one
 click away in the header. The choice is written to the root element before
 first paint, so the page never flashes the wrong one.
 
-Under both, a field of caustics drifts across the desktop: four soft lobes at
-different speeds and scales, so the pattern never visibly repeats. Transform
-and opacity only, and frozen rather than removed under reduced motion.
+Behind both is one background: a very wide radial bloom anchored off the top
+edge and a diagonal wash falling away from it. Two gradients, no canvas and no
+loop — there is nothing to schedule and nothing to stop under reduced motion.
+
+Which room you are in is information, so its two hues answer to the state: blue
+under a lock still holding, amber where the term has elapsed, teal where
+everything has been claimed. Every scene is rendered and cross-fades on
+opacity, because gradients cannot interpolate into one another and a single
+element swapping its `background-image` would cut rather than dissolve.
 
 ## The ice
 

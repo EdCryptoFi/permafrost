@@ -22,7 +22,6 @@ import { Ept } from './Ept'
 import { Boot } from '@/ui/Boot'
 import { Chooser } from '@/ui/Chooser'
 import { PageHead } from '@/ui/PageHead'
-import { Shader } from '@/ui/Shader'
 import { ProofCard } from '@/share/ProofCard'
 import './app.css'
 
@@ -170,12 +169,7 @@ export function App() {
 
   return (
     <>
-      <div class="frostfield" aria-hidden="true">
-        <i /><i /><i /><i />
-      </div>
       <Backdrop scene={scene} />
-      <Shader />
-      <div class="glow" aria-hidden="true" />
       <Boot ready={booted} />
       <div class="wrap">
       <header class="head">

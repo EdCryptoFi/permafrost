@@ -8,9 +8,8 @@
 :root[data-appearance='graphite'] {
   /* Desktop, graphite: slate rather than blue, the way the dark appearance
      always was — the gel stays, the room goes cold. */
-  --desk-1: #2b3440;
-  --desk-2: #1a212b;
-  --desk-3: #10161e;
+  /* nexacore's ground, unchanged. */
+  --ground: rgb(10, 5, 20);
 
   /* Window sheets, dark */
   --sheet: #262d38;
@@ -95,9 +94,8 @@
 }
 
 :root[data-appearance='aqua'] {
-  --desk-1: #4a86c8;
-  --desk-2: #2f5f9e;
-  --desk-3: #1d3f72;
+  /* Aqua keeps paper: the background multiplies onto it, never lights it. */
+  --ground: #dfe7f0;
 
   --sheet: #edf1f6;
   --sheet-2: #dde4ee;
@@ -147,15 +145,18 @@ body {
   font-family: var(--sans);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  /* The desktop: a blue wash, brightened toward the upper left the way the
-     original wallpapers were, with the pinstripe laid over it. */
+  /* The ground the background falls onto. nexacore's own is rgb(10, 5, 20) —
+     near-black, but violet rather than neutral, which is what keeps the bloom
+     above it from reading as a coloured lamp aimed at a grey wall.
+     The pinstripe stays. It is the one piece of the Aqua desktop that reads at
+     any brightness, and it gives a flat ground a surface. */
   background:
     repeating-linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.04) 0 1px,
+      rgba(255, 255, 255, 0.03) 0 1px,
       transparent 1px 4px
     ),
-    linear-gradient(160deg, var(--desk-1) 0%, var(--desk-2) 48%, var(--desk-3) 100%);
+    var(--ground);
   background-attachment: fixed;
 }
 
@@ -167,86 +168,14 @@ body {
    Built from radial gradients on two fixed layers and animated with
    transform and opacity only — a full-screen loop has to be free, and this
    one composites without ever touching layout. */
-/* The CSS caustics. They carry the room on their own, and step back — but do
-   not leave — when the WebGL field is live, because they are what makes the
-   room blue. Hiding them entirely and letting the shader take over left the
-   page flatter and darker than before: `screen` can only add light, and the
-   field's own palette is nearly black away from its frontier.
-   `Shader.tsx` sets that flag only once it has a context and a linked
-   program, so this never fires on a machine showing the caustics alone. */
-:root[data-shader='on'] .frostfield { opacity: 0.4; }
-.frostfield {
-  position: fixed;
-  inset: -20%;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.75;
-}
-.frostfield i {
-  position: absolute;
-  display: block;
-  border-radius: 50%;
-  filter: blur(60px);
-  mix-blend-mode: screen;
-  will-change: transform;
-}
-.frostfield i:nth-child(1) {
-  width: 46%; height: 52%; left: 4%; top: 2%;
-  background: radial-gradient(circle, rgba(126, 196, 255, 0.5), transparent 68%);
-  animation: frost-drift-a 34s ease-in-out infinite;
-}
-.frostfield i:nth-child(2) {
-  width: 38%; height: 44%; right: 6%; top: 12%;
-  background: radial-gradient(circle, rgba(169, 227, 255, 0.42), transparent 66%);
-  animation: frost-drift-b 47s ease-in-out infinite;
-}
-.frostfield i:nth-child(3) {
-  width: 54%; height: 46%; left: 18%; bottom: 2%;
-  background: radial-gradient(circle, rgba(90, 160, 232, 0.44), transparent 70%);
-  animation: frost-drift-c 41s ease-in-out infinite;
-}
-.frostfield i:nth-child(4) {
-  width: 30%; height: 34%; right: 18%; bottom: 14%;
-  background: radial-gradient(circle, rgba(214, 243, 255, 0.34), transparent 64%);
-  animation: frost-drift-d 29s ease-in-out infinite;
-}
-@keyframes frost-drift-a {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  33%      { transform: translate3d(9vw, 5vh, 0) scale(1.16); }
-  66%      { transform: translate3d(-4vw, 9vh, 0) scale(0.92); }
-}
-@keyframes frost-drift-b {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
-  40%      { transform: translate3d(-11vw, 7vh, 0) scale(0.88); }
-  75%      { transform: translate3d(-3vw, -5vh, 0) scale(1.2); }
-}
-@keyframes frost-drift-c {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(0.95); }
-  45%      { transform: translate3d(7vw, -8vh, 0) scale(1.18); }
-  80%      { transform: translate3d(-6vw, -3vh, 0) scale(1); }
-}
-@keyframes frost-drift-d {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1.1); }
-  50%      { transform: translate3d(-8vw, -10vh, 0) scale(0.85); }
-}
-/* Frozen, not removed: the depth it gives the desktop is structural. */
-@media (prefers-reduced-motion: reduce) {
-  .frostfield i { animation: none; }
-}
-
 .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
-/* The shader belongs to the other system; a pinstriped desktop and a volcanic
-   field cannot share a page. */
-.shader { display: none !important; }
-.bd { display: none !important; }
 .grain::before, .grain::after { content: none !important; }
 
 /* --- Gel -------------------------------------------------------------
    The Aqua button: a vertical gradient from light to saturated, a bright
    wet cap over the top half, a soft inner rim, and a drop shadow that
    lifts it off the sheet. */
-.gel,
 .btn {
   position: relative;
   display: inline-flex;
@@ -273,7 +202,6 @@ body {
   overflow: hidden;
 }
 /* The wet cap. Aqua's whole signature is this one highlight. */
-.gel::before,
 .btn::before {
   content: "";
   position: absolute;
@@ -306,12 +234,6 @@ body {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.25));
 }
 
-/* --- Traffic lights, for the states ---------------------------------- */
-.gel-red   { border-color: var(--red-lo);   background: linear-gradient(to bottom, #ff9d92 0%, var(--red) 48%, var(--red-lo) 100%); }
-.gel-amber { border-color: var(--amber-lo); background: linear-gradient(to bottom, #ffd98a 0%, var(--amber) 48%, var(--amber-lo) 100%); color: #3a2a00; text-shadow: 0 1px 0 rgba(255,255,255,.4); }
-.gel-green { border-color: var(--green-lo); background: linear-gradient(to bottom, #a5e0a3 0%, var(--green) 48%, var(--green-lo) 100%); }
-.gel-grey  { border-color: #97a4b4;         background: linear-gradient(to bottom, #f4f7fb 0%, #dbe2ec 48%, #bcc7d6 100%); color: #3c4756; text-shadow: 0 1px 0 rgba(255,255,255,.7); }
-
 /* --- The window rule: a brushed metal strip -------------------------- */
 .rule {
   height: 22px;
@@ -324,12 +246,6 @@ body {
   border-color: var(--sheet-line);
   box-shadow: inset 0 1px 0 0 var(--sheet-top), 0 1px 2px rgba(0,0,0,.3);
 }
-
-/* --- Headline scraps, in Aqua's vocabulary --------------------------- */
-.ransom { display: inline; }
-.ransom-w { display: inline-block; margin-right: 0.24em; }
-.ransom-w.v0, .ransom-w.v2, .ransom-w.v5 { color: #fff; text-shadow: 0 2px 4px rgba(11,28,52,.45); }
-.ransom-w.v1, .ransom-w.v3, .ransom-w.v4 { color: #fff; text-shadow: 0 2px 4px rgba(11,28,52,.45); }
 
 @keyframes pf-ants { to { background-position: 0 0; } }
 
@@ -402,49 +318,3 @@ body {
 .appearance-dot.on { opacity: 1; box-shadow: inset 0 1px 0 0 rgba(255,255,255,.7), 0 0 0 2px rgba(255,255,255,.45); }
 .appearance-dot.is-graphite { background: linear-gradient(to bottom, #b9c2cd, #6c7684); }
 .appearance-dot.is-aqua { background: linear-gradient(to bottom, #a9cdf5, #2f5f9e); }
-
-/* --- the glow ---------------------------------------------------------
-   Lifted from the nexacore template's background, which is not a canvas or a
-   shader at all: two gradients and nothing else. A very wide radial bloom
-   hung off the top edge — 120% x 90%, centred at 50% 0% — and a diagonal
-   wash falling away from it at 160deg. That is the whole effect, and the
-   reason it works everywhere is that it has no content of its own: it is
-   light entering a room, so it sits under any composition without competing
-   with it.
-
-   Two changes, both on purpose.
-
-   It SCREENS rather than replacing the ground. This app already has three
-   things behind the text — the desktop, the WebGL field, the caustics — and
-   a fourth opaque layer would have meant picking which of the other three to
-   throw away. Screened, it adds its light to whatever is already there and
-   takes nothing out.
-
-   The orange third of the palette is dropped. nexacore runs blue → violet →
-   orange, and orange is this product's expiry colour: it means a lock about
-   to open. A background that spends it on decoration makes the one place it
-   carries meaning quieter, which is the same reason the shader's lava is
-   amber and the badge refuses an unshaped ticker. */
-.glow {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  opacity: 0.55;
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(200, 111, 255, 0.34), transparent 70%),
-    linear-gradient(160deg, rgba(28, 78, 255, 0.3), rgba(10, 5, 20, 0) 60%);
-}
-
-/* Aqua is paper. Screening violet onto a pale desktop washes it to nothing,
-   so here the same two gradients are taken away as shade instead of added as
-   light, at a fraction of the strength — enough to give the page a top edge
-   without turning the light appearance into the dark one. */
-:root[data-appearance='aqua'] .glow {
-  mix-blend-mode: multiply;
-  opacity: 0.16;
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(150, 90, 210, 0.5), transparent 70%),
-    linear-gradient(160deg, rgba(28, 78, 255, 0.4), rgba(255, 255, 255, 0) 60%);
-}
