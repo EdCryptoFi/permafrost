@@ -29,14 +29,14 @@ export type PublishedBlob = {
 export const PUBLISHED: PublishedBlob[] = [
   {
     name: 'permafrost',
-    blobId: 'lSCVqZO2P4HYeNkZD_pQDeocwUf0j2pH7oXCtgQAa1g',
-    bytes: 235553,
+    blobId: 'ZZf6EgypJ2hCVQJqVL3TyOXq5Y1cmiwQlQs_MxrvyHc',
+    bytes: 262423,
     publishedAt: '2026-09-06',
   },
   {
     name: 'frostbadge',
-    blobId: 'o2I5yLs4S9pT23VT3qFVJfB6wB_LjdBM9AxJg6EHN2k',
-    bytes: 53448,
+    blobId: 'hKH9s2oxo_Kum7n0sT-GhZdJty8OrACFom0MGUfIr1U',
+    bytes: 51439,
     publishedAt: '2026-09-06',
   },
 ]
