@@ -49,11 +49,6 @@
 }
 .c-verify { font-size: clamp(2.3rem, 6vw, 4rem); }
 
-.hero-mini {
-  font-family: var(--display); font-weight: 700; color: #fff;
-  font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -0.02em;
-  margin-bottom: 10px; text-shadow: 0 2px 5px rgba(11,28,52,.5);
-}
 .lede {
   color: #dbe8f7; max-width: 68ch; margin-bottom: 24px;
   font-size: 1.22rem; line-height: 1.55; text-shadow: 0 1px 2px rgba(11,28,52,.4);
@@ -514,3 +509,36 @@ a:hover { text-decoration: underline; }
 .tile:active { transform: translateY(0); filter: brightness(0.97); }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
 .fact dd.road { font-family: var(--sans); font-size: 0.95rem; color: var(--mut); text-align: left; max-width: 62%; line-height: 1.5; }
+
+/* --- illustrated page heads -------------------------------------------
+   The icon that opens a page is the icon that heads it. Same object, so
+   arriving somewhere is confirmed rather than assumed. */
+.pagehead {
+  display: flex; align-items: flex-start; gap: 22px;
+  margin: 0 0 22px;
+}
+.pagehead-art { flex: 0 0 auto; margin-top: -6px; }
+/* Stopped short of the right edge on purpose: the decorative stickers are
+   absolutely positioned up there, and the old one-line heading passed under
+   them harmlessly. A three-line lede does not — it ran straight through
+   "One signature, no undo". */
+.pagehead-copy { min-width: 0; max-width: 660px; }
+.pagehead h1 {
+  font-family: var(--display); font-size: 2.6rem; font-weight: 700;
+  letter-spacing: -0.6px; line-height: 1.1; color: var(--paper);
+  margin: 0 0 10px;
+}
+.pagehead .lede { margin: 0; }
+@media (max-width: 620px) {
+  .pagehead { gap: 14px; }
+  .pagehead-art { transform: scale(0.72); transform-origin: top left; }
+  .pagehead h1 { font-size: 2rem; }
+  .pagehead-copy { max-width: none; }
+}
+
+/* A numbered decision, with the thing it is about beside it. */
+.stephead {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 26px;
+}
+.stephead-art { flex: 0 0 auto; display: inline-flex; }

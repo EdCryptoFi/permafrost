@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'preact/hooks'
+import { StepHead } from '@/ui/PageHead'
+import { AquaTag, AquaBlob } from '@/ui/AquaIcons'
 import { gql } from '@/chain/graphql'
 import { NAMES, EXPLORER } from '@/chain/constants'
 import { buildUpdateBlob } from '@/chain/tx'
@@ -92,7 +94,7 @@ export function Deploy({
         <p class="muted small">This wallet holds no .epoch NameCap.</p>
       ) : (
         <>
-          <h3>Name</h3>
+          <StepHead n={1} title="Name" art={AquaTag} />
           <div class="pick-list">
             {caps.map((c) => (
               <button
@@ -112,7 +114,7 @@ export function Deploy({
             ))}
           </div>
 
-          <h3>Blob id</h3>
+          <StepHead n={2} title="Blob id" art={AquaBlob} />
           {(() => {
             const cap = caps.find((c) => c.id === capId)
             const s = cap ? suggestedBlobFor(cap.name) : undefined

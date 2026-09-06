@@ -189,3 +189,156 @@ export function AquaDeploy({ size = 96, title }: IconProps) {
     </svg>
   )
 }
+
+/** Guide: the help book. Aqua's was a book because a manual was a book. */
+export function AquaGuide({ size = 96, title }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 128 128" role={title ? 'img' : 'presentation'} aria-label={title} aria-hidden={title ? undefined : 'true'}>
+      <defs>
+        <linearGradient id="ag-cover" x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stop-color="#7fc0ee" />
+          <stop offset="42%" stop-color="#2f7fc4" />
+          <stop offset="100%" stop-color="#154f83" />
+        </linearGradient>
+        <linearGradient id="ag-page" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="100%" stop-color="#d3dde7" />
+        </linearGradient>
+        <linearGradient id="ag-cap" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.75" />
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="64" cy="112" rx="36" ry="6" fill="#0b1c34" opacity="0.22" />
+      <path d="M26 24 h58 a14 14 0 0 1 14 14 v62 a14 14 0 0 0 -14 -14 h-58 z" fill="url(#ag-page)" stroke="#8d9dae" stroke-width="1.3" stroke-linejoin="round" />
+      <path d="M22 20 h56 a12 12 0 0 1 12 12 v60 a12 12 0 0 0 -12 -12 h-56 z" fill="url(#ag-cover)" stroke="#123f6d" stroke-width="1.5" stroke-linejoin="round" />
+      <path d="M28 26 h50 a8 8 0 0 1 8 8 v14 h-66 z" fill="url(#ag-cap)" />
+      {/* The ribbon, which is what says this one is being read. */}
+      <path d="M66 20 v42 l-8 -7 -8 7 v-42 z" fill="#e9b03a" stroke="#8a6412" stroke-width="1.2" stroke-linejoin="round" />
+    </svg>
+  )
+}
+
+/** What to freeze: a stack of coins, gold because Aqua's were. */
+export function AquaCoins({ size = 96, title }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 128 128" role={title ? 'img' : 'presentation'} aria-label={title} aria-hidden={title ? undefined : 'true'}>
+      <defs>
+        <linearGradient id="ac-edge" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f4cf6a" />
+          <stop offset="100%" stop-color="#a97b16" />
+        </linearGradient>
+        <radialGradient id="ac-face" cx="36%" cy="30%" r="76%">
+          <stop offset="0%" stop-color="#fff3cd" />
+          <stop offset="55%" stop-color="#efc45f" />
+          <stop offset="100%" stop-color="#c9971f" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="64" cy="114" rx="34" ry="6" fill="#0b1c34" opacity="0.22" />
+      {[76, 60, 44].map((y) => (
+        <g key={y}>
+          <path d={`M24 ${y} a40 15 0 0 0 80 0 v12 a40 15 0 0 1 -80 0 z`} fill="url(#ac-edge)" stroke="#7d5a0c" stroke-width="1.2" />
+          <ellipse cx="64" cy={y} rx="40" ry="15" fill="url(#ac-face)" stroke="#7d5a0c" stroke-width="1.2" />
+        </g>
+      ))}
+      <ellipse cx="55" cy="39" rx="20" ry="6" fill="#ffffff" opacity="0.5" />
+    </svg>
+  )
+}
+
+/** Until when: the calendar, torn off at today. */
+export function AquaCalendar({ size = 96, title }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 128 128" role={title ? 'img' : 'presentation'} aria-label={title} aria-hidden={title ? undefined : 'true'}>
+      <defs>
+        <linearGradient id="ak-head" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ff8a7a" />
+          <stop offset="48%" stop-color="#d93b28" />
+          <stop offset="100%" stop-color="#9d2416" />
+        </linearGradient>
+        <linearGradient id="ak-page" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="100%" stop-color="#ccd6e0" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="64" cy="114" rx="34" ry="6" fill="#0b1c34" opacity="0.22" />
+      <rect x="22" y="24" width="84" height="84" rx="12" fill="url(#ak-page)" stroke="#7f8fa0" stroke-width="1.5" />
+      <path d="M22 36 a12 12 0 0 1 12 -12 h60 a12 12 0 0 1 12 12 v14 h-84 z" fill="url(#ak-head)" stroke="#8c2113" stroke-width="1.3" />
+      <path d="M28 28 h72 v10 h-72 z" fill="#ffffff" opacity="0.32" />
+      <g fill="#5d6c7c">
+        <rect x="34" y="62" width="14" height="12" rx="2.5" />
+        <rect x="57" y="62" width="14" height="12" rx="2.5" />
+        <rect x="80" y="62" width="14" height="12" rx="2.5" />
+        <rect x="34" y="82" width="14" height="12" rx="2.5" />
+      </g>
+      <rect x="57" y="82" width="14" height="12" rx="2.5" fill="#2f7fc4" />
+    </svg>
+  )
+}
+
+/** Who can claim it: a key, which is the only thing a beneficiary really is. */
+export function AquaKey({ size = 96, title }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 128 128" role={title ? 'img' : 'presentation'} aria-label={title} aria-hidden={title ? undefined : 'true'}>
+      <defs>
+        <linearGradient id="ay-metal" x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="26%" stop-color="#f0d68f" />
+          <stop offset="60%" stop-color="#c79c2c" />
+          <stop offset="100%" stop-color="#8d6a10" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="64" cy="112" rx="32" ry="6" fill="#0b1c34" opacity="0.22" />
+      <g fill="url(#ay-metal)" stroke="none">
+        <circle cx="44" cy="48" r="24" stroke="#7a5a0e" stroke-width="1.6" />
+        <circle cx="44" cy="48" r="10" fill="#2a3440" />
+        <path d="M60 56 L100 96 l-8 8 -8 -8 -6 6 -8 -8 -6 6 -14 -14 z" stroke="#7a5a0e" stroke-width="1.6" stroke-linejoin="round" />
+      </g>
+      <path d="M30 36 a24 24 0 0 1 22 -10" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+    </svg>
+  )
+}
+
+/** The name a site answers to. */
+export function AquaTag({ size = 96, title }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 128 128" role={title ? 'img' : 'presentation'} aria-label={title} aria-hidden={title ? undefined : 'true'}>
+      <defs>
+        <linearGradient id="at-body" x1="0" y1="0" x2="0.4" y2="1">
+          <stop offset="0%" stop-color="#a9e0f7" />
+          <stop offset="46%" stop-color="#3d95cf" />
+          <stop offset="100%" stop-color="#16537f" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="64" cy="112" rx="32" ry="6" fill="#0b1c34" opacity="0.22" />
+      <path d="M20 62 L62 20 h40 a6 6 0 0 1 6 6 v40 L66 108 a6 6 0 0 1 -8 0 L20 70 a6 6 0 0 1 0 -8 z"
+        fill="url(#at-body)" stroke="#0f3f63" stroke-width="1.6" stroke-linejoin="round" />
+      <path d="M30 60 L64 26 h34 v10 L64 70 z" fill="#ffffff" opacity="0.3" />
+      <circle cx="88" cy="40" r="9" fill="#e8f6ff" stroke="#0f3f63" stroke-width="1.5" />
+    </svg>
+  )
+}
+
+/** The blob a name points at. */
+export function AquaBlob({ size = 96, title }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 128 128" role={title ? 'img' : 'presentation'} aria-label={title} aria-hidden={title ? undefined : 'true'}>
+      <defs>
+        <linearGradient id="ab-page" x1="0" y1="0" x2="0.2" y2="1">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="100%" stop-color="#c9d5e0" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="64" cy="114" rx="30" ry="6" fill="#0b1c34" opacity="0.22" />
+      <path d="M32 16 h44 l22 22 v70 a6 6 0 0 1 -6 6 H32 a6 6 0 0 1 -6 -6 V22 a6 6 0 0 1 6 -6 z"
+        fill="url(#ab-page)" stroke="#7f8fa0" stroke-width="1.6" stroke-linejoin="round" />
+      <path d="M76 16 l22 22 h-22 z" fill="#9fb0c2" stroke="#7f8fa0" stroke-width="1.4" stroke-linejoin="round" />
+      <g fill="#2f7fc4" opacity="0.85">
+        <rect x="38" y="56" width="3" height="30" /><rect x="44" y="56" width="6" height="30" />
+        <rect x="53" y="56" width="3" height="30" /><rect x="59" y="56" width="8" height="30" />
+        <rect x="70" y="56" width="3" height="30" /><rect x="76" y="56" width="5" height="30" />
+        <rect x="84" y="56" width="3" height="30" />
+      </g>
+    </svg>
+  )
+}

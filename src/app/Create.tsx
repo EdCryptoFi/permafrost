@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { listLockable, type OwnedObject } from '@/chain/owned'
 import { buildLock } from '@/chain/tx'
+import { StepHead } from '@/ui/PageHead'
+import { AquaCoins, AquaCalendar, AquaKey } from '@/ui/AquaIcons'
 import { ConnectButton } from '@/ui/ConnectButton'
 import { IconCoin, IconObject } from '@/ui/icons'
 import { awaitCreatedLock } from '@/chain/created'
@@ -137,7 +139,7 @@ export function Create({
         pull the date forward. Only the beneficiary can push it further out.
       </p>
 
-      <h3>1 · What to freeze</h3>
+      <StepHead n={1} title="What to freeze" art={AquaCoins} />
       {objects === null ? (
         <p class="muted small">Reading your wallet…</p>
       ) : objects.length === 0 ? (
@@ -184,7 +186,7 @@ export function Create({
         </>
       )}
 
-      <h3>2 · Until when</h3>
+      <StepHead n={2} title="Until when" art={AquaCalendar} />
       <div class="row">
         <div class="seg">
           {PRESETS.map((p) => (
@@ -209,7 +211,7 @@ export function Create({
       </div>
       <p class="muted small">Unlocks {unlockMs ? fmtDate(unlockMs) : '—'}</p>
 
-      <h3>3 · Who can claim it</h3>
+      <StepHead n={3} title="Who can claim it" art={AquaKey} />
       <input
         class="mono"
         placeholder={wallet.address}

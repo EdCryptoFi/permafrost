@@ -50,8 +50,8 @@ export function EptMark({
           <stop offset="100%" stop-color="#1b7fd4" />
         </linearGradient>
         <linearGradient id="em-glass" x1="0" y1="0" x2="0.4" y2="1">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85" />
-          <stop offset="100%" stop-color="#a8d8f5" stop-opacity="0.35" />
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.92" />
+          <stop offset="100%" stop-color="#a8d8f5" stop-opacity="0.55" />
         </linearGradient>
         <filter id="em-glow" x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur stdDeviation="2.4" result="b" />

@@ -21,6 +21,7 @@ import { Backdrop, sceneFor } from '@/ui/Backdrop'
 import { Ept } from './Ept'
 import { Boot } from '@/ui/Boot'
 import { Chooser } from '@/ui/Chooser'
+import { PageHead } from '@/ui/PageHead'
 import { Shader } from '@/ui/Shader'
 import { ProofCard } from '@/share/ProofCard'
 import './app.css'
@@ -222,35 +223,47 @@ export function App() {
       <Stickers view={view} frost={view === 'verify' ? selected : null} />
 
       {/* The full ransom-note headline is the landing page's argument. Once
-          somebody is reading a specific lock, or filling in a form, it is a
-          poster in the way — so it stands down to one line and the copy
-          underneath starts describing the thing they are actually doing. */}
+          somebody is reading a specific lock it is a poster in the way, so it
+          stands down to one line. On the pages that DO one thing, the heading
+          arrives beside the object that page is about — the same object that
+          was on the tile they clicked to get here. */}
       {view === 'verify' && status === 'idle' && !selected ? (
-        <HeroTitle />
+        <>
+          <HeroTitle />
+          <p class="lede">
+            Paste a project's address and see everything it has locked with Epoch — LP
+            positions, vesting vaults, the lot. Then embed a badge that reads the chain
+            live, so nobody has to take your word for it.
+          </p>
+        </>
+      ) : view === 'new' ? (
+        <PageHead kind="new" title="Freeze something.">
+          Pick anything this wallet holds that the contract accepts, set a date, sign
+          once. Locks are shared objects — after that, anybody can verify it and nobody
+          can undo it.
+        </PageHead>
+      ) : view === 'deploy' ? (
+        <PageHead kind="deploy" title="Ship the blob.">
+          Publish each build to Walrus, then point a .epoch name at the blob it returns.
+          The NameCap never leaves your wallet.
+        </PageHead>
+      ) : view === 'ept' ? (
+        <PageHead kind="ept" title="Burned, not promised.">
+          Epoch lets a vesting vault pay its fee in $EPT instead of SUI, and the contract
+          burns it in the same transaction. Its own counters say how much. Nothing was
+          reading them.
+        </PageHead>
+      ) : view === 'guide' ? (
+        <PageHead kind="guide" title="How it works.">
+          Every step, and what each part of the picture means. Nothing here is a roadmap
+          — it all works right now.
+        </PageHead>
       ) : (
-        <h1 class="hero-mini">
-          {view === 'new'
-            ? 'Freeze something.'
-            : view === 'deploy'
-              ? 'Ship the blob.'
-              : view === 'ept'
-                ? 'Burned, not promised.'
-                : view === 'guide'
-                  ? 'How it works.'
-                  : 'Read it from the chain.'}
-        </h1>
+        <PageHead kind="verify" title="Read it from the chain.">
+          Everything below is an object on Sui mainnet, read live. Nothing is stored
+          here, and nothing on this page can say more than the lock does.
+        </PageHead>
       )}
-      <p class="lede">
-        {view === 'new'
-          ? 'Pick anything this wallet holds that the contract accepts, set a date, sign once. Locks are shared objects — after that, anybody can verify it and nobody can undo it.'
-          : view === 'deploy'
-            ? 'Publish each build to Walrus, then point a .epoch name at the blob it returns. The NameCap never leaves your wallet.'
-            : view === 'ept'
-              ? 'Epoch lets a vesting vault pay its fee in $EPT instead of SUI, and the contract burns it in the same transaction. Its own counters say how much. Nothing was reading them.'
-              : view === 'guide'
-              ? 'Every step, and what each part of the picture means. Nothing here is a roadmap — it all works right now.'
-              : "Paste a project's address and see everything it has locked with Epoch — LP positions, vesting vaults, the lot. Then embed a badge that reads the chain live, so nobody has to take your word for it."}
-      </p>
 
       {view === 'verify' && status === 'idle' && !selected && <Chooser onGo={go} />}
 
