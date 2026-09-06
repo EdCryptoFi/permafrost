@@ -2,7 +2,14 @@
    A gel lozenge sitting on somebody else's page: light sheet, wet cap, soft
    drop shadow, traffic-light borders for the states. Transparent ground and
    no body margin, as always. */
-html, body { background: transparent; margin: 0; padding: 0; }
+/* Transparent, and it has to WIN.
+   `theme.css` paints the desktop on `body`, and in the bundled badge it lands
+   AFTER this file — so a plain `body { background: transparent }` lost on
+   source order and the badge shipped an opaque slab of desktop behind itself,
+   on somebody else's page. `:root body` is (0,1,1) against theme's (0,0,1),
+   so it wins wherever the bundler puts it. */
+:root, :root body { background: transparent; }
+html, body { margin: 0; padding: 0; }
 body { display: inline-block; }
 
 .pf {

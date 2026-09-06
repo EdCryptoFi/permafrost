@@ -48,6 +48,11 @@ function validLocale(v: string | null): string | undefined {
 {
   const a = new URLSearchParams(location.search).get('appearance')
   document.documentElement.dataset.appearance = a === 'aqua' ? 'aqua' : 'graphite'
+  // Deliberately NOT setting `color-scheme`. A frame whose canvas is
+  // transparent composites onto the host page — but only while nothing has
+  // declared a scheme. Declare one and the browser paints its base colour
+  // underneath instead: white for light, near-black for dark. Both were tried
+  // here, and both are a card the host did not ask for.
 }
 
 const root = document.getElementById('app')!
