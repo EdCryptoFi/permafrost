@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks'
+import { useEffect, useRef, useState } from 'preact/hooks'
 import type { Frost } from '@/chain/frost'
 
 /**
@@ -57,16 +57,83 @@ const VARIATIONS = [
   { id: '0x653cdb6285add1c2d76c7fc093d10b9c02218f53adf6f52b4dec388f9dd90771', label: 'Claimed and gone' },
 ]
 
+/**
+ * An iframe that lets the badge inside decide how big it should be.
+ *
+ * The badge posts its measured size on load and whenever it changes (see
+ * `src/badge/main.tsx`). Until then the frame uses `fallback`, so a host that
+ * blocks scripts still gets a sensibly-sized box instead of a collapsed one.
+ *
+ * The message crosses an origin boundary, so nothing in it is trusted: it has
+ * to come from this frame's own window, carry our marker, and survive a range
+ * check before it moves a pixel.
+ */
+function BadgeFrame({
+  src,
+  fallback,
+  title,
+  lazy,
+  sandbox,
+  onSize,
+}: {
+  src: string
+  fallback: { w: number; h: number }
+  title: string
+  lazy?: boolean
+  sandbox?: string
+  onSize?: (d: { w: number; h: number }) => void
+}) {
+  const ref = useRef<HTMLIFrameElement>(null)
+  const [size, setSize] = useState(fallback)
+
+  // A new src is a different badge, and the old measurement is not its size.
+  useEffect(() => setSize(fallback), [src])
+
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (!ref.current || e.source !== ref.current.contentWindow) return
+      const d = e.data as { source?: unknown; w?: unknown; h?: unknown } | null
+      if (!d || d.source !== 'permafrost-badge') return
+      if (typeof d.w !== 'number' || typeof d.h !== 'number') return
+      if (!Number.isFinite(d.w) || !Number.isFinite(d.h)) return
+      const w = Math.min(Math.max(Math.ceil(d.w), 60), 900)
+      const h = Math.min(Math.max(Math.ceil(d.h), 24), 400)
+      setSize({ w, h })
+      onSize?.({ w, h })
+    }
+    addEventListener('message', onMessage)
+    return () => removeEventListener('message', onMessage)
+  }, [onSize])
+
+  return (
+    <iframe
+      ref={ref}
+      src={src}
+      width={size.w}
+      height={size.h}
+      frameborder="0"
+      scrolling="no"
+      loading={lazy ? 'lazy' : undefined}
+      title={title}
+      referrerpolicy="no-referrer"
+      sandbox={sandbox}
+    />
+  )
+}
+
 export function Embed({ frost }: { frost: Frost }) {
   const [variant, setVariant] = useState<'pill' | 'card'>('pill')
   const [mascot, setMascot] = useState(true)
   const [light, setLight] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
+  // What the badge reports it needs. The snippet below is copied onto other
+  // people's pages, so shipping a guessed box would clip the amount off every
+  // embed in the wild — this is measured, not assumed.
+  const [dims, setDims] = useState({ w: 260, h: 48 })
 
   const id = safeId(frost.id)
   const query = `?id=${id}&variant=${variant}${mascot ? '' : '&mascot=0'}${light ? '&appearance=aqua' : ''}`
   const src = `${BADGE_ORIGIN}${BADGE_PATH}${query}`
-  const dims = variant === 'card' ? { w: 300, h: 96 } : { w: 260, h: 48 }
 
   const publicSrc = `${PUBLIC_BADGE}${query}`
 
@@ -92,7 +159,7 @@ export function Embed({ frost }: { frost: Frost }) {
   }
 
   return (
-    <section class="panel">
+    <section class="panel embed">
       <h2>Embed this proof</h2>
       <p class="muted">
         Paste it on your site. The date is read from Sui on every page load — you
@@ -119,15 +186,18 @@ export function Embed({ frost }: { frost: Frost }) {
       </div>
 
       <div class="preview preview-lg">
-        <iframe
+        <BadgeFrame
           src={src}
-          width={dims.w}
-          height={dims.h}
-          frameborder="0"
-          scrolling="no"
+          fallback={variant === 'card' ? { w: 300, h: 96 } : { w: 260, h: 48 }}
           title="Badge preview"
-          referrerpolicy="no-referrer"
-          sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+          onSize={setDims}
+          /* `allow-same-origin` is here because without it the frame gets an
+             opaque origin, its GraphQL request goes out as `Origin: null`,
+             CORS refuses it, and the preview sits on "Checking the chain…"
+             forever — verified in a browser, not assumed. It grants nothing:
+             the frame is our own build, and when VITE_BADGE_ORIGIN points it
+             elsewhere the origin it gets back is the badge host's, not ours. */
+          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
         />
       </div>
 
@@ -139,14 +209,11 @@ export function Embed({ frost }: { frost: Frost }) {
       <div class="variations">
         {VARIATIONS.map((v) => (
           <figure class="variation" key={v.id}>
-            <iframe
+            <BadgeFrame
               src={`${BADGE_ORIGIN}${BADGE_PATH}?id=${v.id}&variant=pill${light ? '&appearance=aqua' : ''}`}
-              width="280"
-              height="52"
-              frameborder="0"
-              scrolling="no"
-              loading="lazy"
+              fallback={{ w: 260, h: 48 }}
               title={v.label}
+              lazy
             />
             <figcaption>{v.label}</figcaption>
           </figure>

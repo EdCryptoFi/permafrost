@@ -385,15 +385,27 @@ a:hover { text-decoration: underline; }
 /* --- the embed panel, full width --------------------------------------
    It carries a live preview, four more, and a snippet somebody has to read
    before pasting it into their own page — a half-width column made all
-   three cramped. */
-.preview-lg { padding: 34px; min-height: 150px; }
+   three cramped.
+
+   Corners here are 2px, not the 10px the rest of the app uses. Everything in
+   this panel is a frame around a badge or around code: a rounded well drawn
+   around a rounded pill reads as two competing shapes, and a rounded box
+   around monospace reads as a bubble. Square is the quieter container. */
+.embed .row { margin-bottom: 16px; row-gap: 12px; }
+.embed h3 { margin-top: 30px; }
+.embed h3 + .muted { margin-bottom: 16px; }
+.embed .code { border-radius: 2px; }
+.embed .preview, .embed .variation { border-radius: 2px; }
+
+.preview-lg { padding: 30px; min-height: 130px; }
 .variations {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 18px; margin: 14px 0 20px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(228px, 1fr));
+  gap: 16px; margin: 0 0 26px;
 }
 .variation {
-  display: flex; flex-direction: column; gap: 8px; align-items: flex-start;
-  padding: 16px; border-radius: 10px;
+  display: flex; flex-direction: column; gap: 12px; align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 20px 16px;
   border: 1px solid var(--well-line); background: var(--well);
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.22);
 }

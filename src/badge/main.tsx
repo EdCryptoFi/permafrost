@@ -64,3 +64,32 @@ if (!opts) {
 } else {
   render(<Badge opts={opts} />, root)
 }
+
+/**
+ * Tell the host how big this badge actually is.
+ *
+ * An iframe cannot size itself, and the badge has no fixed size to hardcode:
+ * a pill holding "1,230,000 EPT" is 63px tall, one saying "Checking the
+ * chain…" is 30px, and the width follows the ticker. Guessing a box for it
+ * clips the amount off the bottom on somebody else's homepage — the one place
+ * this must never happen.
+ *
+ * So it measures itself and says so. Hosts that listen (our own embed panel)
+ * fit the frame to the badge; hosts that don't are unaffected, which is why
+ * this is a message and not a demand.
+ */
+if (window.parent !== window) {
+  const post = () => {
+    const r = document.body.getBoundingClientRect()
+    if (!r.width || !r.height) return
+    // '*' rather than an origin: the whole point is to work on pages whose
+    // address we cannot know. Nothing here is secret — it is two integers
+    // about a public badge — and the receiver validates before believing it.
+    window.parent.postMessage(
+      { source: 'permafrost-badge', w: Math.ceil(r.width), h: Math.ceil(r.height) },
+      '*',
+    )
+  }
+  new ResizeObserver(post).observe(document.body)
+  addEventListener('load', post)
+}
