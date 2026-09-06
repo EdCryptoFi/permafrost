@@ -14,9 +14,9 @@ import { Results } from './Results'
 import { useWallet } from '@/wallet/useWallet'
 import { shortAddr } from '@/format'
 import { IconFrost, IconGuide } from '@/ui/icons'
+import { ThemeToggle } from '@/ui/ThemeToggle'
 import { HeroTitle } from '@/ui/HeroTitle'
 import { Backdrop, sceneFor } from '@/ui/Backdrop'
-import { Shader } from '@/ui/Shader'
 import { ProofCard } from '@/share/ProofCard'
 import './app.css'
 
@@ -145,7 +145,9 @@ export function App() {
 
   return (
     <>
-      <Shader />
+      <div class="frostfield" aria-hidden="true">
+        <i /><i /><i /><i />
+      </div>
       <Backdrop scene={scene} />
       <div class="wrap">
       <header class="head">
@@ -186,6 +188,7 @@ export function App() {
           <IconGuide size={14} />
           Guide
         </a>
+        <ThemeToggle />
         <WalletButton wallet={wallet} />
       </header>
       <div class="rule" />

@@ -10,6 +10,16 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
     />
+    <script>
+      // Before first paint: a page that flashes the wrong appearance and then
+      // corrects itself looks broken, and this one is asking to be trusted.
+      try {
+        var a = localStorage.getItem('permafrost:appearance')
+        document.documentElement.dataset.appearance = a === 'aqua' ? 'aqua' : 'graphite'
+      } catch (e) {
+        document.documentElement.dataset.appearance = 'graphite'
+      }
+    </script>
   </head>
   <body>
     <div id="app"></div>
