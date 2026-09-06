@@ -25,12 +25,13 @@ const RIGHT = 'M58 20 L32 34 L32 58 L58 44 Z'
 
 type Tone = { top: string; left: string; right: string; edge: string }
 
+/* Aqua's own gels: blue is fine, amber warns, red stops, grey is spent. */
 const TONES: Record<string, Tone> = {
-  frozen: { top: '#7df4ff', left: '#1a6ea8', right: '#0d3f63', edge: '#dbfcff' },
-  expiring: { top: '#ffd486', left: '#b06c10', right: '#6d4208', edge: '#ffe6b8' },
-  cracked: { top: '#9fb2c4', left: '#4a5a6b', right: '#2c3744', edge: '#c8d6e4' },
-  thawed: { top: '#5b6b7c', left: '#33404e', right: '#1e2833', edge: '#6f8091' },
-  hollow: { top: '#e8590c', left: '#9a3412', right: '#5c1f0a', edge: '#ff7518' },
+  frozen: { top: '#a9cdf5', left: '#3e7dd4', right: '#1f5cb0', edge: '#e2effc' },
+  expiring: { top: '#ffd98a', left: '#f0ab27', right: '#c07c07', edge: '#fff1cf' },
+  cracked: { top: '#cdd6e2', left: '#8c9aad', right: '#5d6b7e', edge: '#eef2f8' },
+  thawed: { top: '#c3ccd8', left: '#94a1b2', right: '#6d7a8b', edge: '#e6ebf2' },
+  hollow: { top: '#ff9d92', left: '#e4483d', right: '#b62b22', edge: '#ffd9d4' },
 }
 
 function toneFor(f: Frost): keyof typeof TONES {
