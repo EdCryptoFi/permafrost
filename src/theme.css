@@ -9,56 +9,56 @@
   /* Desktop, graphite: slate rather than blue, the way the dark appearance
      always was — the gel stays, the room goes cold. */
   /* nexacore's ground, unchanged. */
-  --ground: rgb(10, 5, 20);
+  --ground: #0a122a;
 
   /* Window sheets, dark */
-  --sheet: #262d38;
-  --sheet-2: #1e242e;
-  --sheet-sunken: #171c24;
-  --sheet-line: #3c4655;
-  --sheet-line-soft: #333c49;
+  --sheet: #171e37;
+  --sheet-2: #131a33;
+  --sheet-sunken: #050d25;
+  --sheet-line: #2c344d;
+  --sheet-line-soft: #212942;
 
   /* Aqua blue, the primary gel */
-  --aqua: #3e7dd4;
-  --aqua-lo: #1f5cb0;
-  --aqua-hi: #a9cdf5;
+  --aqua: #54d6ff;
+  --aqua-lo: #006780;
+  --aqua-hi: #baebff;
 
   /* Traffic lights */
-  --red: #e4483d;
-  --red-lo: #b62b22;
-  --amber: #f0ab27;
-  --amber-lo: #c07c07;
-  --green: #45b348;
-  --green-lo: #2b8430;
+  --red: #ff453a;
+  --red-lo: #93000a;
+  --amber: #ffbb50;
+  --amber-lo: #724b00;
+  --green: #30d158;
+  --green-lo: #1a7a35;
 
   /* Ink, inverted for the dark sheets */
-  --tx: #dfe6ef;
-  --paper: #f2f6fb;
-  --mut: #9aa8ba;
-  --mut-soft: #b6c2d1;
+  --tx: #dbe1ff;
+  --paper: #ffffff;
+  --mut: #bcc8ce;
+  --mut-soft: #879398;
   --on-sheet-shadow: rgba(0, 0, 0, 0.55);
-  --sheet-top: #39414e;          /* the lit edge of a dark sheet, not white */
-  --well: #151a22;               /* sunken areas: darker than the sheet */
-  --well-line: #3c4655;
-  --control: #333b47;            /* unselected segment / inert control */
-  --control-2: #262d38;
-  --control-ink: #d3dbe6;
-  --warn-bg: #3a2f14;
-  --warn-line: #7a6321;
-  --warn-ink: #f5d489;
-  --bad-bg: #3d1f1c;
-  --bad-line: #7d3a33;
-  --bad-ink: #ffb3a9;
+  --sheet-top: #313852;          /* the lit edge of a dark sheet, not white */
+  --well: #050d25;               /* sunken areas: darker than the sheet */
+  --well-line: #2c344d;
+  --control: #212942;            /* unselected segment / inert control */
+  --control-2: #171e37;
+  --control-ink: #dbe1ff;
+  --warn-bg: #3a2b0d;
+  --warn-line: #724b00;
+  --warn-ink: #ffdfb5;
+  --bad-bg: #3d1113;
+  --bad-line: #93000a;
+  --bad-ink: #ffb4ab;
   /* The startup field. Graphite boots into the dark it lives in. */
-  --boot-1: #1a222c;
-  --boot-2: #10161e;
-  --boot-3: #070b10;
-  --good-bg: #1b3320;
-  --good-ink: #9fe0a4;
-  --gel-cap: rgba(255, 255, 255, 0.16);
+  --boot-1: #171e37;
+  --boot-2: #0a122a;
+  --boot-3: #050d25;
+  --good-bg: #0e3520;
+  --good-ink: #30d158;
+  --gel-cap: rgba(255, 255, 255, 0.28);
 
   /* Aliases the components already speak. Kept so nothing structural moves. */
-  --bg: #2f5f9e;
+  --bg: #0a122a;
   --bg-raised: var(--sheet);
   --bg-elevated: var(--sheet-2);
   --bg-sunken: var(--sheet-sunken);
@@ -76,18 +76,18 @@
   --highlighter: var(--hi);
 
   /* Ice, in Aqua's own blues */
-  --ice-900: #1f5cb0;
-  --ice-700: #3e7dd4;
-  --ice-500: #74aae8;
-  --ice-300: #a9cdf5;
-  --ice-100: #e2effc;
-  --water: #6fa8dc;
+  --ice-900: #004d61;
+  --ice-700: #0093b8;
+  --ice-500: #54d6ff;
+  --ice-300: #baebff;
+  --ice-100: #e6f8ff;
+  --water: #aac7ff;
 
-  --radius: 10px;
+  --radius: 16px;
   --radius-pill: 999px;
   --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
-  --sans: "Lucida Grande", "Helvetica Neue", Helvetica, "Inter", sans-serif;
-  --display: "Lucida Grande", "Helvetica Neue", Helvetica, "Inter", sans-serif;
+  --sans: "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif;
+  --display: "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif;
   --display-alt: var(--display);
 
   --anim: 1;
@@ -154,7 +154,7 @@ body {
     repeating-linear-gradient(
       to bottom,
       rgba(255, 255, 255, 0.03) 0 1px,
-      transparent 1px 4px
+      transparent 1px 3px
     ),
     var(--ground);
   background-attachment: fixed;
@@ -189,16 +189,20 @@ body {
   font-size: 1.35rem;
   letter-spacing: 0;
   text-transform: none;
-  color: #fff;
+  /* The gel, exactly as the system specifies it: one 180deg ramp from the
+     bright cryo blue to the deep one, a white inset along the top edge, a
+     dark inset along the bottom, and the coloured bloom underneath that is
+     what makes it look lit rather than painted. Ink is the dark end of the
+     ramp, not white — on a #53d5fe cap, white text has no contrast. */
+  color: #003543;
   cursor: pointer;
   text-decoration: none;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
-  background: linear-gradient(to bottom, #8fbdf0 0%, var(--aqua) 48%, var(--aqua-lo) 100%);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  background: linear-gradient(180deg, #53d5fe 0%, #006780 100%);
   box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.75),
-    inset 0 -8px 12px -8px rgba(0, 0, 0, 0.4),
-    0 1px 2px rgba(11, 28, 52, 0.35),
-    0 3px 8px rgba(11, 28, 52, 0.22);
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.5),
+    0 4px 12px rgba(83, 213, 254, 0.3);
   overflow: hidden;
 }
 /* The wet cap. Aqua's whole signature is this one highlight. */
@@ -224,6 +228,17 @@ body {
 }
 .btn:disabled { opacity: 0.5; cursor: default; }
 
+.btn.amber {
+  border-color: var(--amber-lo);
+  color: #442b00;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  background: linear-gradient(180deg, #ffdfb5 0%, #724b00 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.7),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(255, 187, 80, 0.22);
+}
+
 .btn.ghost {
   color: #2c3a4c;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -232,19 +247,6 @@ body {
 }
 .btn.ghost::before {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.25));
-}
-
-/* --- The window rule: a brushed metal strip -------------------------- */
-.rule {
-  height: 22px;
-  border: 1px solid #9aa7b8;
-  border-radius: 8px;
-  margin: 0 0 26px;
-  background:
-    repeating-linear-gradient(to bottom, rgba(0,0,0,.06) 0 1px, transparent 1px 2px),
-    linear-gradient(to bottom, var(--sheet-top) 0%, var(--sheet) 52%, var(--sheet-2) 100%);
-  border-color: var(--sheet-line);
-  box-shadow: inset 0 1px 0 0 var(--sheet-top), 0 1px 2px rgba(0,0,0,.3);
 }
 
 @keyframes pf-ants { to { background-position: 0 0; } }

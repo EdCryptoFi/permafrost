@@ -22,6 +22,8 @@ import { Ept } from './Ept'
 import { Boot } from '@/ui/Boot'
 import { Chooser } from '@/ui/Chooser'
 import { PageHead } from '@/ui/PageHead'
+import { MacWindow } from '@/ui/MacWindow'
+import { Dock } from '@/ui/Dock'
 import { ProofCard } from '@/share/ProofCard'
 import './app.css'
 
@@ -172,7 +174,7 @@ export function App() {
       <div class="bg" aria-hidden="true" />
       <Backdrop scene={scene} />
       <Boot ready={booted} />
-      <div class="wrap">
+      <div class="wrap has-dock">
       <header class="head">
         <div class="brand">
           <span class="brand-mark">
@@ -211,195 +213,199 @@ export function App() {
           <IconGuide size={14} />
           Guide
         </a>
+        <div class="chips">
+          <Chips view={view} frost={view === 'verify' ? selected : null} />
+        </div>
         <ThemeToggle />
         <WalletButton wallet={wallet} />
       </header>
-      <div class="rule" />
+      <MacWindow title="PermaFrost — Proof of Lock · Built on Epoch">
 
-      <Stickers view={view} frost={view === 'verify' ? selected : null} />
+        {/* The full ransom-note headline is the landing page's argument. Once
+            somebody is reading a specific lock it is a poster in the way, so it
+            stands down to one line. On the pages that DO one thing, the heading
+            arrives beside the object that page is about — the same object that
+            was on the tile they clicked to get here. */}
+        {view === 'verify' && status === 'idle' && !selected ? (
+          <>
+            <HeroTitle />
+            <p class="lede">
+              Paste a project's address and see everything it has locked with Epoch — LP
+              positions, vesting vaults, the lot. Then embed a badge that reads the chain
+              live, so nobody has to take your word for it.
+            </p>
+          </>
+        ) : view === 'new' ? (
+          <PageHead kind="new" title="Freeze something.">
+            Pick anything this wallet holds that the contract accepts, set a date, sign
+            once. Locks are shared objects — after that, anybody can verify it and nobody
+            can undo it.
+          </PageHead>
+        ) : view === 'deploy' ? (
+          <PageHead kind="deploy" title="Ship the blob.">
+            Publish each build to Walrus, then point a .epoch name at the blob it returns.
+            The NameCap never leaves your wallet.
+          </PageHead>
+        ) : view === 'ept' ? (
+          <PageHead kind="ept" title="Burned, not promised.">
+            Epoch lets a vesting vault pay its fee in $EPT instead of SUI, and the contract
+            burns it in the same transaction. Its own counters say how much. Nothing was
+            reading them.
+          </PageHead>
+        ) : view === 'guide' ? (
+          <PageHead kind="guide" title="How it works.">
+            Every step, and what each part of the picture means. Nothing here is a roadmap
+            — it all works right now.
+          </PageHead>
+        ) : (
+          <PageHead kind="verify" title="Read it from the chain.">
+            Everything below is an object on Sui mainnet, read live. Nothing is stored
+            here, and nothing on this page can say more than the lock does.
+          </PageHead>
+        )}
 
-      {/* The full ransom-note headline is the landing page's argument. Once
-          somebody is reading a specific lock it is a poster in the way, so it
-          stands down to one line. On the pages that DO one thing, the heading
-          arrives beside the object that page is about — the same object that
-          was on the tile they clicked to get here. */}
-      {view === 'verify' && status === 'idle' && !selected ? (
-        <>
-          <HeroTitle />
-          <p class="lede">
-            Paste a project's address and see everything it has locked with Epoch — LP
-            positions, vesting vaults, the lot. Then embed a badge that reads the chain
-            live, so nobody has to take your word for it.
-          </p>
-        </>
-      ) : view === 'new' ? (
-        <PageHead kind="new" title="Freeze something.">
-          Pick anything this wallet holds that the contract accepts, set a date, sign
-          once. Locks are shared objects — after that, anybody can verify it and nobody
-          can undo it.
-        </PageHead>
-      ) : view === 'deploy' ? (
-        <PageHead kind="deploy" title="Ship the blob.">
-          Publish each build to Walrus, then point a .epoch name at the blob it returns.
-          The NameCap never leaves your wallet.
-        </PageHead>
-      ) : view === 'ept' ? (
-        <PageHead kind="ept" title="Burned, not promised.">
-          Epoch lets a vesting vault pay its fee in $EPT instead of SUI, and the contract
-          burns it in the same transaction. Its own counters say how much. Nothing was
-          reading them.
-        </PageHead>
-      ) : view === 'guide' ? (
-        <PageHead kind="guide" title="How it works.">
-          Every step, and what each part of the picture means. Nothing here is a roadmap
-          — it all works right now.
-        </PageHead>
-      ) : (
-        <PageHead kind="verify" title="Read it from the chain.">
-          Everything below is an object on Sui mainnet, read live. Nothing is stored
-          here, and nothing on this page can say more than the lock does.
-        </PageHead>
-      )}
+        {view === 'verify' && status === 'idle' && !selected && <Chooser onGo={go} />}
 
-      {view === 'verify' && status === 'idle' && !selected && <Chooser onGo={go} />}
-
-      {view === 'verify' && (
-      <form
-        class="search"
-        onSubmit={(e) => {
-          e.preventDefault()
-          void search(query)
-        }}
-      >
-        <input
-          class="mono"
-          value={query}
-          onInput={(e) => setQuery(e.currentTarget.value)}
-          placeholder="name.epoch, project address, lock id, or coin type"
-          spellcheck={false}
-          autocomplete="off"
-        />
-        <button class="btn" type="submit" disabled={status === 'loading'}>
-          {status === 'loading' ? 'Reading chain…' : 'Verify'}
-        </button>
-      </form>
-      )}
-
-      {wallet.address && status === 'idle' && (
-        <button class="btn ghost mine" onClick={() => void search(wallet.address!)}>
-          Show everything I locked
-        </button>
-      )}
-
-      {view === 'new' && (
-        <Create
-          wallet={wallet}
-          onCreated={(frost) => {
-            go('verify')
-            setResult(null)
-            setSelected(frost)
-            setStatus('ready')
-            setUrl('id', frost.id)
-            // The card is the point of the whole flow: they froze something in
-            // order to be able to show it.
-            setShare({ frost, celebrate: true })
-            scrollTo({ top: 0, behavior: 'smooth' })
+        {view === 'verify' && (
+        <form
+          class="search"
+          onSubmit={(e) => {
+            e.preventDefault()
+            void search(query)
           }}
-          onCancel={() => go('verify')}
-        />
-      )}
+        >
+          <input
+            class="mono"
+            value={query}
+            onInput={(e) => setQuery(e.currentTarget.value)}
+            placeholder="name.epoch, project address, lock id, or coin type"
+            spellcheck={false}
+            autocomplete="off"
+          />
+          <button class="btn" type="submit" disabled={status === 'loading'}>
+            {status === 'loading' ? 'Reading chain…' : 'Verify'}
+          </button>
+        </form>
+        )}
 
-      {view === 'deploy' && <Deploy wallet={wallet} onCancel={() => go('verify')} />}
+        {wallet.address && status === 'idle' && (
+          <button class="btn ghost mine" onClick={() => void search(wallet.address!)}>
+            Show everything I locked
+          </button>
+        )}
 
-      {view === 'ept' && <Ept />}
+        {view === 'new' && (
+          <Create
+            wallet={wallet}
+            onCreated={(frost) => {
+              go('verify')
+              setResult(null)
+              setSelected(frost)
+              setStatus('ready')
+              setUrl('id', frost.id)
+              // The card is the point of the whole flow: they froze something in
+              // order to be able to show it.
+              setShare({ frost, celebrate: true })
+              scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+            onCancel={() => go('verify')}
+          />
+        )}
 
-      {view === 'guide' && (
-        <Guide
-          onPick={(id) => {
-            go('verify')
-            void pick(id)
-          }}
-          onGo={go}
-        />
-      )}
+        {view === 'deploy' && <Deploy wallet={wallet} onCancel={() => go('verify')} />}
 
-      {slow && (
-        <p class="muted small">
-          Still reading. The public Sui endpoint is slow right now, so this is retrying
-          with a back-off rather than hammering it.
-        </p>
-      )}
-      {status === 'error' && <p class="err">{error}</p>}
-      {nothingFound && (
-        <p class="err">
-          Nothing locked with Epoch under that address. It may hold locks created by a different
-          wallet — search that one instead.
-        </p>
-      )}
+        {view === 'ept' && <Ept />}
 
-      {view === 'verify' && status === 'idle' && (
-        <>
-          <Landing
+        {view === 'guide' && (
+          <Guide
             onPick={(id) => {
               go('verify')
               void pick(id)
             }}
+            onGo={go}
           />
-          <div class="row">
-            <button class="btn" onClick={() => go('new')}>
-              ❄ Freeze something
-            </button>
-            <button class="btn ghost" onClick={() => go('deploy')}>
-              Deploy
-            </button>
-          </div>
-        </>
-      )}
+        )}
 
-      {view === 'verify' && result && result.frosts.length > 1 && (
-        <Results
-          kind={result.kind}
-          term={result.term}
-          frosts={result.frosts}
-          resolved={result.resolved}
-          alsoName={result.alsoName}
-          onSearch={(t) => { setQuery(t); void search(t) }}
-          onPick={(id) => void pick(id)}
-        />
-      )}
+        {slow && (
+          <p class="muted small">
+            Still reading. The public Sui endpoint is slow right now, so this is retrying
+            with a back-off rather than hammering it.
+          </p>
+        )}
+        {status === 'error' && <p class="err">{error}</p>}
+        {nothingFound && (
+          <p class="err">
+            Nothing locked with Epoch under that address. It may hold locks created by a different
+            wallet — search that one instead.
+          </p>
+        )}
 
-      {view === 'verify' && selected && (
-        <>
-          <section class="stage">
-            <div class="crt">
-              <Frozen frost={selected} size={200} />
+        {view === 'verify' && status === 'idle' && (
+          <>
+            <Landing
+              onPick={(id) => {
+                go('verify')
+                void pick(id)
+              }}
+            />
+            <div class="row">
+              <button class="btn" onClick={() => go('new')}>
+                ❄ Freeze something
+              </button>
+              <button class="btn ghost" onClick={() => go('deploy')}>
+                Deploy
+              </button>
             </div>
-            <Verdict frost={selected} />
+          </>
+        )}
+
+        {view === 'verify' && result && result.frosts.length > 1 && (
+          <Results
+            kind={result.kind}
+            term={result.term}
+            frosts={result.frosts}
+            resolved={result.resolved}
+            alsoName={result.alsoName}
+            onSearch={(t) => { setQuery(t); void search(t) }}
+            onPick={(id) => void pick(id)}
+          />
+        )}
+
+        {view === 'verify' && selected && (
+          <>
+            <section class="stage">
+              <div class="crt">
+                <Frozen frost={selected} size={200} />
+              </div>
+              <Verdict frost={selected} />
+              {selected.phase !== 'absent' && (
+                <button
+                  class="btn stage-share"
+                  onClick={() => setShare({ frost: selected, celebrate: false })}
+                >
+                  Share this proof
+                </button>
+              )}
+            </section>
+
             {selected.phase !== 'absent' && (
-              <button
-                class="btn stage-share"
-                onClick={() => setShare({ frost: selected, celebrate: false })}
-              >
-                Share this proof
+              <>
+                <Actions frost={selected} wallet={wallet} onDone={() => void pick(selected.id)} />
+                <Details frost={selected} />
+                <Embed frost={selected} />
+              </>
+            )}
+
+            {result && result.frosts.length > 1 && (
+              <button class="btn ghost" onClick={() => setSelected(null)}>
+                ← Back to {result.frosts.length} results
               </button>
             )}
-          </section>
+          </>
+        )}
+      </MacWindow>
 
-          {selected.phase !== 'absent' && (
-            <>
-              <Actions frost={selected} wallet={wallet} onDone={() => void pick(selected.id)} />
-              <Details frost={selected} />
-              <Embed frost={selected} />
-            </>
-          )}
-
-          {result && result.frosts.length > 1 && (
-            <button class="btn ghost" onClick={() => setSelected(null)}>
-              ← Back to {result.frosts.length} results
-            </button>
-          )}
-        </>
-      )}
+      <Dock view={view} onGo={go} />
 
       <footer class="foot">
         <span>
@@ -431,7 +437,16 @@ export function App() {
  * status: chill" over a lock that cracked open this morning is lying in the
  * one register the reader has not been taught to distrust.
  */
-function Stickers({ view, frost }: { view: View; frost: Frost | null }) {
+/**
+ * The status strip.
+ *
+ * These two were absolutely-positioned stickers at fixed pixel offsets from
+ * the page's right edge, which on a narrow screen put them on top of a
+ * sentence — they had to be hidden below 760px to stop that. As chips in the
+ * header they are in a layout instead of over one, so they survive any width
+ * and say the same thing.
+ */
+function Chips({ view, frost }: { view: View; frost: Frost | null }) {
   const pair: [string, string] =
     view === 'new'
       ? ['Blizzard mode', 'One signature, no undo']
@@ -447,12 +462,12 @@ function Stickers({ view, frost }: { view: View; frost: Frost | null }) {
 
   return (
     <>
-      <span class="sticker s-yellow" style="--tilt:-5deg; top:118px; right:34px" aria-hidden="true">
-        {pair[0]}
+      <span class="chip chip-live">
+        <i class="dot" />
+        Sui mainnet
       </span>
-      <span class="sticker s-pink" style="--tilt:4deg; top:186px; right:96px" aria-hidden="true">
-        {pair[1]}
-      </span>
+      <span class="chip chip-amber">{pair[0]}</span>
+      <span class="chip">{pair[1]}</span>
     </>
   )
 }
@@ -505,7 +520,7 @@ function WalletButton({ wallet }: { wallet: ReturnType<typeof useWallet> }) {
     )
   }
   if (wallet.wallets.length === 0) {
-    return <span class="muted small">No Sui wallet detected</span>
+    return <span class="muted small wallet-state">No Sui wallet detected</span>
   }
   return (
     <div class="dropdown">
