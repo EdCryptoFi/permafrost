@@ -1,5 +1,6 @@
 import { type Frost, assetLabel, msLeft } from '@/chain/frost'
 import { EXPLORER } from '@/chain/constants'
+import { CopyAddr } from '@/ui/CopyAddr'
 import { fmtAsset, fmtCountdown, fmtDate, pct } from '@/format'
 import { isHollow, urgencyOf } from '@/chain/frost'
 import { useTick } from '@/useTick'
@@ -10,7 +11,7 @@ export function Details({ frost }: { frost: Frost }) {
   const unit = (v: bigint) => fmtAsset(v, frost.decimals, frost.symbol)
 
   const rows: [string, preact.ComponentChildren][] = [
-    ['Lock id', <Addr a={frost.id} />],
+    ['Lock id', <CopyAddr value={frost.id} label="the lock id" />],
     [
       'Kind',
       frost.kind === 'lock'
@@ -24,11 +25,11 @@ export function Details({ frost }: { frost: Frost }) {
     ['Unlocks', fmtDate(frost.unlockMs)],
     ['Time left', left > 0 ? fmtCountdown(left) : '—'],
     ['Term elapsed', pct(frost.progress)],
-    ['Creator', <Addr a={frost.creator} />],
+    ['Creator', <CopyAddr value={frost.creator} label="the creator" />],
   ]
 
-  if (frost.beneficiary) rows.push(['Beneficiary', <Addr a={frost.beneficiary} />])
-  rows.push(['Frozen item type', <span class="mono addr">{frost.innerType}</span>])
+  if (frost.beneficiary) rows.push(['Beneficiary', <CopyAddr value={frost.beneficiary} label="the beneficiary" />])
+  rows.push(['Frozen item type', <CopyAddr value={frost.innerType} label="the type" />])
 
   // An object lock of a coin has an amount, and it is the number that decides
   // whether this proof means anything at all.
@@ -89,7 +90,7 @@ export function Details({ frost }: { frost: Frost }) {
             {frost.beneficiaries.map((b) => (
               <div class="fact" key={b.address}>
                 <dt>
-                  <Addr a={b.address} />
+                  <CopyAddr value={b.address} label="this beneficiary" />
                 </dt>
                 <dd class="mono">{b.shareBps / 100}%</dd>
               </div>
@@ -113,8 +114,3 @@ export function Details({ frost }: { frost: Frost }) {
  * cut, and each one links to the explorer so the claim can be checked
  * somewhere that is not us.
  */
-const Addr = ({ a }: { a: string }) => (
-  <a class="mono addr" href={EXPLORER(a)} target="_blank" rel="noopener noreferrer" title={a}>
-    {a}
-  </a>
-)

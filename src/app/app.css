@@ -23,7 +23,7 @@
   display: block; line-height: 1;
 }
 .brand small {
-  display: block; font-family: var(--mono); font-size: 0.6rem; color: var(--mut);
+  display: block; font-family: var(--mono); font-size: 0.82rem; color: var(--mut);
   font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px;
 }
 .head > :last-child { margin-left: auto; }
@@ -40,7 +40,7 @@
 }
 .lede {
   color: var(--mut-soft); max-width: 66ch; margin-bottom: 28px;
-  font-size: 0.98rem; line-height: 1.65;
+  font-size: 1.32rem; line-height: 1.65;
   border-left: 2px solid var(--line); padding: 4px 0 4px 16px;
 }
 
@@ -114,7 +114,9 @@
 
 /* --- panels: cryo hulls ---------------------------------------------- */
 .panel {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--lava);
   border-radius: 0;
   padding: 22px 24px; margin-bottom: 24px;
@@ -124,20 +126,22 @@
    it always had — now it is the exception rather than the rule. */
 .panel.accent { border-color: var(--cyan); box-shadow: 5px 5px 0 0 var(--cyan); }
 .panel h2 {
-  font-family: var(--display); font-size: 0.72rem; font-weight: 800;
+  font-family: var(--display); font-size: 1.05rem; font-weight: 800;
   text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;
   color: #240b00; background: var(--lava); display: inline-block;
   padding: 4px 10px;
 }
 .panel.accent h2 { background: var(--cyan); color: #00232a; }
 .panel h3 {
-  font-family: var(--mono); font-size: 0.68rem; color: var(--lava-bright);
+  font-family: var(--mono); font-size: 0.98rem; color: var(--lava-bright);
   margin: 20px 0 8px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;
 }
 
 .stage {
   display: flex; align-items: center; gap: 30px; flex-wrap: wrap;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--lava); border-radius: 0;
   padding: 26px 28px; margin-bottom: 24px;
   box-shadow: 5px 5px 0 0 var(--lava);
@@ -167,10 +171,10 @@
   padding: 9px 0; border-bottom: 1px dashed rgba(224, 242, 254, 0.2);
 }
 .fact dt {
-  color: var(--mut); font-family: var(--mono); font-size: 0.66rem;
+  color: var(--mut); font-family: var(--mono); font-size: 0.98rem;
   font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
 }
-.fact dd { font-family: var(--mono); font-size: 0.8rem; text-align: right; color: var(--cyan); max-width: 62%; }
+.fact dd { font-family: var(--mono); font-size: 1.1rem; text-align: right; color: var(--cyan); max-width: 62%; }
 .hot { color: #00232a !important; background: var(--cyan); padding: 1px 7px; font-weight: 600; }
 
 .row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin: 14px 0; }
@@ -183,7 +187,7 @@
 .seg button.on { background: var(--cyan); color: #00232a; }
 .check {
   display: inline-flex; align-items: center; gap: 7px;
-  font-family: var(--mono); font-size: 0.7rem; color: var(--mut-soft);
+  font-family: var(--mono); font-size: 0.95rem; color: var(--mut-soft);
   text-transform: uppercase; font-weight: 600; letter-spacing: 0.08em;
 }
 
@@ -197,7 +201,7 @@
 .code {
   min-width: 0;
   background: var(--bg-sunken); border: 1px solid var(--line); border-radius: 0;
-  padding: 13px 15px; font-size: 0.7rem; color: var(--cyan);
+  padding: 13px 15px; font-size: 0.95rem; color: var(--cyan);
   overflow-x: auto; white-space: pre; margin-bottom: 12px;
   font-family: var(--mono);
 }
@@ -221,22 +225,22 @@
 }
 .menu button:hover { background: var(--cyan); color: #00232a; }
 
-.muted { color: var(--mut-soft); }
-.small { font-size: 0.84rem; }
+.muted { color: var(--mut-soft); font-size: 1.08rem; }
+.small { font-size: 1.12rem; }
 .err {
   color: #240000; background: var(--lava); font-family: var(--mono); font-weight: 600;
-  font-size: 0.74rem; margin: 12px 0; padding: 9px 12px; display: inline-block;
+  font-size: 1rem; margin: 12px 0; padding: 9px 12px; display: inline-block;
 }
 .ok {
   color: #00232a; background: var(--cyan); font-family: var(--mono); font-weight: 600;
-  font-size: 0.74rem; margin: 12px 0; padding: 9px 12px; display: inline-block;
+  font-size: 1rem; margin: 12px 0; padding: 9px 12px; display: inline-block;
 }
 
 .foot {
   display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
   margin-top: 56px; padding-top: 20px;
   border-top: 1px solid var(--line); color: var(--mut);
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--mono); font-size: 0.92rem; letter-spacing: 0.06em;
 }
 .foot code { font-family: var(--mono); color: var(--cyan); }
 a { color: var(--cyan); text-decoration: none; }
@@ -245,7 +249,9 @@ a:hover { color: var(--paper); }
 /* --- landing hero ---------------------------------------------------- */
 .hero-stage {
   display: flex; align-items: center; gap: 28px; width: 100%; text-align: left;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--lava); border-radius: 0;
   padding: 24px 28px; margin-bottom: 24px; cursor: pointer; color: var(--tx);
   box-shadow: 5px 5px 0 0 var(--lava);
@@ -261,9 +267,9 @@ a:hover { color: var(--paper); }
   display: inline-block; align-self: flex-start;
   border-bottom: 2px solid var(--cyan); padding-bottom: 2px;
 }
-.hero-line { color: var(--mut-soft); font-size: 0.9rem; }
+.hero-line { color: var(--mut-soft); font-size: 1.2rem; }
 .hero-cta {
-  font-family: var(--mono); color: var(--cyan); font-size: 0.72rem;
+  font-family: var(--mono); color: var(--cyan); font-size: 1rem;
   font-weight: 600; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.1em;
 }
 .hero-skel {
@@ -284,17 +290,19 @@ a:hover { color: var(--paper); }
 
 .ex {
   display: flex; align-items: center; gap: 14px; text-align: left;
-  background: rgba(0, 0, 0, 0.3); border: 1px solid var(--line); border-radius: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 0;
   padding: 16px 18px; cursor: pointer; color: var(--tx);
   box-shadow: 4px 4px 0 0 rgba(232, 89, 12, 0.32);
 }
 .ex:hover { border-color: var(--lava); box-shadow: 4px 4px 0 0 var(--lava); }
 .ex-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .ex-body b {
-  font-family: var(--mono); font-size: 0.86rem; font-weight: 600;
+  font-family: var(--mono); font-size: 1.15rem; font-weight: 600;
   text-transform: uppercase; color: var(--cyan); letter-spacing: 0.04em;
 }
-.ex-meta { font-family: var(--mono); font-size: 0.66rem; color: var(--mut); letter-spacing: 0.06em; }
+.ex-meta { font-family: var(--mono); font-size: 0.92rem; color: var(--mut); letter-spacing: 0.06em; }
 .ex-skel { min-height: 96px; border-style: dotted; cursor: default; animation: pf-pulse 1.8s ease-in-out infinite; }
 @keyframes pf-pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.65; } }
 
@@ -338,7 +346,7 @@ a:hover { color: var(--paper); }
 .pick > :last-child { margin-left: auto; }
 
 /* --- full identifiers ------------------------------------------------- */
-.addr { word-break: break-all; line-height: 1.4; font-size: 0.7rem; }
+.addr { word-break: break-all; line-height: 1.4; font-size: 0.95rem; }
 .hero-stage, .ex, .res { color: var(--tx); text-decoration: none; }
 .hero-stage:hover, .ex:hover, .res:hover { color: var(--tx); }
 
@@ -348,7 +356,7 @@ a:hover { color: var(--paper); }
 .hollow {
   background: rgba(255, 59, 48, 0.1); color: var(--lava);
   border: 1px solid var(--lava); border-left: 4px solid var(--lava);
-  font-family: var(--mono); font-size: 0.74rem; font-weight: 500; line-height: 1.6;
+  font-family: var(--mono); font-size: 1rem; font-weight: 500; line-height: 1.6;
   padding: 12px 14px; margin: 0 0 16px;
 }
 .hollow-tag {
@@ -364,7 +372,7 @@ a:hover { color: var(--paper); }
   display: inline-flex; align-items: center; gap: 6px;
   margin-left: auto; margin-right: 10px;
   border: 1px solid var(--line); border-radius: 0;
-  color: var(--mut-soft); font-family: var(--mono); font-size: 0.7rem;
+  color: var(--mut-soft); font-family: var(--mono); font-size: 0.95rem;
   font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
   padding: 8px 12px; text-decoration: none;
 }
@@ -447,7 +455,7 @@ a:hover { color: var(--paper); }
 .expiring {
   background: rgba(255, 149, 0, 0.1); color: var(--ember);
   border: 1px solid var(--ember); border-left: 4px solid var(--ember);
-  font-family: var(--mono); font-size: 0.74rem; line-height: 1.6;
+  font-family: var(--mono); font-size: 1rem; line-height: 1.6;
   padding: 12px 14px; margin: 0 0 16px;
 }
 .expiring.is-imminent {
@@ -463,7 +471,7 @@ a:hover { color: var(--paper); }
 
 .pick-kind {
   display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--mono); font-size: 0.66rem;
+  font-family: var(--mono); font-size: 0.92rem;
   text-transform: uppercase; letter-spacing: 0.08em;
 }
 
@@ -483,7 +491,7 @@ a:hover { color: var(--paper); }
 .versus-side ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .versus-side li {
   position: relative; padding-left: 18px; color: var(--mut-soft);
-  font-size: 0.86rem; line-height: 1.5;
+  font-size: 1.12rem; line-height: 1.5;
 }
 .versus-side li::before {
   content: ""; position: absolute; left: 0; top: 0.55em;
@@ -499,7 +507,7 @@ a:hover { color: var(--paper); }
 }
 .legend-row > div { display: flex; flex-direction: column; gap: 3px; }
 .legend-row b {
-  font-family: var(--mono); font-size: 0.8rem; text-transform: uppercase;
+  font-family: var(--mono); font-size: 1.1rem; text-transform: uppercase;
   letter-spacing: 0.06em; color: var(--cyan);
 }
 .legend-row b.is-ember { color: var(--ember); }
@@ -508,3 +516,12 @@ a:hover { color: var(--paper); }
   flex-shrink: 0; width: 36px; height: 36px; display: grid; place-items: center;
   border: 1px solid var(--lava); color: var(--lava-bright); background: var(--bg-elevated);
 }
+
+/* --- a copyable identifier -------------------------------------------- */
+.copyaddr { display: inline-flex; align-items: flex-start; gap: 8px; justify-content: flex-end; }
+.copyaddr-btn {
+  flex-shrink: 0; background: transparent; border: 1px solid var(--line);
+  color: var(--mut-soft); cursor: pointer; padding: 3px; line-height: 0;
+  border-radius: 0;
+}
+.copyaddr-btn:hover { color: var(--cyan); border-color: var(--cyan); }
