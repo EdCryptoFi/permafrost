@@ -1,6 +1,6 @@
-import type { Frost } from '@/chain/frost'
+import { isHollow, urgencyOf, type Frost } from '@/chain/frost'
 import { IceBlock } from './IceBlock'
-import { Walrus } from './Walrus'
+import { Hourglass } from './Hourglass'
 import { characterFor } from './character'
 import './ice.css'
 
@@ -69,7 +69,14 @@ export function Frozen({ frost, size = 120, mascot = true, snow = true, detail }
 
       {showMascot && (
         <g transform={`translate(0 ${surfaceDrop})`}>
-          <Walrus character={character} detail={fine} />
+          <Hourglass
+            progress={frost.progress}
+            running={frost.phase === 'melting'}
+            tone={
+              isHollow(frost) ? 'spent' : urgencyOf(frost) !== 'none' ? 'warn'
+              : frost.phase === 'melting' ? 'frost' : 'spent'
+            }
+          />
         </g>
       )}
     </svg>
