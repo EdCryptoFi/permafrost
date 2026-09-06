@@ -38,6 +38,21 @@ claim('badge takes no free-text prop', !/:\s*string/.test(props),
   props.replace(/\/\*[\s\S]*?\*\//g, '').split('\n').map(l => l.trim()).filter(Boolean).join(' '))
 claim('chain-sourced tickers are shape-gated', safeSymbol('1,000,000 SUI') === null)
 
+// "Connect any Sui wallet." The list is filtered before a reader ever sees it,
+// so a filter that is too narrow is invisible: the wallet simply is not there
+// and there is nothing to click. Both signing features, and no chain check
+// before an account exists to ask.
+{
+  const w = (await import('node:fs')).readFileSync('src/wallet/useWallet.ts', 'utf8')
+  const gate = w.slice(w.indexOf('function supportsSui'), w.indexOf('function supportsSui') + 220)
+  claim('legacy-signing wallets are still offered',
+    gate.includes('LEGACY') && gate.includes('||'))
+  claim('wallets are not filtered on chains before connecting',
+    !/function supportsSui[\s\S]{0,200}w\.chains/.test(w))
+  claim('both signing features are actually called',
+    w.includes('signAndExecuteTransactionBlock({') && w.includes('signAndExecuteTransaction({'))
+}
+
 console.log('\nDESCRIPTION — "the search box takes four different things"')
 for (const [what, term, want] of [
   ['a .epoch name', 'permafrost.epoch', 'name'],

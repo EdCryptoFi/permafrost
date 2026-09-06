@@ -132,17 +132,16 @@ function BadgeFrame({
 }
 
 export function Embed({ frost }: { frost: Frost }) {
-  const [variant, setVariant] = useState<'pill' | 'card'>('pill')
   const [mascot, setMascot] = useState(true)
   const [light, setLight] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
   // What the badge reports it needs. The snippet below is copied onto other
   // people's pages, so shipping a guessed box would clip the amount off every
   // embed in the wild — this is measured, not assumed.
-  const [dims, setDims] = useState({ w: 260, h: 48 })
+  const [dims, setDims] = useState({ w: 300, h: 96 })
 
   const id = safeId(frost.id)
-  const query = `?id=${id}&variant=${variant}${mascot ? '' : '&mascot=0'}${light ? '&appearance=aqua' : ''}`
+  const query = `?id=${id}&variant=card${mascot ? '' : '&mascot=0'}${light ? '&appearance=aqua' : ''}`
   const src = `${BADGE_ORIGIN}${BADGE_PATH}${query}`
 
   const publicSrc = `${PUBLIC_BADGE}${query}`
@@ -177,14 +176,6 @@ export function Embed({ frost }: { frost: Frost }) {
       </p>
 
       <div class="row">
-        <div class="seg">
-          <button class={variant === 'pill' ? 'on' : ''} onClick={() => setVariant('pill')}>
-            Pill
-          </button>
-          <button class={variant === 'card' ? 'on' : ''} onClick={() => setVariant('card')}>
-            Card
-          </button>
-        </div>
         <label class="check">
           <input type="checkbox" checked={mascot} onChange={(e) => setMascot(e.currentTarget.checked)} />
           Mascot
@@ -198,7 +189,7 @@ export function Embed({ frost }: { frost: Frost }) {
       <div class="preview preview-lg">
         <BadgeFrame
           src={src}
-          fallback={variant === 'card' ? { w: 300, h: 96 } : { w: 260, h: 48 }}
+          fallback={{ w: 300, h: 96 }}
           title="Badge preview"
           onSize={setDims}
         />
@@ -213,8 +204,8 @@ export function Embed({ frost }: { frost: Frost }) {
         {VARIATIONS.map((v) => (
           <figure class="variation" key={v.id}>
             <BadgeFrame
-              src={`${BADGE_ORIGIN}${BADGE_PATH}?id=${v.id}&variant=pill${light ? '&appearance=aqua' : ''}`}
-              fallback={{ w: 260, h: 48 }}
+              src={`${BADGE_ORIGIN}${BADGE_PATH}?id=${v.id}&variant=card${light ? '&appearance=aqua' : ''}`}
+              fallback={{ w: 300, h: 96 }}
               title={v.label}
               lazy
             />

@@ -14,6 +14,14 @@ const CHAIN = 'sui:mainnet' as const
 const REGISTRY = getWallets()
 const LAST_WALLET_KEY = 'permafrost:wallet'
 
+/**
+ * The two shapes a Sui wallet signs in.
+ *
+ * `sui:signAndExecuteTransaction` is the current Wallet Standard feature.
+ * `sui:signAndExecuteTransactionBlock` is what wallets shipped before the
+ * rename, and plenty still expose only that one — an extension built against
+ * the older spec is not broken, it is just older.
+ */
 type SignFeature = {
   signAndExecuteTransaction: (input: {
     transaction: Transaction
@@ -22,11 +30,34 @@ type SignFeature = {
   }) => Promise<{ digest: string }>
 }
 
+type LegacySignFeature = {
+  signAndExecuteTransactionBlock: (input: {
+    transactionBlock: Transaction
+    account: WalletAccount
+    chain: string
+  }) => Promise<{ digest: string }>
+}
+
+const MODERN = 'sui:signAndExecuteTransaction'
+const LEGACY = 'sui:signAndExecuteTransactionBlock'
+
+/**
+ * Which wallets are offered at all.
+ *
+ * This used to require the modern feature AND `sui:mainnet` in the wallet's
+ * advertised chains, and both halves were turning away wallets that work:
+ *
+ *   A wallet exposing only the pre-rename feature was dropped from the list
+ *   entirely, so it never appeared and there was nothing to click. Signing
+ *   below now takes whichever of the two a wallet actually has.
+ *
+ *   And a wallet does not have to advertise its chains before connecting —
+ *   some report none until an account exists. Requiring mainnet up front hid
+ *   them. Being on the wrong network is still caught, after connecting, where
+ *   the account can actually be asked: see `wrongNetwork`.
+ */
 function supportsSui(w: Wallet) {
-  return (
-    'sui:signAndExecuteTransaction' in w.features &&
-    w.chains.some((c) => c === CHAIN)
-  )
+  return MODERN in w.features || LEGACY in w.features
 }
 
 /**
@@ -122,10 +153,20 @@ export function useWallet() {
       if (wrongNetwork) {
         throw new Error('This wallet is not on Sui mainnet. Switch networks and try again.')
       }
-      const feature = wallet.features['sui:signAndExecuteTransaction'] as SignFeature
+      const modern = wallet.features[MODERN] as SignFeature | undefined
+      const legacy = wallet.features[LEGACY] as LegacySignFeature | undefined
+      if (!modern && !legacy) {
+        throw new Error('This wallet cannot sign Sui transactions.')
+      }
       setBusy(true)
       try {
-        return await feature.signAndExecuteTransaction({ transaction, account, chain: CHAIN })
+        return modern
+          ? await modern.signAndExecuteTransaction({ transaction, account, chain: CHAIN })
+          : await legacy!.signAndExecuteTransactionBlock({
+              transactionBlock: transaction,
+              account,
+              chain: CHAIN,
+            })
       } finally {
         setBusy(false)
       }
