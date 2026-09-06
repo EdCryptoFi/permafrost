@@ -29,7 +29,7 @@ The contract was there. The thing that lets a non-developer act on it was not.
    symbol** (`0x2::sui::SUI`, or just `SUI`) and get everything frozen of that
    asset; paste a **lock id** and go straight to it. A connected wallet also gets
    a one-click "show everything I locked".
-2. **An embeddable badge.** A live pill for the project's own site. The date is
+2. **An embeddable badge.** A live card for the project's own site. The date is
    read from Sui on every page load, so the site owner cannot edit what it
    claims. If the lock expires, the badge changes by itself.
 3. **Create a lock.** Pick anything the wallet holds that the contract accepts
@@ -224,7 +224,7 @@ Three.js primitives, which costs ~624 KB â€” four times the entire application â
 for one decorative animal, inside a budget where the site must collapse into a
 single Walrus blob and the badge has to stay small on somebody else's homepage.
 Layered SVG with gradients, an occlusion pass and fur strokes buys the same
-read for about 6 KB, animates on the compositor, and scales from a 34 px pill
+read for about 6 KB, animates on the compositor, and scales from a compact card
 to a 1200 px share card with no second asset. Below 110 px the fine pass
 (pores, fur, breath) drops out rather than shipping grey mush.
 

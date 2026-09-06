@@ -263,25 +263,6 @@ body {
 }
 .crt::before, .crt::after { content: none; }
 
-/* --- Stickers become lozenge labels ---------------------------------- */
-.sticker {
-  position: absolute;
-  font-family: var(--display); font-size: 0.78rem; font-weight: 700;
-  text-transform: none; letter-spacing: 0;
-  padding: 5px 14px; z-index: 4; pointer-events: none;
-  border-radius: var(--radius-pill);
-  color: #2c3a4c; text-shadow: 0 1px 0 rgba(255,255,255,.85);
-  border: 1px solid #9fb0c6;
-  background: linear-gradient(to bottom, #ffffff 0%, #eef2f8 50%, #d7dfeb 100%);
-  box-shadow: inset 0 1px 0 0 #fff, 0 2px 5px rgba(11,28,52,.25);
-  animation: none;
-}
-.sticker.s-yellow { border-color: var(--amber-lo); background: linear-gradient(to bottom, #ffe6a8, #f0ab27); }
-.sticker.s-pink, .sticker.s-cyan {
-  border-color: var(--aqua-lo); color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.35);
-  background: linear-gradient(to bottom, #8fbdf0, var(--aqua));
-}
-
 /* --- Nav: the pill segmented control --------------------------------- */
 .nav { display: flex; gap: 6px; align-items: center; margin-left: 30px; }
 .nav a {

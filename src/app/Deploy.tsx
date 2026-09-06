@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'preact/hooks'
+import { resolveEpochName } from '@/chain/names'
 import { StepHead } from '@/ui/PageHead'
 import { AquaTag, AquaBlob } from '@/ui/AquaIcons'
 import { gql } from '@/chain/graphql'
@@ -39,6 +40,16 @@ export function Deploy({
   const [caps, setCaps] = useState<NameCap[] | null>(null)
   const [capId, setCapId] = useState('')
   const [blobId, setBlobId] = useState('')
+  /**
+   * What the name points at on chain, right now.
+   *
+   * Without this the console could only offer what its own bundle remembered,
+   * and a bundle is a snapshot: sign what it suggests and you may be
+   * re-pointing a name at the blob it is already on. That fails as a success —
+   * a signature, a digest, and nothing changed. Reading the chain makes the
+   * no-op visible before it costs gas.
+   */
+  const [onChain, setOnChain] = useState<string | null | undefined>(undefined)
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null)
 
   useEffect(() => {
@@ -71,6 +82,17 @@ export function Deploy({
  * the failure is silent because the chain did exactly what it was told.
  */
 const BLOB_ID = /^[A-Za-z0-9_-]{40,50}$/
+
+  const selected = caps?.find((c) => c.id === capId)
+  useEffect(() => {
+    setOnChain(undefined)
+    if (!selected) return
+    const ac = new AbortController()
+    resolveEpochName(selected.name, ac.signal)
+      .then((r) => !ac.signal.aborted && setOnChain(r?.blobId ?? null))
+      .catch(() => !ac.signal.aborted && setOnChain(null))
+    return () => ac.abort()
+  }, [selected?.name])
 
   const blob = blobId.trim()
   const blobShaped = BLOB_ID.test(blob)
@@ -134,11 +156,27 @@ const BLOB_ID = /^[A-Za-z0-9_-]{40,50}$/
             if (!s) return null
             const matches = blob === s.blobId
             return (
-              <p class={matches ? 'ok' : 'muted small'}>
-                {matches
-                  ? `matches the published ${cap!.name} build — ${s.bytes.toLocaleString('en-US')} bytes, ${s.publishedAt}`
-                  : `latest published build for ${cap!.name} is ${s.blobId}`}
-              </p>
+              <>
+                <p class={matches ? 'ok' : 'muted small'}>
+                  {matches
+                    ? `matches the published ${cap!.name} build — ${s.bytes.toLocaleString('en-US')} bytes, ${s.publishedAt}`
+                    : `latest published build for ${cap!.name} is ${s.blobId}`}
+                </p>
+                <p class="muted small">
+                  {onChain === undefined
+                    ? 'reading what this name points at…'
+                    : onChain === null
+                      ? 'this name has no blob set yet'
+                      : `on chain now: ${onChain}`}
+                </p>
+                {onChain != null && blob === onChain && (
+                  <p class="err small">
+                    That is the blob this name already points at. Signing would cost gas
+                    and change nothing — which looks exactly like success, so it is worth
+                    saying before you do it rather than after.
+                  </p>
+                )}
+              </>
             )
           })()}
           <input

@@ -70,4 +70,23 @@ writeFileSync(
 
 console.error('\nrecorded in src/chain/published.ts:')
 for (const p of published) console.log(`  ${p.name.padEnd(12)} ${p.blobId}`)
+
+/*
+ * Build again, and it matters.
+ *
+ * The deploy console reads its suggested blob ids from `published.ts`, which
+ * is bundled INTO the build. Recording them after the build meant every
+ * published console carried the ids of the publish before it — so opening the
+ * deploy screen and signing what it offered re-pointed each name at the blob
+ * it was already on. A no-op that looks exactly like success: a signature, a
+ * digest, a green tick, and nothing changed on chain.
+ *
+ * The rebuilt bundle has different bytes from the one just uploaded, so it is
+ * not the blob being signed. That is fine and unavoidable — the console
+ * cannot contain its own hash. What matters is that the ids it SUGGESTS are
+ * the ones that were just published, and now they are.
+ */
+console.error('\nrebuilding so the deploy console carries these ids…')
+run('npm', ['run', 'build:site'])
+
 console.error('\nsign the two update_blob calls at ?view=deploy')
