@@ -1,6 +1,5 @@
 import { isHollow, urgencyOf, type Frost } from '@/chain/frost'
 import { IceBlock } from './IceBlock'
-import { Hourglass } from './Hourglass'
 import { characterFor } from './character'
 import './ice.css'
 
@@ -35,13 +34,12 @@ export function Frozen({ frost, size = 120, mascot = true, snow = true, detail }
         ? 1
         : Math.min(frost.progress, 0.82)
       : frost.released
-  const surfaceDrop = 34 * Math.min(1, Math.max(0, melted))
 
-  // Below ~60px the mascot stops being a walrus and becomes a grey blob, so
-  // she bows out and a clean block carries the meaning instead. The threshold
-  // sits under the badge card's 68px on purpose: that variant offers a
-  // "Mascot" toggle, and a toggle that never changes anything is a bug.
-  const showMascot = mascot && size >= 60 && frost.phase !== 'absent'
+  // Below ~60px the hourglass inside the block is a smudge behind glass, so
+  // it bows out and a clean cube carries the meaning instead. The threshold
+  // sits under the badge card's 68px on purpose: that variant offers the
+  // toggle, and a toggle that never changes anything is a bug.
+  const showGlass = mascot && size >= 60 && frost.phase !== 'absent'
   // Fur strokes, pores and breath vapour are noise under ~110px.
   const fine = detail ?? size >= 110
   const character = characterFor(frost)
@@ -65,21 +63,29 @@ export function Frozen({ frost, size = 120, mascot = true, snow = true, detail }
         </g>
       )}
 
-      <IceBlock melted={melted} elapsed={frost.progress} phase={frost.phase} detail={fine} />
+      <IceBlock
+        melted={melted}
+        elapsed={frost.progress}
+        phase={frost.phase}
+        detail={fine}
+        hourglass={
+          showGlass
+            ? {
+                progress: frost.progress,
+                running: frost.phase === 'melting',
+                tone: isHollow(frost)
+                  ? 'spent'
+                  : urgencyOf(frost) !== 'none'
+                    ? 'warn'
+                    : frost.phase === 'melting'
+                      ? 'frost'
+                      : 'spent',
+              }
+            : undefined
+        }
+      />
 
-      {showMascot && (
-        <g transform={`translate(0 ${surfaceDrop})`}>
-          <Hourglass
-            progress={frost.progress}
-            running={frost.phase === 'melting'}
-            tone={
-              isHollow(frost) ? 'spent' : urgencyOf(frost) !== 'none' ? 'warn'
-              : frost.phase === 'melting' ? 'frost' : 'spent'
-            }
-          />
-        </g>
-      )}
-    </svg>
+          </svg>
   )
 }
 
