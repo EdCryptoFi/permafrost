@@ -38,6 +38,9 @@ const BADGE_PATH = import.meta.env.VITE_BADGE_ORIGIN
 const PUBLIC_BADGE =
   import.meta.env.VITE_PUBLIC_BADGE_URL || 'https://frostbadge.epochsui.com/'
 
+/** One place both the live preview and the four state previews read from. */
+const BADGE_BASE = import.meta.env.DEV ? `${BADGE_ORIGIN}${BADGE_PATH}` : PUBLIC_BADGE
+
 /**
  * Ids come from the chain, but this one is about to be pasted into a string
  * that becomes HTML on somebody else's page. Validate at the boundary rather
@@ -63,6 +66,31 @@ const VARIATIONS = [
  * The badge posts its measured size on load and whenever it changes (see
  * `src/badge/main.tsx`). Until then the frame uses `fallback`, so a host that
  * blocks scripts still gets a sensibly-sized box instead of a collapsed one.
+ *
+ * It also decides WHICH url to frame, and that is not a static choice.
+ *
+ * The preview used same-origin `/badge/` so it would work on any deployment.
+ * On the primary target it does the opposite: every path under a .epoch name
+ * serves that name's single blob, so `permafrost.epochsui.com/badge/` returns
+ * the app — 262 KB of PermaFrost, dock and all, rendered inside a box meant to
+ * hold a badge. The copied snippet was already pointed at the badge's own
+ * name; the preview beside it was not.
+ *
+ * A built site previews the badge's own name — the exact url the snippet
+ * hands out. Only in dev does it use same-origin, because previewing
+ * production while changing the badge would show you yesterday's work.
+ *
+ * There is no fallback between the two, and that was a mistake worth not
+ * repeating. A first attempt started same-origin and switched after a silent
+ * timeout; on a .epoch host it therefore switched INTO the broken url, since
+ * a name serves one blob at every path and same-origin `/badge/` is the app.
+ * A timeout also cannot tell "not deployed" from "slow", so it fired on every
+ * cold cross-origin load.
+ *
+ * Preview exactly what is copied. If the badge's name is not serving, the
+ * preview is broken — and so is the snippet, which is the thing worth
+ * knowing. A preview that quietly works when the snippet would not is the
+ * actual lie.
  *
  * No `sandbox` attribute, deliberately. It carried `allow-scripts` with
  * `allow-same-origin`, which Chrome warns about by name because that pair
@@ -142,9 +170,11 @@ export function Embed({ frost }: { frost: Frost }) {
 
   const id = safeId(frost.id)
   const query = `?id=${id}&variant=card${mascot ? '' : '&mascot=0'}${light ? '&appearance=aqua' : ''}`
-  const src = `${BADGE_ORIGIN}${BADGE_PATH}${query}`
+
 
   const publicSrc = `${PUBLIC_BADGE}${query}`
+  /** Dev works on the badge; a built site ships beside it. */
+  const src = `${BADGE_BASE}${query}`
 
   const iframe =
     `<iframe src="${publicSrc}"\n` +
@@ -204,7 +234,7 @@ export function Embed({ frost }: { frost: Frost }) {
         {VARIATIONS.map((v) => (
           <figure class="variation" key={v.id}>
             <BadgeFrame
-              src={`${BADGE_ORIGIN}${BADGE_PATH}?id=${v.id}&variant=card${light ? '&appearance=aqua' : ''}`}
+              src={`${BADGE_BASE}?id=${v.id}&variant=card${light ? '&appearance=aqua' : ''}`}
               fallback={{ w: 300, h: 96 }}
               title={v.label}
               lazy

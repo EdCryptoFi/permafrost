@@ -11,3 +11,6 @@ blob-id.txt
 design/permafrost-ui.html
 stitch_wacky_walrus_motion_lab/**/screen.png
 _to_delete_git_locks/
+
+# Screen recordings for the demo. Large, and not source.
+video/
