@@ -94,4 +94,15 @@ console.error('\nrebuilding so the deploy console carries these ids…')
 // disk afterwards was not, and that is the one a person would reach for next.
 run('npm', ['run', 'build:site'], { VITE_OG_IMAGE: `${AGG}/${OG_BLOB}` })
 
+/*
+ * The last gate before anyone is asked to sign.
+ *
+ * Local servers route paths; a .epoch name does not. Everything I check runs
+ * on the former and ships to the latter, which is how the embed panel went
+ * live framing the whole app instead of the badge. This runs the built site
+ * under one-blob routing and refuses to hand over ids if it is wrong.
+ */
+console.error('\nchecking the build under .epoch routing…')
+run('node', ['scripts/epoch-routing-test.mjs'])
+
 console.error('\nsign the two update_blob calls at ?view=deploy')
