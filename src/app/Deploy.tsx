@@ -197,8 +197,12 @@ const BLOB_ID = /^[A-Za-z0-9_-]{40,50}$/
             <button class="btn" disabled={!valid || wallet.busy} onClick={() => void submit()}>
               {wallet.busy ? 'Signing…' : 'Point name at blob'}
             </button>
+            {/* Not "Done". It sat beside the button that signs, reading like
+                the confirmation and meaning the opposite — leave without doing
+                anything. Someone clicked it repeatedly, watched the screen
+                return, and reasonably concluded the pointer would not stick. */}
             <button class="btn ghost" onClick={onCancel}>
-              Done
+              ← Back
             </button>
           </div>
           {msg && (
