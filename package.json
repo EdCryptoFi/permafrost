@@ -18,7 +18,8 @@
     "publish:all": "node scripts/publish-all.mjs",
     "test:security": "node scripts/security-test.mjs",
     "test:claims": "node scripts/claims-test.mjs",
-    "test": "npm run test:security && npm run test:claims",
+    "test": "npm run test:csp && npm run test:security && npm run test:claims",
+    "test:csp": "node scripts/csp-parity-test.mjs",
     "test:routing": "node scripts/epoch-routing-test.mjs"
   },
   "dependencies": {
