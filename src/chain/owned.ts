@@ -96,27 +96,50 @@ export async function listLockable(
     if (!after) break
   }
 
-  // Attach tickers so the picker says "1,230,000 EPT", not "TEMPLATE".
-  await Promise.all(
-    out.map(async (o) => {
-      if (!o.isCoin) return
-      const info = await resolveCoinInfo(innerTypeOf(o.type), signal).catch(() => null)
-      o.decimals = info?.decimals ?? null
-      o.symbol = info?.symbol ?? null
-      if (info?.symbol) o.label = info.symbol
-    }),
-  )
-
-  // Non-coins first: an LP position, a NameCap or an NFT is the deliberate
-  // thing someone came here to lock, while coins are the long tail. Within
-  // coins, biggest balance first. Sorting by bigint through Number() would
-  // overflow, so compare the bigints directly.
-  return out.sort((a, b) => {
+  /*
+   * Sort BEFORE resolving tickers, then resolve only what a person will look
+   * at first.
+   *
+   * This wallet holds 1,098 lockable objects across 264 distinct coin types.
+   * Resolving every ticker up front means 264 requests through a limiter that
+   * allows four at a time with a 55ms gap — about fifteen seconds of pure
+   * spacing on top of the five the paging already costs, during which the
+   * picker says "Reading your wallet…" and gives no reason to believe it will
+   * ever stop. It looked like a hang because, at that length, it is one.
+   *
+   * The sort needs no tickers: non-coins first, then by balance, both of
+   * which are already known. So the order is settled, and only the first
+   * COINS pay for a name — counted among coins, not among objects. Sorting
+   * puts every non-coin ahead of every coin, and this wallet holds 381 of
+   * them, so a slice off the front of the whole list spent its budget before
+   * reaching a single coin and every ticker came back unresolved.
+   *
+   * The tail keeps its Move struct name, which is true, just less friendly.
+   */
+  const sorted = out.sort((a, b) => {
     if (a.isCoin !== b.isCoin) return a.isCoin ? 1 : -1
     if (a.isCoin && b.isCoin) {
+      // Comparing bigints through Number() would overflow.
       const d = (b.balance ?? 0n) - (a.balance ?? 0n)
       return d > 0n ? 1 : d < 0n ? -1 : 0
     }
     return a.label.localeCompare(b.label)
   })
+
+  /** How many coins get a ticker before the picker paints. */
+  const NAMED = 60
+
+  await Promise.all(
+    sorted
+      .filter((o) => o.isCoin)
+      .slice(0, NAMED)
+      .map(async (o) => {
+        const info = await resolveCoinInfo(innerTypeOf(o.type), signal).catch(() => null)
+        o.decimals = info?.decimals ?? null
+        o.symbol = info?.symbol ?? null
+        if (info?.symbol) o.label = info.symbol
+      }),
+  )
+
+  return sorted
 }
