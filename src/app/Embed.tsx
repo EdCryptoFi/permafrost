@@ -72,7 +72,7 @@ const VARIATIONS = [
  * The preview used same-origin `/badge/` so it would work on any deployment.
  * On the primary target it does the opposite: every path under a .epoch name
  * serves that name's single blob, so `permafrost.epochsui.com/badge/` returns
- * the app — 262 KB of PermaFrost, dock and all, rendered inside a box meant to
+ * the app — 262 KB of PermaFrost, menu bar and all, rendered inside a box meant to
  * hold a badge. The copied snippet was already pointed at the badge's own
  * name; the preview beside it was not.
  *

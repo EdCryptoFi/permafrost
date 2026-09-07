@@ -14,7 +14,7 @@ import { Guide } from './Guide'
 import { Results } from './Results'
 import { useWallet } from '@/wallet/useWallet'
 import { shortAddr } from '@/format'
-import { IconFrost, IconGuide } from '@/ui/icons'
+import { IconFrost } from '@/ui/icons'
 import { ThemeToggle } from '@/ui/ThemeToggle'
 import { HeroTitle } from '@/ui/HeroTitle'
 import { Backdrop, sceneFor } from '@/ui/Backdrop'
@@ -23,7 +23,8 @@ import { Boot } from '@/ui/Boot'
 import { Chooser } from '@/ui/Chooser'
 import { PageHead } from '@/ui/PageHead'
 import { MacWindow } from '@/ui/MacWindow'
-import { Dock } from '@/ui/Dock'
+import { AquaVerify, AquaFreeze, AquaDeploy, AquaGuide } from '@/ui/AquaIcons'
+import { EptMark } from '@/ui/EptMark'
 import { ProofCard } from '@/share/ProofCard'
 import './app.css'
 
@@ -40,6 +41,24 @@ const viewFromUrl = (): View => {
   const v = new URLSearchParams(location.search).get('view')
   return v === 'new' || v === 'deploy' || v === 'ept' || v === 'guide' ? v : 'verify'
 }
+
+/**
+ * The menu bar, which is now the only navigation.
+ *
+ * It used to be four words here and a Dock of five icons at the bottom — the
+ * same five destinations, stated twice. On a Mac that duplication earned its
+ * keep because the Dock survived across applications; here both lived on the
+ * same page, and the lower one covered the last line of whatever you were
+ * reading. The icons were the better half, so they came up here.
+ */
+const NAV: { id: View; label: string; art?: (p: { size?: number }) => preact.JSX.Element }[] = [
+  { id: 'verify', label: 'Verify', art: AquaVerify },
+  { id: 'new', label: 'Freeze', art: AquaFreeze },
+  { id: 'deploy', label: 'Deploy', art: AquaDeploy },
+  // EPT has no Aqua icon; it wears Epoch's own mark.
+  { id: 'ept', label: 'EPT' },
+  { id: 'guide', label: 'Guide', art: AquaGuide },
+]
 
 export function App() {
   const wallet = useWallet()
@@ -174,7 +193,7 @@ export function App() {
       <div class="bg" aria-hidden="true" />
       <Backdrop scene={scene} />
       <Boot ready={booted} />
-      <div class="wrap has-dock">
+      <div class="wrap">
       <header class="head">
         <div class="brand">
           <span class="brand-mark">
@@ -186,33 +205,24 @@ export function App() {
           </div>
         </div>
         <nav class="nav">
-          {(['verify', 'new', 'deploy', 'ept'] as View[]).map((v) => (
+          {NAV.map(({ id, label, art: Art }) => (
             <a
-              key={v}
-              class={view === v ? 'on' : ''}
-              href={v === 'verify' ? '?' : `?view=${v}`}
+              key={id}
+              class={view === id ? 'on' : ''}
+              href={id === 'verify' ? '?' : `?view=${id}`}
               onClick={(e) => {
                 if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
                 e.preventDefault()
-                go(v)
+                go(id)
               }}
             >
-              {v === 'verify' ? 'Verify' : v === 'new' ? 'Freeze' : v === 'deploy' ? 'Deploy' : 'EPT'}
+              <span class="nav-art" aria-hidden="true">
+                {Art ? <Art size={26} /> : <EptMark size={26} />}
+              </span>
+              {label}
             </a>
           ))}
         </nav>
-        <a
-          class={`guide-link${view === 'guide' ? ' on' : ''}`}
-          href="?view=guide"
-          onClick={(e) => {
-            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
-            e.preventDefault()
-            go('guide')
-          }}
-        >
-          <IconGuide size={14} />
-          Guide
-        </a>
         <div class="chips">
           <Chips view={view} frost={view === 'verify' ? selected : null} />
         </div>
@@ -404,8 +414,6 @@ export function App() {
           </>
         )}
       </MacWindow>
-
-      <Dock view={view} onGo={go} />
 
       <footer class="foot">
         <span>
